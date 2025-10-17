@@ -47,11 +47,11 @@
 </body>
 </html>
 <?php
-    if($_SERVER["REQUEST_METHOD"] == "POST"){
-        $usuario = $_POST["username"];
-        $pass = $_POST["password"];
+    if(isset($_POST['registro'])){
+        $nombre = $_POST ['username'];
+        $email = $_POST ['email'];
+        $pass = $_POST ['password'];
 
-        $sql = "SELECT * FROM usuarios WHERE usuario = '$usuario' && pass = '$pass'";
-        $resultado = mysqli_query($enlace, $sql);
-    }
+        $insertarDatos = "INSER INTO usuarios VALUES('','$nombre','$email','$pass',)";
+        $ejecutarInsertar = mysqli_query ($enlace,$insertardatos);
 ?>

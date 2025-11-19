@@ -1,11 +1,3 @@
-<?php
-    $servidor = "localhost";
-    $usuario = "root";
-    $clave = "";
-    $baseDeDatos = "rulemkw";
-
-    $enlace = mysqli_connect($servidor, $usuario, $clave, $baseDeDatos);
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -47,11 +39,25 @@
 </body>
 </html>
 <?php
-    if(isset($_POST['registro'])){
-        $nombre = $_POST ['username'];
-        $email = $_POST ['email'];
-        $pass = $_POST ['password'];
+    include 'conexion/conexion.php';
+    
+    $nombre = $_POST ['username'];
+    $email = $_POST ['email'];
+    $pass = $_POST ['password'];
 
-        $insertarDatos = "INSER INTO usuarios VALUES('','$nombre','$email','$pass',)";
-        $ejecutarInsertar = mysqli_query ($enlace,$insertardatos);
+    // VERIFICAR SI EL CORREO YA EXISTE
+    $buscar = $enlace->$query("SELECT * FROM usuarios WHERE email = '$email'");
+        if ($buscar -> num_rows > 0){
+            echo "Este correo ya existe";
+            exit;
+        }
+        
+    // ENCRIPTAR CONTRASEÑA
+    $passHash = password_hash($pass, PASSWORD_DEFAULT);
+
+    // INSERTAR EN LA BASE DE DATOS
+    if(isset($_POST['registro'])){
+
+    $insertarDatos = "INSERT INTO usuarios VALUES('','$nombre','$email','$passHash')";
+    $ejecutarInsertar = mysqli_query ($enlace,$insertardatos);
 ?>

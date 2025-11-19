@@ -46,7 +46,7 @@
 </html>
 <?php
     if(!empty($_POST["btn-iniciar"])){
-        if(!empty($_POST["username"]) && !empty($_POST["password"])){
+        if(!empty($_POST["username"]) || !empty($_POST["password"])){
             $usuario = $_POST["username"];
             $pass = $_POST["password"];
             $sql = $enlace->query("SELECT * FROM usuarios WHERE usuario = '$usuario' AND pass = '$pass'");

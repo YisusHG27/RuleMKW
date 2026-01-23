@@ -88,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registro'])) {
                         $_SESSION['usuario_email'] = $email;
                         
                         // Redirigir a la página principal
-                        header("Location: index.php");
+                        header("Location: ../frontend/index.html");
                         exit();
                     } else {
                         $mensaje = "Error al registrar: " . $stmt3->error;
@@ -114,7 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registro'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bienvenido</title>
-    <link rel="stylesheet" href="css/lr.css">
+    <link rel="stylesheet" href="../frontend/css/loginRegistro.css">
     <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
     <style>
         .mensaje {

@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
                 $_SESSION['usuario_nombre'] = $fila['usuario'];
                 
                 // Redirigir
-                header("Location: inicio.php");
+                header("Location: ../frontend/index.html");
                 exit();
             } else {
                 $error = "Correo o contraseña incorrectos";
@@ -50,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de sesión</title>
-    <link rel="stylesheet" href="css/lr.css">
+    <link rel="stylesheet" href="../frontend/css/loginRegistro.css">
     <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
 </head>
 <style>

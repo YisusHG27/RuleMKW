@@ -15,18 +15,15 @@
             <div class="user-info">
                 <div v-if="usuario" class="user-links">
                     <a href="perfil.html" class="user-name">
-                        👤 {{ usuario }}
-                    </a>
-                    <a v-if="rol === 'admin'" href="../backend/admin_panel.php" class="admin-link">
-                        ⚙️ Admin
+                        {{ usuario }}
                     </a>
                     <a href="../backend/logout.php" class="logout-link">
-                        🚪 Salir
+                        Salir
                     </a>
                 </div>
                 <div v-else class="guest-links">
-                    <a href="../backend/login.php">🔑 Iniciar Sesión</a>
-                    <a href="../backend/registro.php">📝 Registrarse</a>
+                    <a href="../backend/login.php">Iniciar Sesión</a>
+                    <a href="../backend/registro.php">Registrarse</a>
                 </div>
             </div>
         </header>
@@ -49,14 +46,22 @@
                     <div class="contador-seleccion">
                         <span class="numero-grande">{{ seleccionados }}</span>
                         <span>circuitos seleccionados</span>
+                        <div class="contador-limitador" :class="{
+                            'limite-ok': seleccionados >= 2 && seleccionados <= 4,
+                            'limite-poco': seleccionados < 2,
+                            'limite-mucho': seleccionados > 4
+                        }">
+                            {{ seleccionados }}/4
+                            <span v-if="seleccionados < 2"> (mínimo 2)</span>
+                        </div>
                     </div>
                     
                     <div class="botones-masivos">
                         <button @click="seleccionarTodos" class="btn-masivo btn-todos">
-                            ✅ Seleccionar Todos
+                            Seleccionar Todos
                         </button>
                         <button @click="deseleccionarTodos" class="btn-masivo btn-ninguno">
-                            ❌ Deseleccionar Todos
+                            Deseleccionar Todos
                         </button>
                     </div>
                 </div>
@@ -168,12 +173,12 @@
                 </div>
 
                 <!-- Mensajes informativos -->
-                <div v-if="seleccionados < 4" class="mensaje-info">
-                    ⚠️ Necesitas seleccionar al menos 4 circuitos para usar la ruleta.
+                <div v-if="seleccionados < 2 || seleccionados > 4" class="mensaje-info">
+                    Selecciona entre 2 y 4 circuitos para usar la ruleta.
                 </div>
                 
                 <div v-if="!usuario" class="mensaje-info">
-                    🔐 <a href="../backend/login.php">Inicia sesión</a> para guardar tus estadísticas.
+                    <a href="../backend/login.php">Inicia sesión</a> para guardar tus estadísticas.
                 </div>
             </section>
 
@@ -201,27 +206,29 @@
                         <h3 class="nombre-copa">{{ copa.nombre }}</h3>
                         
                         <!-- Circuitos de esta copa (se muestra al hacer click) -->
-                        <div v-if="copaAbierta === copa.id" class="circuitos-copa-desplegable">
-                            <div v-for="circuito in copa.circuitos" 
-                                 :key="circuito.id"
-                                 class="circuito-desplegable"
-                                 :class="{ 'seleccionado': circuito.seleccionado }"
-                                 @click.stop="alternarCircuito(circuito)">
-                                
-                                <div class="check-circuito">
-                                    <input type="checkbox" v-model="circuito.seleccionado">
-                                </div>
-                                
-                                <div class="imagen-circuito-peque">
-                                    <img :src="'../' + circuito.imagen" 
-                                         :alt="circuito.nombre"
-                                         @error="manejarErrorImagen">
-                                </div>
-                                
-                                <div class="info-circuito-peque">
-                                    <span class="nombre-circuito-peque">{{ circuito.nombre }}</span>
-                                </div>
+                        <div v-for="circuito in copa.circuitos" 
+                            :key="circuito.id"
+                            class="circuito-desplegable"
+                            :class="{ 'seleccionado': circuito.seleccionado }"
+                            @click.stop="alternarCircuito(circuito)">
+                            
+                            <div class="check-circuito" @click.stop>
+                                <input type="checkbox" 
+                                    :checked="circuito.seleccionado"
+                                    @change="alternarCircuito(circuito)"
+                                    :disabled="!circuito.seleccionado && seleccionados >= 4">
                             </div>
+                                
+                            <div class="imagen-circuito-peque">
+                                <img :src="'../' + circuito.imagen" 
+                                     :alt="circuito.nombre"
+                                     @error="manejarErrorImagen">
+                            </div>
+                                
+                            <div class="info-circuito-peque">
+                                <span class="nombre-circuito-peque">{{ circuito.nombre }}</span>
+                            </div>
+                        </div>
                             
                             <div class="controles-copa">
                                 <button @click.stop="seleccionarTodosEnCopa(copa.id)" 

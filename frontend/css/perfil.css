@@ -1,0 +1,85 @@
+/* Perfil Styles */
+.profile-card {
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    border: none;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.stats-summary .stat-box {
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.stats-summary .stat-box h4 {
+    color: var(--primary-color);
+    margin: 0;
+    font-weight: bold;
+}
+
+/* Circuito Ranking */
+.circuito-ranking {
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    background: #f8f9fa;
+    transition: all 0.3s;
+}
+
+.circuito-ranking:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+}
+
+.ranking-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.ranking-1 .ranking-badge {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+}
+
+.ranking-2 .ranking-badge {
+    background: linear-gradient(135deg, #C0C0C0, #A9A9A9);
+}
+
+.ranking-3 .ranking-badge {
+    background: linear-gradient(135deg, #CD7F32, #8B4513);
+}
+
+/* Historial Table */
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* Chart Container */
+#statsChart {
+    max-height: 300px;
+}

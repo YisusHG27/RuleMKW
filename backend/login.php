@@ -31,11 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
                 $_SESSION['usuario_nombre'] = $fila['usuario'];
                 
                 // Redirigir
-                if ($fila['rol'] === 'admin') {
-                header("Location: admin_panel.php");
-                } else {
-                    header("Location: ../frontend/index.html");
-                }
+                header("Location: ../frontend/index.html");
                 exit();
             } else {
                 $error = "Correo o contraseña incorrectos";

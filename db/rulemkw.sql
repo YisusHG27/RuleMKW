@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 23-01-2026 a las 13:42:59
+-- Tiempo de generación: 04-02-2026 a las 02:30:59
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -117,7 +117,7 @@ CREATE TABLE `estadisticas_usuario` (
 INSERT INTO `estadisticas_usuario` (`id`, `usuario_id`, `circuito_id`, `veces_seleccionado`, `fecha_ultima_seleccion`) VALUES
 (1, 1, 6, 2, '2026-01-22 02:23:10'),
 (2, 1, 27, 1, '2026-01-22 02:23:17'),
-(3, 1, 5, 3, '2026-01-22 02:27:12'),
+(3, 1, 5, 4, '2026-01-22 02:27:12'),
 (4, 1, 1, 2, '2026-01-22 02:29:45'),
 (5, 1, 25, 2, '2026-01-22 02:33:00'),
 (6, 1, 14, 2, '2026-01-22 02:45:26'),
@@ -128,13 +128,17 @@ INSERT INTO `estadisticas_usuario` (`id`, `usuario_id`, `circuito_id`, `veces_se
 (12, 1, 3, 1, '2026-01-22 02:56:44'),
 (14, 1, 12, 3, '2026-01-22 02:59:17'),
 (15, 1, 29, 1, '2026-01-22 03:02:56'),
-(19, 1, 23, 1, '2026-01-22 03:28:53'),
+(19, 1, 23, 2, '2026-01-22 03:28:53'),
 (20, 1, 24, 1, '2026-01-22 03:29:09'),
 (22, 1, 11, 1, '2026-01-22 03:39:15'),
 (23, 1, 28, 1, '2026-01-22 03:39:34'),
 (24, 1, 18, 1, '2026-01-22 03:45:15'),
-(28, 1, 21, 1, '2026-01-22 04:36:37'),
-(29, 1, 8, 1, '2026-01-22 04:43:50');
+(28, 1, 21, 2, '2026-01-22 04:36:37'),
+(29, 1, 8, 1, '2026-01-22 04:43:50'),
+(31, 1, 16, 1, '2026-01-23 12:46:35'),
+(32, 1, 20, 2, '2026-01-29 00:02:31'),
+(35, 1, 7, 1, '2026-01-29 00:03:44'),
+(37, 1, 17, 1, '2026-01-29 19:54:47');
 
 -- --------------------------------------------------------
 
@@ -211,7 +215,7 @@ ALTER TABLE `copas`
 -- AUTO_INCREMENT de la tabla `estadisticas_usuario`
 --
 ALTER TABLE `estadisticas_usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`

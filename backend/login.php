@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
         $password = $_POST["password"];
         
         // Preparar la consulta con sentencias preparadas
-        $stmt = $enlace->prepare("SELECT id, usuario, pass FROM usuarios WHERE email = ?");
+        $stmt = $enlace->prepare("SELECT id, usuario, pass, rol FROM usuarios WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $resultado = $stmt->get_result();
@@ -29,12 +29,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
                 // Iniciar sesión
                 $_SESSION['usuario_id'] = $fila['id'];
                 $_SESSION['usuario_nombre'] = $fila['usuario'];
+                $_SESSION['usuario_rol'] = $fila['rol'];
+                $_SESSION['usuario_email'] = $email;
                 
                 // Redirigir
                 if ($fila['rol'] === 'admin') {
                     header("Location: admin_panel.php");
                 } else {
-                    header("Location: ../frontend/index.html");
+                    header("Location: ../frontend/index.php");
                 }
                 exit();
             } else {
@@ -47,28 +49,57 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
         $stmt->close();
     }
 }
+
+// Si ya está logueado, redirigir
+if (isset($_SESSION['usuario_id'])) {
+    if ($_SESSION['usuario_rol'] === 'admin') {
+        header("Location: admin_panel.php");
+    } else {
+        header("Location: ../frontend/index.php");
+    }
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio de sesión</title>
+    <title>Inicio de sesión - RuleMKW</title>
+    <!-- Navbar incluida en este archivo también -->
     <link rel="stylesheet" href="../frontend/css/loginRegistro.css">
     <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .mensaje-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border: 1px solid #f5c6cb;
+            text-align: center;
+        }
+        body {
+            padding-top: 80px;
+        }
+    </style>
 </head>
-<style>
-    .mensaje-error {
-        background-color: #f8d7da;
-        color: #721c24;
-        padding: 12px;
-        border-radius: 5px;
-        margin: 15px 0;
-        border: 1px solid #f5c6cb;
-        text-align: center;
-    }
-</style>
 <body>
+    <!-- NAVBAR para login.php -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="../frontend/index.php">
+                <img src="../frontend/media/iconos/logo.png" alt="RuleMKW" height="60" class="me-2">
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="../frontend/index.php">
+                    <i class="fas fa-home me-1"></i> Volver al Inicio
+                </a>
+            </div>
+        </div>
+    </nav>
+    
     <main>
         <div class="lr-container">
             <form action="" method="post">
@@ -102,5 +133,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
             </form>
         </div>
     </main>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Fuente Awesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>

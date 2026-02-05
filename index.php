@@ -24,7 +24,7 @@ session_start();
 </head>
 <body>
     <!-- Incluir navbar desde PHP -->
-    <?php include '/backend/includes/generar_navbar.php'; ?>
+    <?php include 'backend/includes/generar_navbar.php'; ?>
     
     <main class="container py-5 mt-5">
         <!-- Alertas Dinámicas -->
@@ -49,7 +49,7 @@ session_start();
                 <?php if(!isset($_SESSION['usuario_id'])): ?>
                 <div class="alert alert-info d-inline-block">
                     <i class="fas fa-info-circle me-2"></i>
-                    Puedes usar la ruleta sin iniciar sesión. <a href="../backend/login.php" class="alert-link">Inicia sesión</a> para guardar tus estadísticas.
+                    Puedes usar la ruleta sin iniciar sesión. <a href="backend/login.php" class="alert-link">Inicia sesión</a> para guardar tus estadísticas.
                 </div>
                 <?php endif; ?>
             </div>
@@ -237,7 +237,7 @@ session_start();
                         <img src="media/iconos/logo.png" alt="RuleMKW" height="40" class="me-2">
                         RuleMKW
                     </h4>
-                    <p>Tu herramienta definitiva para seleccionar circuitos de Mario Kart Wii de forma aleatoria y divertida.</p>
+                    <p>Tu herramienta definitiva para seleccionar circuitos de Mario Kart World de forma aleatoria y divertida.</p>
                     <div class="social-icons mt-3">
                         <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-lg"></i></a>
                         <a href="#" class="text-white me-3"><i class="fab fa-discord fa-lg"></i></a>
@@ -256,10 +256,10 @@ session_start();
                 </div>
                 <div class="col-lg-4">
                     <h5 class="fw-bold mb-3">Contacto</h5>
-                    <p class="mb-2"><i class="fas fa-envelope me-2"></i> contacto@rulemkw.com</p>
-                    <p><i class="fas fa-graduation-cap me-2"></i> Proyecto TFG - Universidad</p>
+                    <p class="mb-2"><i class="fas fa-envelope me-2"></i> jahernandezg20@educarex.es</p>
+                    <p><i class="fas fa-graduation-cap me-2"></i> Proyecto TFG - Jesús Antonio Hernández Gómez</p>
                     <div class="mt-4">
-                        <small class="text-white-50">© 2024 RuleMKW. Todos los derechos reservados.</small>
+                        <small class="text-white-50">© 2026 RuleMKW. Todos los derechos reservados.</small>
                     </div>
                 </div>
             </div>

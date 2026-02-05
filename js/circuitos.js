@@ -21,7 +21,7 @@ class CircuitosApp {
     
     static async loadCircuits() {
         try {
-            const response = await fetch('../backend/api/get_circuitos.php');
+            const response = await fetch('backend/api/get_circuitos.php');
             const data = await response.json();
             
             if (data.error) {
@@ -92,7 +92,7 @@ class CircuitosApp {
                                 data-bs-target="#${copaId}"
                                 aria-expanded="${isFirst ? 'true' : 'false'}">
                             <div class="d-flex align-items-center w-100">
-                                <img src="../frontend/media/copas/${this.getCopaImageName(copa.nombre)}.png" 
+                                <img src="media/copas/${this.getCopaImageName(copa.nombre)}.png" 
                                      alt="${copa.nombre}" 
                                      class="me-3"
                                      style="width: 50px; height: 50px; object-fit: contain;">
@@ -132,10 +132,10 @@ class CircuitosApp {
                      data-circuit-name="${circuito.nombre}"
                      data-circuit-copa="${circuito.copa_nombre}">
                     <div class="circuito-image">
-                        <img src="../frontend/media/circuitos/${this.getCircuitoImageName(circuito.nombre)}.jpg" 
+                        <img src="media/circuitos/${this.getCircuitoImageName(circuito.nombre)}.jpg" 
                              alt="${circuito.nombre}"
                              class="img-fluid rounded"
-                             onerror="this.src='../frontend/media/circuitos/default.jpg'">
+                             onerror="this.src='media/circuitos/default.jpg'">
                         <div class="circuito-overlay">
                             <i class="fas fa-check-circle"></i>
                         </div>

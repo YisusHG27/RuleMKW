@@ -15,4 +15,6 @@ Ya unas cositas, el copyright lo tienes del 2024, pone TFG - Universidad (no est
 
 Las cosas que te he dicho que están mal las he cambiado menos lo de borrar la cabecera del index.php y cambiar todos los index.html por index.php, en plan, no sé si quedan, he cambiado los que me jodían lo que intentaba hacer. Lo del copy y tfg universidad y la tabla circuitos-copa tampoco lo he hecho (no tengo tu BD así que no puedo tocarla obviamente), pero hazlo colegui venga saluditos chao.
 
+
 *PD: cuando cambies conexion.php o arregles lo del getenv() mira la base de datos y ponle al usuario y a la BD lo que le pongas a esas variables.*
+*PPD: lo que te he cambiado está en los commits, que he tenido que moverlos de la raíz a cada una de sus carpetas y para hacer eso tenía que hacer un commit para cada archivo.*

@@ -3,7 +3,7 @@
 
     // Configuración para Docker
     $host = getenv('DB_HOST') ?: 'mysql';  // 'mysql' es el nombre del servicio en docker-compose
-    $usuario_bd = getenv('DB_USER') ?: 'usuario';
+    $usuario_bd = getenv('DB_USER') ?: 'usuariomkw';
     $password_bd = getenv('DB_PASSWORD') ?: 'contrasena';
     $nombre_bd = getenv('DB_NAME') ?: 'rulemkw';
 

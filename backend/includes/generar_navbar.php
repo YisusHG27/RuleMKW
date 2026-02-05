@@ -61,7 +61,7 @@ if (session_status() == PHP_SESSION_NONE) {
                     <a class="nav-link btn btn-outline-light btn-sm mx-1" href="../login.php">
                         <i class="fas fa-sign-in-alt me-1"></i> Iniciar Sesión
                     </a>
-                    <a class="nav-link btn btn-danger btn-sm mx-1" href="registro.php">
+                    <a class="nav-link btn btn-danger btn-sm mx-1" href="../backend/registro.php">
                         <i class="fas fa-user-plus me-1"></i> Registro
                     </a>
                 <?php endif; ?>

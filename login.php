@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
                 if ($fila['rol'] === 'admin') {
                     header("Location: admin_panel.php");
                 } else {
-                    header("Location: ../frontend/index.html");
+                    header("Location: ../frontend/index.php");
                 }
                 exit();
             } else {
@@ -56,7 +56,7 @@ if (isset($_SESSION['usuario_id'])) {
     if ($_SESSION['usuario_rol'] === 'admin') {
         header("Location: admin_panel.php");
     } else {
-        header("Location: ../frontend/index.html");
+        header("Location: ../frontend/index.php");
     }
     exit();
 }

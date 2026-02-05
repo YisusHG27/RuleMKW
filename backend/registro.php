@@ -88,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registro'])) {
                         $_SESSION['usuario_email'] = $email;
                         
                         // Redirigir a la página principal
-                        header("Location: ../frontend/index.html");
+                        header("Location: ../frontend/index.php");
                         exit();
                     } else {
                         $mensaje = "Error al registrar: " . $stmt3->error;

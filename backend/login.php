@@ -16,7 +16,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
         $password = $_POST["password"];
         
         // Preparar la consulta con sentencias preparadas
-        // CORRECCIÓN: Incluir el campo 'rol' en la consulta
         $stmt = $enlace->prepare("SELECT id, usuario, pass, rol FROM usuarios WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -37,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
                 if ($fila['rol'] === 'admin') {
                     header("Location: admin_panel.php");
                 } else {
-                    header("Location: ../frontend/index.html");
+                    header("Location: ../frontend/index.php");
                 }
                 exit();
             } else {
@@ -56,7 +55,7 @@ if (isset($_SESSION['usuario_id'])) {
     if ($_SESSION['usuario_rol'] === 'admin') {
         header("Location: admin_panel.php");
     } else {
-        header("Location: ../frontend/index.html");
+        header("Location: ../frontend/index.php");
     }
     exit();
 }
@@ -70,7 +69,6 @@ if (isset($_SESSION['usuario_id'])) {
     <!-- Navbar incluida en este archivo también -->
     <link rel="stylesheet" href="../frontend/css/loginRegistro.css">
     <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
-    <!-- Bootstrap para navbar -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .mensaje-error {
@@ -138,7 +136,7 @@ if (isset($_SESSION['usuario_id'])) {
     
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Font Awesome -->
+    <!-- Fuente Awesome -->
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>

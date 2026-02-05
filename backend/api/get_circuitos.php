@@ -1,14 +1,5 @@
 <?php
-// Permitir acceso desde cualquier origen (solo para desarrollo)
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST");
-header('Content-Type: application/json; charset=utf-8');
-
 include '../includes/conexion.php';
-
-// Para debug
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 
 try {
     // Obtener todas las copas con sus circuitos

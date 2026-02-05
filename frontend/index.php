@@ -273,7 +273,7 @@ session_start();
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Cargar circuitos desde la base de datos (funciona sin login)
+            // Cargar circuitos desde la base de datos
             CircuitosApp.init();
             
             // Botón nuevo intento

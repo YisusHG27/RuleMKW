@@ -8,7 +8,6 @@ if (session_status() == PHP_SESSION_NONE) {
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="../frontend/index.php">
-            <!-- Logo más grande (60px) y sin texto -->
             <img src="../frontend/media/iconos/logo.png" alt="RuleMKW" height="60" class="me-2">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -35,8 +34,8 @@ if (session_status() == PHP_SESSION_NONE) {
                 <?php endif; ?>
             </ul>
             <div class="navbar-nav">
+                    <!-- Esto lo pondrá en la barra de navegación si el usuario está logueado -->
                 <?php if(isset($_SESSION['usuario_id'])): ?>
-                    <!-- Usuario logueado -->
                     <div class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" 
                            data-bs-toggle="dropdown" aria-expanded="false">
@@ -57,11 +56,11 @@ if (session_status() == PHP_SESSION_NONE) {
                         </ul>
                     </div>
                 <?php else: ?>
-                    <!-- Usuario no logueado -->
+                    <!-- Esto lo pondrá en la barra de navegación si el usuario no está logueado -->
                     <a class="nav-link btn btn-outline-light btn-sm mx-1" href="../login.php">
                         <i class="fas fa-sign-in-alt me-1"></i> Iniciar Sesión
                     </a>
-                    <a class="nav-link btn btn-danger btn-sm mx-1" href="registro.php">
+                    <a class="nav-link btn btn-danger btn-sm mx-1" href="../registro.php">
                         <i class="fas fa-user-plus me-1"></i> Registro
                     </a>
                 <?php endif; ?>

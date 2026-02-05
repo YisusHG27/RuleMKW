@@ -24,7 +24,7 @@ session_start();
 </head>
 <body>
     <!-- Incluir navbar desde PHP -->
-    <?php include '../backend/includes/generar_navbar.php'; ?>
+    <?php include '/backend/includes/generar_navbar.php'; ?>
     
     <main class="container py-5 mt-5">
         <!-- Alertas Dinámicas -->

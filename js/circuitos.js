@@ -149,7 +149,6 @@ class CircuitosApp {
         }).join('');
     }
     
-    // ... (el resto del código se mantiene igual hasta el final)
     
     static async guardarEstadisticas(resultados) {
         // Solo guardar estadísticas si el usuario está logueado

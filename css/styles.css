@@ -1,4 +1,4 @@
-/* ========== VARIABLES Y ESTILOS BASE ========== */
+/* ========== Variables y estilos base ========== */
 :root {
     --primary-color: #FF6B6B;
     --secondary-color: #4ECDC4;
@@ -29,7 +29,7 @@ body {
     color: var(--dark-color);
 }
 
-/* ========== NAVBAR ========== */
+/* ========== NavBar ========== */
 .navbar {
     background: rgba(45, 48, 71, 0.95) !important;
     backdrop-filter: blur(10px);
@@ -63,14 +63,14 @@ body {
     background: rgba(255, 255, 255, 0.1);
 }
 
-/* ========== CONTENEDORES ========== */
+/* ========== Contenedores ========== */
 .ruleta-container, .selected-container, .results-container {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* ========== NUEVA ANIMACIÓN DE RULETA ========== */
+/* ========== Nueva Animación de Ruleta ========== */
 .ruleta-animacion {
     position: relative;
     padding: 30px;
@@ -153,7 +153,7 @@ body {
     z-index: 3;
 }
 
-/* Efecto de brillo que se mueve */
+/* ========== Efecto de brillo que se mueve ========== */
 .ruleta-glow {
     position: absolute;
     width: 100%;
@@ -173,7 +173,7 @@ body {
     text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
 }
 
-/* Animaciones */
+/* ========== Animaciones ========== */
 @keyframes slotGlow {
     0% {
         box-shadow: 0 0 20px var(--ruleta-glow);
@@ -230,7 +230,7 @@ body {
     }
 }
 
-/* ========== CONTADOR DE SELECCIONADOS ========== */
+/* ========== Contador de Seleccionados ========== */
 .contador-seleccionados {
     position: fixed;
     bottom: 30px;
@@ -433,7 +433,7 @@ body {
     font-size: 1.1rem;
 }
 
-/* ========== FOOTER ========== */
+/* ========== Footer ========== */
 .footer {
     background: linear-gradient(135deg, #1a1c2e, var(--dark-color));
     border-top: 3px solid var(--primary-color);
@@ -443,7 +443,7 @@ body {
     color: var(--primary-color) !important;
 }
 
-/* ========== RESPONSIVE ========== */
+/* ========== Responsive ========== */
 @media (max-width: 992px) {
     .ruleta-stage {
         flex-wrap: wrap;
@@ -494,7 +494,7 @@ body {
     }
 }
 
-/* ========== UTILIDADES ========== */
+/* ========== Utilidades ========== */
 .shadow-lg {
     box-shadow: var(--ruleta-shadow) !important;
 }
@@ -510,7 +510,7 @@ body {
     background-clip: text;
 }
 
-/* ========== ANIMACIONES DE ENTRADA ========== */
+/* ========== Animaciones de Entrada ========== */
 .fade-in {
     animation: fadeIn 0.5s ease-out;
 }

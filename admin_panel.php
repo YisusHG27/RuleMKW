@@ -3,7 +3,7 @@
 session_start();
 
 // Incluimos conexión correcta
-include 'includes/conexion.php';
+include 'backend/includes/conexion.php';
 
 // Comprobamos que solo el admin pueda acceder
 if (!isset($_SESSION['usuario_rol']) || $_SESSION['usuario_rol'] !== 'admin') {
@@ -41,7 +41,7 @@ $resultado = $enlace->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración - RuleMKW</title>
-    <link rel="stylesheet" href="../frontend/css/style.css">
+    <link rel="stylesheet" href="css/styles.css">
     <style>
         .admin-container {
             max-width: 1200px;
@@ -135,8 +135,8 @@ $resultado = $enlace->query($sql);
         <div class="admin-header">
             <h1>Panel de Administración</h1>
             <div>
-                <a href="../frontend/index.html" class="btn-volver">🏠 Volver al inicio</a>
-                <a href="logout.php" style="margin-left: 10px; color: #ff4444;">🚪 Salir</a>
+                <a href="index.php" class="btn-volver">Volver al inicio</a>
+                <a href="logout.php" style="margin-left: 10px; color: #ff4444;">Salir</a>
             </div>
         </div>
         

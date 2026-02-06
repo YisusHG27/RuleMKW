@@ -34,9 +34,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
                 
                 // Redirigir
                 if ($fila['rol'] === 'admin') {
-                    header("Location: admin_panel.php");
+                    header("Location: ../admin_panel.php");
                 } else {
-                    header("Location: ../frontend/index.php");
+                    header("Location: ../index.php");
                 }
                 exit();
             } else {
@@ -53,9 +53,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
 // Si ya está logueado, redirigir
 if (isset($_SESSION['usuario_id'])) {
     if ($_SESSION['usuario_rol'] === 'admin') {
-        header("Location: admin_panel.php");
+        header("Location: ../admin_panel.php");
     } else {
-        header("Location: ../frontend/index.php");
+        header("Location: ../index.php");
     }
     exit();
 }
@@ -66,8 +66,7 @@ if (isset($_SESSION['usuario_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de sesión - RuleMKW</title>
-    <!-- Navbar incluida en este archivo también -->
-    <link rel="stylesheet" href="../frontend/css/loginRegistro.css">
+    <link rel="stylesheet" href="../css/loginRegistro.css">
     <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -86,14 +85,14 @@ if (isset($_SESSION['usuario_id'])) {
     </style>
 </head>
 <body>
-    <!-- NAVBAR para login.php -->
+    <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="../frontend/index.php">
-                <img src="../frontend/media/iconos/logo.png" alt="RuleMKW" height="60" class="me-2">
+            <a class="navbar-brand d-flex align-items-center" href="../index.php">
+                <img src="../media/iconos/logo.png" alt="RuleMKW" height="60" width="120" class="me-2">
             </a>
             <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="../frontend/index.php">
+                <a class="nav-link" href="../index.php">
                     <i class="fas fa-home me-1"></i> Volver al Inicio
                 </a>
             </div>

@@ -17,43 +17,7 @@
 </head>
 <body>
     <!-- ========== NAVBAR ========== -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="index.html">
-                <img src="media/iconos/logo.png" alt="RuleMKW" height="45" class="me-2">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">
-                            <i class="fas fa-home me-1"></i> Inicio
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="perfil.html">
-                            <i class="fas fa-user me-1"></i> Perfil
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="historial.html">
-                            <i class="fas fa-history me-1"></i> Historial
-                        </a>
-                    </li>
-                </ul>
-                <div class="navbar-nav">
-                    <span class="nav-link text-light me-3">
-                        <i class="fas fa-user-circle me-1"></i> Usuario
-                    </span>
-                    <a class="nav-link btn btn-outline-light btn-sm" href="backend/logout.php">
-                        <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <?php include 'backend/includes/generar_navbar.php'; ?>
 
     <main class="container py-5 mt-5">
         <div class="row">
@@ -171,25 +135,23 @@
             <div class="row">
                 <div class="col-lg-4 mb-4 mb-lg-0">
                     <h4 class="fw-bold mb-3">
-                        <img src="media/iconos/logo.png" alt="RuleMKW" height="40" class="me-2">
-                        RuleMKW
+                        <img src="media/iconos/logo.png" alt="RuleMKW" height="100" width="160" class="me-2">
                     </h4>
-                    <p>Tu herramienta definitiva para seleccionar circuitos de Mario Kart Wii de forma aleatoria y divertida.</p>
+                    <p>Tu herramienta definitiva para seleccionar circuitos de Mario Kart World de forma aleatoria y divertida.</p>
                 </div>
                 <div class="col-lg-4 mb-4 mb-lg-0">
                     <h5 class="fw-bold mb-3">Enlaces Rápidos</h5>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="index.html" class="text-white-50 text-decoration-none">Inicio</a></li>
-                        <li class="mb-2"><a href="perfil.html" class="text-white-50 text-decoration-none">Perfil</a></li>
-                        <li class="mb-2"><a href="historial.html" class="text-white-50 text-decoration-none">Historial</a></li>
+                        <li class="mb-2"><a href="index.php" class="text-white-50 text-decoration-none">Inicio</a></li>
+                        <li class="mb-2"><a href="perfil.php" class="text-white-50 text-decoration-none">Perfil</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-4">
                     <h5 class="fw-bold mb-3">Contacto</h5>
-                    <p class="mb-2"><i class="fas fa-envelope me-2"></i> contacto@rulemkw.com</p>
-                    <p><i class="fas fa-graduation-cap me-2"></i> Proyecto TFG - Universidad</p>
+                    <p class="mb-2"><i class="fas fa-envelope me-2"></i> jahernandezg20@educarex.es</p>
+                    <p><i class="fas fa-graduation-cap me-2"></i> Proyecto TFG - Jesús Antonio Hernández Gómez</p>
                     <div class="mt-4">
-                        <small class="text-white-50">© 2024 RuleMKW. Todos los derechos reservados.</small>
+                        <small class="text-white-50">© 2026 RuleMKW. Todos los derechos reservados.</small>
                     </div>
                 </div>
             </div>

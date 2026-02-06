@@ -22,11 +22,11 @@ session_start();
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     <!-- Incluir navbar desde PHP -->
     <?php include 'backend/includes/generar_navbar.php'; ?>
     
-    <main class="container py-5 mt-5">
+    <main class="container py-5 mt-5 flex-grow-1">
         <!-- Alertas Dinámicas -->
         <div id="alertContainer" class="mb-4"></div>
         
@@ -229,13 +229,12 @@ session_start();
     </main>
     
     <!-- ========== FOOTER ========== -->
-    <footer class="footer bg-dark text-white py-5">
+    <footer class="footer bg-dark text-white py-5 mt-auto">
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 mb-4 mb-lg-0">
                     <h4 class="fw-bold mb-3">
-                        <img src="media/iconos/logo.png" alt="RuleMKW" height="40" class="me-2">
-                        RuleMKW
+                        <img src="media/iconos/logo.png" alt="RuleMKW" height="100" width="160" class="me-2">
                     </h4>
                     <p>Tu herramienta definitiva para seleccionar circuitos de Mario Kart World de forma aleatoria y divertida.</p>
                     <div class="social-icons mt-3">
@@ -248,10 +247,9 @@ session_start();
                     <h5 class="fw-bold mb-3">Enlaces Rápidos</h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="index.php" class="text-white-50 text-decoration-none">Inicio</a></li>
-                        <li class="mb-2"><a href="perfil.html" class="text-white-50 text-decoration-none">Perfil</a></li>
-                        <li class="mb-2"><a href="historial.html" class="text-white-50 text-decoration-none">Historial</a></li>
-                        <li class="mb-2"><a href="../backend/login.php" class="text-white-50 text-decoration-none">Iniciar Sesión</a></li>
-                        <li><a href="../backend/registro.php" class="text-white-50 text-decoration-none">Registro</a></li>
+                        <li class="mb-2"><a href="perfil.php" class="text-white-50 text-decoration-none">Perfil</a></li>
+                        <li class="mb-2"><a href="backend/login.php" class="text-white-50 text-decoration-none">Iniciar Sesión</a></li>
+                        <li><a href="backend/registro.php" class="text-white-50 text-decoration-none">Registro</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-4">

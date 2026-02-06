@@ -21,7 +21,7 @@ class CircuitosApp {
     
     static async loadCircuits() {
         try {
-            const response = await fetch('backend/api/get_circuitos.php');
+            const response = await fetch('../backend/api/get_circuitos.php');
             const data = await response.json();
             
             if (data.error) {
@@ -45,7 +45,7 @@ class CircuitosApp {
                 circuitos: [
                     {id: 1, nombre: "Circuito Mario Bros.", copa_nombre: "Copa Champiñón"},
                     {id: 2, nombre: "Ciudad Corona (1)", copa_nombre: "Copa Champiñón"},
-                    {id: 3, nombre: "Cañon Ferroviario", copa_nombre: "Copa Champiñón"},
+                    {id: 3, nombre: "Canion Ferroviario", copa_nombre: "Copa Champiñón"},
                     {id: 4, nombre: "Puerto Espacial DK", copa_nombre: "Copa Champiñón"}
                 ]
             },
@@ -58,7 +58,67 @@ class CircuitosApp {
                     {id: 7, nombre: "Estadio Wario", copa_nombre: "Copa Flor"},
                     {id: 8, nombre: "Fortaleza Aerea", copa_nombre: "Copa Flor"}
                 ]
-            }
+            },
+            {
+                id: 3,
+                nombre: "Copa Estrella",
+                circuitos: [
+                    {id: 9, nombre: "DK Alpino", copa_nombre: "Copa Estrella"},
+                    {id: 10, nombre: "Mirador Estelar", copa_nombre: "Copa Estrella"},
+                    {id: 11, nombre: "Cielos Helados", copa_nombre: "Copa Estrella"},
+                    {id: 12, nombre: "Galeon de Wario", copa_nombre: "Copa Estrella"}
+                ]
+            },
+            {
+                id: 4,
+                nombre: "Copa Caparazón",
+                circuitos: [
+                    {id: 13, nombre: "Playa Koopa", copa_nombre: "Copa Caparazón"},
+                    {id: 14, nombre: "Sabana Salpicante", copa_nombre: "Copa Caparazón"},
+                    {id: 15, nombre: "Ciudad Corona (2)", copa_nombre: "Copa Caparazón"},
+                    {id: 16, nombre: "Estadio Peach (1)", copa_nombre: "Copa Caparazón"}
+                ]
+            },
+            {
+                id: 5,
+                nombre: "Copa Plátano",
+                circuitos: [
+                    {id: 17, nombre: "Playa Peach", copa_nombre: "Copa Plátano"},
+                    {id: 18, nombre: "Ciudad Salina", copa_nombre: "Copa Plátano"},
+                    {id: 19, nombre: "Jungla Dino Dino", copa_nombre: "Copa Plátano"},
+                    {id: 20, nombre: "Templo del Bloque", copa_nombre: "Copa Plátano"}
+                ]
+            },
+            {
+                id: 6,
+                nombre: "Copa Hoja",
+                circuitos: [
+                    {id: 21, nombre: "Cascadas Cheep Cheep", copa_nombre: "Copa Hoja"},
+                    {id: 22, nombre: "Gruta Diente de Leon", copa_nombre: "Copa Hoja"},
+                    {id: 23, nombre: "Cine Boo", copa_nombre: "Copa Hoja"},
+                    {id: 24, nombre: "Caverna Osea", copa_nombre: "Copa Hoja"}
+                ]
+            },
+            {
+                id: 7,
+                nombre: "Copa Rayo",
+                circuitos: [
+                    {id: 25, nombre: "Pradera Mu-Mu", copa_nombre: "Copa Rayo"},
+                    {id: 26, nombre: "Monte Chocolate", copa_nombre: "Copa Rayo"},
+                    {id: 27, nombre: "Fabrica de Toad", copa_nombre: "Copa Rayo"},
+                    {id: 28, nombre: "Castillo de Bowser", copa_nombre: "Copa Rayo"}
+                ]
+            },
+            {
+                id: 8,
+                nombre: "Copa Especial",
+                circuitos: [
+                    {id: 29, nombre: "Aldea Arborea", copa_nombre: "Copa Especial"},
+                    {id: 30, nombre: "Circuito Mario", copa_nombre: "Copa Especial"},
+                    {id: 31, nombre: "Estadio Peach (2)", copa_nombre: "Copa Especial"},
+                    {id: 32, nombre: "Senda Arco Iris", copa_nombre: "Copa Especial"}
+                ]
+            },
         ];
         
         this.renderCopas(copasEjemplo);
@@ -100,7 +160,6 @@ class CircuitosApp {
                                     <h5 class="mb-0">${copa.nombre}</h5>
                                     <small class="text-white-80">${copa.circuitos.length} circuitos</small>
                                 </div>
-                                <i class="fas fa-chevron-down ms-2"></i>
                             </div>
                         </button>
                     </h2>

@@ -380,32 +380,6 @@ class RuletaApp {
         return colors[Math.floor(Math.random() * colors.length)];
     }
     
-    static playSound(type) {
-        // Para producción, usaría archivos de audio reales
-        if (type === 'tick') {
-            // Simular sonido con el Web Audio API
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.frequency.value = 800;
-                oscillator.type = 'sine';
-                
-                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-                
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.1);
-            } catch (e) {
-                console.log('Audio no disponible');
-            }
-        }
-    }
-    
     static async guardarEstadisticas() {
         // Solo guardar si hay usuario logueado
         if (!CircuitosApp.isLoggedIn) {

@@ -7,8 +7,8 @@ if (session_status() == PHP_SESSION_NONE) {
 <!-- ========== NAVBAR DINÁMICA ========== -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
     <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="index.php">
-            <img src="media/iconos/logo.png" alt="RuleMKW" height="100" width="160" class="me-2">
+        <a class="navbar-brand d-flex align-items-center p-0" href="index.php">
+            <img src="media/iconos/logo.png" alt="RuleMKW" height="90" width="160" class="me-2 p-0">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>

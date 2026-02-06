@@ -45,7 +45,7 @@ class CircuitosApp {
                 circuitos: [
                     {id: 1, nombre: "Circuito Mario Bros.", copa_nombre: "Copa Champiñón"},
                     {id: 2, nombre: "Ciudad Corona (1)", copa_nombre: "Copa Champiñón"},
-                    {id: 3, nombre: "Canion Ferroviario", copa_nombre: "Copa Champiñón"},
+                    {id: 3, nombre: "Cañon Ferroviario", copa_nombre: "Copa Champiñón"},
                     {id: 4, nombre: "Puerto Espacial DK", copa_nombre: "Copa Champiñón"}
                 ]
             },
@@ -184,28 +184,35 @@ class CircuitosApp {
     static renderCircuitos(circuitos) {
         return circuitos.map(circuito => {
             const isSelected = this.selectedCircuits.some(c => c.id === circuito.id);
-            
+            const displayName = this.formatCircuitoNombre(circuito.nombre);
+
             return `
                 <div class="circuito-selector ${isSelected ? 'selected' : ''}" 
-                     data-circuit-id="${circuito.id}"
-                     data-circuit-name="${circuito.nombre}"
-                     data-circuit-copa="${circuito.copa_nombre}">
+                    data-circuit-id="${circuito.id}"
+                    data-circuit-name="${circuito.nombre}"
+                    data-circuit-copa="${circuito.copa_nombre}">
                     <div class="circuito-image">
                         <img src="media/circuitos/${this.getCircuitoImageName(circuito.nombre)}.jpg" 
-                             alt="${circuito.nombre}"
-                             class="img-fluid rounded"
-                             onerror="this.src='media/circuitos/default.jpg'">
+                            alt="${displayName}"
+                            class="img-fluid rounded"
+                            onerror="this.src='media/circuitos/default.jpg'">
                         <div class="circuito-overlay">
                             <i class="fas fa-check-circle"></i>
                         </div>
                     </div>
                     <div class="circuito-info mt-2">
-                        <h6 class="mb-1">${circuito.nombre}</h6>
+                        <h6 class="mb-1">${displayName}</h6>
                         <small class="text-muted">${circuito.copa_nombre}</small>
                     </div>
                 </div>
             `;
         }).join('');
+    }
+    static formatCircuitoNombre(circuitoNombre) {
+        if (circuitoNombre === 'CanionFerroviario') {
+            return 'Cañon Ferroviario';
+        }
+        return circuitoNombre;
     }
     
     
@@ -255,6 +262,9 @@ class CircuitosApp {
     }
     
     static getCircuitoImageName(circuitoNombre) {
+        if (circuitoNombre === 'Cañon Ferroviario' || circuitoNombre === 'CanionFerroviario') {
+            return 'CanionFerroviario';
+        }
         return circuitoNombre
             .replace(/[^\w\s]/gi, '')
             .replace(/\s+/g, '')

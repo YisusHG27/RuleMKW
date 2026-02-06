@@ -132,9 +132,10 @@ class RuletaApp {
     
     static updateSlotContent(slot, circuito) {
         const content = slot.querySelector('.slot-content');
+        const displayName = this.formatCircuitoNombre(circuito.nombre);
         content.innerHTML = `
-            <div class="circuito-info">
-                <h6 class="fw-bold mb-1">${circuito.nombre}</h6>
+        <div class="circuito-info">
+            <h6 class="fw-bold mb-1">${displayName}</h6>
                 <small class="text-white-80">${circuito.copa_nombre || ''}</small>
                 <div class="mt-3">
                     <span class="badge bg-warning">${this.getPositionName(slot.classList[1])}</span>
@@ -180,7 +181,7 @@ class RuletaApp {
             const positionClass = position === 1 ? 'gold' : 
                                  position === 2 ? 'silver' : 
                                  position === 3 ? 'bronze' : 'normal';
-            
+            const displayName = this.formatCircuitoNombre(circuito.nombre);
             const col = document.createElement('div');
             col.className = 'col-md-3 col-6 mb-3';
             col.innerHTML = `
@@ -188,11 +189,11 @@ class RuletaApp {
                     <div class="position-badge">${position}º</div>
                     <div class="circuito-image">
                         <img src="media/circuitos/${this.getImageName(circuito.nombre)}.jpg" 
-                             alt="${circuito.nombre}"
+                             alt="${displayName}"
                              class="img-fluid rounded-top">
                     </div>
                     <div class="circuito-details p-3">
-                        <h6 class="fw-bold mb-1">${circuito.nombre}</h6>
+                        <h6 class="fw-bold mb-1">${displayName}</h6>
                         <small class="text-muted d-block mb-2">${circuito.copa_nombre || ''}</small>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="badge bg-light text-dark">
@@ -216,6 +217,13 @@ class RuletaApp {
         
         // Agregar estilos para resultados
         this.addResultStyles();
+    }
+
+    static formatCircuitoNombre(circuitoNombre) {
+        if (circuitoNombre === 'CanionFerroviario') {
+            return 'Cañon Ferroviario';
+        }
+        return circuitoNombre;
     }
     
     static addResultStyles() {
@@ -315,8 +323,11 @@ class RuletaApp {
         this.showAlert('Ruleta reiniciada', 'info');
     }
     
+    // Convertir nombre a formato de archivo
     static getImageName(circuitoNombre) {
-        // Convertir nombre a formato de archivo
+        if (circuitoNombre === 'Cañon Ferroviario' || circuitoNombre === 'CanionFerroviario') {
+            return 'CanionFerroviario';
+        }
         return circuitoNombre
             .replace(/[^\w\s]/gi, '')
             .replace(/\s+/g, '')

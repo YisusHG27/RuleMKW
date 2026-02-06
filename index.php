@@ -240,7 +240,7 @@ session_start();
                     <div class="social-icons mt-3">
                         <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-lg"></i></a>
                         <a href="#" class="text-white me-3"><i class="fab fa-discord fa-lg"></i></a>
-                        <a href="#" class="text-white"><i class="fab fa-github fa-lg"></i></a>
+                        <a href="https://github.com/YisusHG27" class="text-white"><i class="fab fa-github fa-lg"></i></a>
                     </div>
                 </div>
                 <div class="col-lg-4 mb-4 mb-lg-0">

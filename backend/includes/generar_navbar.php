@@ -26,11 +26,6 @@ if (session_status() == PHP_SESSION_NONE) {
                         <i class="fas fa-user me-1"></i> Perfil
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="historial.php">
-                        <i class="fas fa-history me-1"></i> Historial
-                    </a>
-                </li>
                 <?php endif; ?>
             </ul>
             <div class="navbar-nav">

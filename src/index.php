@@ -234,7 +234,7 @@ session_start();
             <div class="row">
                 <div class="col-lg-4 mb-4 mb-lg-0">
                     <h4 class="fw-bold mb-3">
-                        <img src="media/iconos/logo.png" alt="RuleMKW" height="100" width="160" class="me-2">
+                        <img src="media/iconos/logo.png" alt="RuleMKW" height="40" width="160" class="me-2">
                     </h4>
                     <p>Tu herramienta definitiva para seleccionar circuitos de Mario Kart World de forma aleatoria y divertida.</p>
                     <div class="social-icons mt-3">

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-02-2026 a las 02:30:59
+-- Tiempo de generación: 06-02-2026 a las 03:26:25
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -21,7 +21,8 @@ SET time_zone = "+00:00";
 -- Base de datos: `rulemkw`
 --
 
--- --------------------------------------------------------
+CREATE DATABASE IF NOT EXISTS rulemkw CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE rulemkw;
 
 --
 -- Estructura de tabla para la tabla `circuitos`
@@ -120,7 +121,7 @@ INSERT INTO `estadisticas_usuario` (`id`, `usuario_id`, `circuito_id`, `veces_se
 (3, 1, 5, 4, '2026-01-22 02:27:12'),
 (4, 1, 1, 2, '2026-01-22 02:29:45'),
 (5, 1, 25, 2, '2026-01-22 02:33:00'),
-(6, 1, 14, 2, '2026-01-22 02:45:26'),
+(6, 1, 14, 3, '2026-01-22 02:45:26'),
 (7, 1, 30, 1, '2026-01-22 02:49:40'),
 (9, 1, 9, 2, '2026-01-22 02:50:22'),
 (10, 1, 32, 1, '2026-01-22 02:53:24'),
@@ -160,7 +161,8 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `usuario`, `email`, `pass`, `rol`, `fecha_registro`) VALUES
-(1, 'admin', 'admin@rulemkw.com', '$2y$10$z5lMnmH3FBmqIgca0/6v0.H3Xg/7C/vzTZ4cXhSeOIbmNx2wdBuBe', 'admin', '2025-12-03 01:04:22');
+(1, 'admin', 'admin@rulemkw.com', '$2y$10$z5lMnmH3FBmqIgca0/6v0.H3Xg/7C/vzTZ4cXhSeOIbmNx2wdBuBe', 'admin', '2025-12-03 01:04:22'),
+(2, 'Jesus', 'jahernandezg20@educarex.es', '$2y$10$flwgyS/OTHizGI0k7QVmV.lHbX2hWc8Z6T2Y9k7P4AfuUzzNmNYYu', 'usuario', '2026-02-06 01:33:33');
 
 --
 -- Índices para tablas volcadas
@@ -215,13 +217,13 @@ ALTER TABLE `copas`
 -- AUTO_INCREMENT de la tabla `estadisticas_usuario`
 --
 ALTER TABLE `estadisticas_usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Restricciones para tablas volcadas

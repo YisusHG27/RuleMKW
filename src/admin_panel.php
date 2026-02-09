@@ -217,7 +217,7 @@ $resultado = $enlace->query($sql);
             </div>
         </div>
         
-        <a href="../frontend/index.html" class="btn-volver">🏠 Volver al inicio</a>
+        <a href="index.html" class="btn-volver">Volver al inicio</a>
     </div>
 </body>
 </html>

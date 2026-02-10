@@ -3,28 +3,19 @@ Antes de intentar ejecutar a la aplicacion has de realizar varias cosas
 ## Tendrás que descargar docker desktop a traves de la página de docker
 [Página de Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
-## 1º Has de importar las imagenes necesarias
-lo harás a traves de estos comandos:
+Antes de intentar ejecutar a la aplicacion has de realizar varias cosas
 
-# Descargas Nginx
-docker pull nginx:alpine
+## Tendrás que descargar docker desktop a traves de la página de docker
+[Página de Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
-# Descargas PHP
-docker pull php:8.1-fpm-alpine
+luego inicias docker desktop
 
-# Descargas MySQL
-docker pull mysql:8.0
+## Dentro de una terminal tendras que dirigirte a la carpeta raiz del proyecto y poner distintos comandos para distintas cosas:
 
-# Descargas PHPMyAdmin
-docker pull phpmyadmin/phpmyadmin
+# Para iniciar docker y poder ir a la página
 
-## luego ejecutamos docker compose
+docker-compose up
 
-# Verificas que tienes docker-compose.yml
-dir *.yml
+# Para finalizr docker
 
-# Inicias todos los servicios
-docker-compose up -d
-
-# Verificas que están corriendo
-docker-compose ps
+docker-compose down

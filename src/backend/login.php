@@ -89,7 +89,7 @@ if (isset($_SESSION['usuario_id'])) {
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="../index.php">
-                <img src="../media/iconos/logo.png" alt="RuleMKW" height="60" width="120" class="me-2">
+                <img src="../media/iconos/logo.png" alt="RuleMKW" height="40" width="160" class="me-2">
             </a>
             <div class="navbar-nav ms-auto">
                 <a class="nav-link" href="../index.php">

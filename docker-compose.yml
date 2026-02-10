@@ -49,6 +49,22 @@ services:
     networks:
       - app_network
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: rulemkw_phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+      UPLOAD_LIMIT: 512M
+    depends_on:
+      - mysql
+    networks:
+      - app_network
+  
 volumes:
   mysql_data:
 

@@ -94,7 +94,7 @@ INSERT INTO `copas` (`id`, `nombre`) VALUES
 (4, 'Copa Caparazón'),
 (5, 'Copa Plátano'),
 (6, 'Copa Hoja'),
-(7, 'Copa Rayo'),
+(7, 'Copa Centella'),
 (8, 'Copa Especial');
 
 -- --------------------------------------------------------

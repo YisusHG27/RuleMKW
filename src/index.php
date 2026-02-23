@@ -43,7 +43,7 @@ session_start();
         <section class="ruleta-section mb-5">
             <div class="text-center mb-5">
                 <h1 class="display-4 fw-bold text-danger mb-3">
-                    <i class="fas fa-dice me-3"></i>Ruleta de Circuitos
+                    Ruleta de Circuitos
                 </h1>
                 <p class="lead text-muted">Selecciona tus circuitos favoritos y deja que la suerte decida</p>
                 <?php if(!isset($_SESSION['usuario_id'])): ?>

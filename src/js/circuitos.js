@@ -26,105 +26,189 @@ class CircuitosApp {
             
             if (data.error) {
                 console.error('Error cargando circuitos:', data.error);
-                this.useFallbackData();
             } else {
                 this.renderCopas(data);
             }
         } catch (error) {
             console.error('Error de conexión:', error);
-            this.useFallbackData();
         }
     }
     
-    static useFallbackData() {
-        // Datos de ejemplo como fallback
-        const copasEjemplo = [
-            {
-                id: 1,
-                nombre: "Copa Champiñón",
-                circuitos: [
-                    {id: 1, nombre: "Circuito Mario Bros.", copa_nombre: "Copa Champiñón"},
-                    {id: 2, nombre: "Ciudad Corona (1)", copa_nombre: "Copa Champiñón"},
-                    {id: 3, nombre: "Cañon Ferroviario", copa_nombre: "Copa Champiñón"},
-                    {id: 4, nombre: "Puerto Espacial DK", copa_nombre: "Copa Champiñón"}
-                ]
-            },
-            {
-                id: 2,
-                nombre: "Copa Flor",
-                circuitos: [
-                    {id: 5, nombre: "Desierto Sol-Sol", copa_nombre: "Copa Flor"},
-                    {id: 6, nombre: "Bazar Shy Guy", copa_nombre: "Copa Flor"},
-                    {id: 7, nombre: "Estadio Wario", copa_nombre: "Copa Flor"},
-                    {id: 8, nombre: "Fortaleza Aerea", copa_nombre: "Copa Flor"}
-                ]
-            },
-            {
-                id: 3,
-                nombre: "Copa Estrella",
-                circuitos: [
-                    {id: 9, nombre: "DK Alpino", copa_nombre: "Copa Estrella"},
-                    {id: 10, nombre: "Mirador Estelar", copa_nombre: "Copa Estrella"},
-                    {id: 11, nombre: "Cielos Helados", copa_nombre: "Copa Estrella"},
-                    {id: 12, nombre: "Galeon de Wario", copa_nombre: "Copa Estrella"}
-                ]
-            },
-            {
-                id: 4,
-                nombre: "Copa Caparazón",
-                circuitos: [
-                    {id: 13, nombre: "Playa Koopa", copa_nombre: "Copa Caparazón"},
-                    {id: 14, nombre: "Sabana Salpicante", copa_nombre: "Copa Caparazón"},
-                    {id: 15, nombre: "Ciudad Corona (2)", copa_nombre: "Copa Caparazón"},
-                    {id: 16, nombre: "Estadio Peach (1)", copa_nombre: "Copa Caparazón"}
-                ]
-            },
-            {
-                id: 5,
-                nombre: "Copa Plátano",
-                circuitos: [
-                    {id: 17, nombre: "Playa Peach", copa_nombre: "Copa Plátano"},
-                    {id: 18, nombre: "Ciudad Salina", copa_nombre: "Copa Plátano"},
-                    {id: 19, nombre: "Jungla Dino Dino", copa_nombre: "Copa Plátano"},
-                    {id: 20, nombre: "Templo del Bloque", copa_nombre: "Copa Plátano"}
-                ]
-            },
-            {
-                id: 6,
-                nombre: "Copa Hoja",
-                circuitos: [
-                    {id: 21, nombre: "Cascadas Cheep Cheep", copa_nombre: "Copa Hoja"},
-                    {id: 22, nombre: "Gruta Diente de Leon", copa_nombre: "Copa Hoja"},
-                    {id: 23, nombre: "Cine Boo", copa_nombre: "Copa Hoja"},
-                    {id: 24, nombre: "Caverna Osea", copa_nombre: "Copa Hoja"}
-                ]
-            },
-            {
-                id: 7,
-                nombre: "Copa Rayo",
-                circuitos: [
-                    {id: 25, nombre: "Pradera Mu-Mu", copa_nombre: "Copa Rayo"},
-                    {id: 26, nombre: "Monte Chocolate", copa_nombre: "Copa Rayo"},
-                    {id: 27, nombre: "Fabrica de Toad", copa_nombre: "Copa Rayo"},
-                    {id: 28, nombre: "Castillo de Bowser", copa_nombre: "Copa Rayo"}
-                ]
-            },
-            {
-                id: 8,
-                nombre: "Copa Especial",
-                circuitos: [
-                    {id: 29, nombre: "Aldea Arborea", copa_nombre: "Copa Especial"},
-                    {id: 30, nombre: "Circuito Mario", copa_nombre: "Copa Especial"},
-                    {id: 31, nombre: "Estadio Peach (2)", copa_nombre: "Copa Especial"},
-                    {id: 32, nombre: "Senda Arco Iris", copa_nombre: "Copa Especial"}
-                ]
-            },
-        ];
+    static setupEventListeners() {
+        console.log('Configurando event listeners generales');
         
-        this.renderCopas(copasEjemplo);
-        this.showAlert('Usando datos de ejemplo. Los circuitos reales no están disponibles.', 'warning');
+        // Listener para el botón de reiniciar selección (si existe)
+        const btnReset = document.getElementById('btnReset');
+        if (btnReset) {
+            btnReset.addEventListener('click', () => {
+                this.clearSelectedCircuits();
+            });
+        }
+        
+        // Listener para el botón de girar ruleta
+        const btnGirar = document.getElementById('btnGirar');
+        if (btnGirar) {
+            btnGirar.addEventListener('click', () => {
+                // Aquí llamaremos a la función de la ruleta cuando exista
+                if (window.RuletaApp && typeof window.RuletaApp.girar === 'function') {
+                    window.RuletaApp.girar();
+                }
+            });
+        }
+        
+        // Actualizar estado del botón girar
+        this.updateGirarButtonState();
     }
     
+    static setupCircuitosListeners() {
+        console.log('Configurando listeners de circuitos');
+        
+        // Seleccionar todos los elementos de circuito
+        document.querySelectorAll('.circuito-selector').forEach(selector => {
+            selector.addEventListener('click', (e) => {
+                // Evitar que el click se propague si se hace en el overlay
+                if (e.target.closest('.circuito-overlay')) {
+                    return;
+                }
+                
+                const circuitId = parseInt(selector.dataset.circuitId);
+                const circuitName = selector.dataset.circuitName;
+                const circuitCopa = selector.dataset.circuitCopa;
+                
+                this.toggleCircuitSelection({
+                    id: circuitId,
+                    nombre: circuitName,
+                    copa_nombre: circuitCopa
+                }, selector);
+            });
+        });
+    }
+    
+    static toggleCircuitSelection(circuito, elemento) {
+        const index = this.selectedCircuits.findIndex(c => c.id === circuito.id);
+        
+        if (index === -1) {
+            // Añadir circuito
+            if (this.selectedCircuits.length < this.maxSelections) {
+                this.selectedCircuits.push(circuito);
+                elemento.classList.add('selected');
+                this.showAlert(`"${this.formatCircuitoNombre(circuito.nombre)}" añadido`, 'success');
+            } else {
+                this.showAlert(`Máximo ${this.maxSelections} circuitos seleccionados`, 'warning');
+                return;
+            }
+        } else {
+            // Quitar circuito
+            this.selectedCircuits.splice(index, 1);
+            elemento.classList.remove('selected');
+            this.showAlert(`"${this.formatCircuitoNombre(circuito.nombre)}" eliminado`, 'info');
+        }
+        
+        // Actualizar contador
+        this.updateSelectedCounter();
+        
+        // Actualizar estado del botón girar
+        this.updateGirarButtonState();
+        
+        // Actualizar grid de seleccionados
+        this.updateSelectedGrid();
+    }
+    
+    static updateSelectedCounter() {
+        const contadorTexto = document.getElementById('contadorTexto');
+        const progressBar = document.getElementById('progressBar');
+        const selectedCount = document.getElementById('selectedCount');
+        
+        if (contadorTexto) {
+            contadorTexto.textContent = `${this.selectedCircuits.length}/${this.maxSelections} circuitos seleccionados`;
+        }
+        
+        if (progressBar) {
+            const porcentaje = (this.selectedCircuits.length / this.maxSelections) * 100;
+            progressBar.style.width = `${porcentaje}%`;
+        }
+        
+        if (selectedCount) {
+            selectedCount.textContent = this.selectedCircuits.length;
+        }
+    }
+    
+    static updateGirarButtonState() {
+        const btnGirar = document.getElementById('btnGirar');
+        if (btnGirar) {
+            const isValid = this.selectedCircuits.length >= this.minSelections && 
+                           this.selectedCircuits.length <= this.maxSelections;
+            btnGirar.disabled = !isValid;
+            
+            if (!isValid) {
+                btnGirar.title = `Selecciona entre ${this.minSelections} y ${this.maxSelections} circuitos`;
+            } else {
+                btnGirar.title = '¡Girar ruleta!';
+            }
+        }
+    }
+    
+    static updateSelectedGrid() {
+        const container = document.getElementById('circuitosSeleccionados');
+        if (!container) return;
+        
+        if (this.selectedCircuits.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state text-center py-5">
+                    <i class="fas fa-map-marked-alt fa-4x text-muted mb-4"></i>
+                    <h4 class="text-muted">Sin circuitos seleccionados</h4>
+                    <p class="text-muted">Selecciona circuitos de las copas para comenzar</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = this.selectedCircuits.map(circuito => `
+            <div class="selected-circuito-item">
+                <div class="selected-circuito-image">
+                    <img src="media/circuitos/${this.getCircuitoImageName(circuito.nombre)}.jpg" 
+                         alt="${circuito.nombre}"
+                         onerror="this.src='media/circuitos/default.jpg'">
+                </div>
+                <div class="selected-circuito-info">
+                    <h6>${this.formatCircuitoNombre(circuito.nombre)}</h6>
+                    <small>${circuito.copa_nombre}</small>
+                </div>
+                <button class="btn-remove-selected" data-id="${circuito.id}">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `).join('');
+        
+        // Añadir listeners a los botones de eliminar
+        container.querySelectorAll('.btn-remove-selected').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = parseInt(btn.dataset.id);
+                const elemento = document.querySelector(`.circuito-selector[data-circuit-id="${id}"]`);
+                if (elemento) {
+                    elemento.click();
+                }
+            });
+        });
+    }
+    
+    static clearSelectedCircuits() {
+        // Quitar clase selected de todos los elementos
+        document.querySelectorAll('.circuito-selector.selected').forEach(el => {
+            el.classList.remove('selected');
+        });
+        
+        // Vaciar array
+        this.selectedCircuits = [];
+        
+        // Actualizar UI
+        this.updateSelectedCounter();
+        this.updateSelectedGrid();
+        this.updateGirarButtonState();
+        
+        this.showAlert('Selección reiniciada', 'info');
+    }
     static renderCopas(copasData) {
         const accordion = document.getElementById('copasAccordion');
         accordion.innerHTML = '';
@@ -262,13 +346,70 @@ class CircuitosApp {
     }
     
     static getCircuitoImageName(circuitoNombre) {
-        if (circuitoNombre === 'Cañon Ferroviario' || circuitoNombre === 'CanionFerroviario') {
-            return 'CanionFerroviario';
-        }
-        return circuitoNombre
+        // Mapeo de nombres de circuitos a nombres de archivo
+        const mapping = {
+            // Copa Champiñón
+            'Circuito Mario Bros.': 'CircuitoMarioBros',
+            'Ciudad Corona (1)': 'CiudadCorona1',
+            'Cañón Ferroviario': 'CanFerroviario',
+            'Puerto Espacial DK': 'PuertoEspacialDK',
+            
+            // Copa Flor
+            'Desierto Sol-Sol': 'DesiertoSolSol',
+            'Bazar Shy Guy': 'BazarShyGuy',
+            'Estadio Wario': 'EstadioWario',
+            'Fortaleza Aérea': 'FortalezaArea',
+            
+            // Copa Estrella
+            'DK Alpino': 'DKAlpino',
+            'Mirador Estelar': 'MiradorEstelar',
+            'Cielos Helados': 'CielosHelados',
+            'Galeón de Wario': 'GaleondeWario',
+            
+            // Copa Caparazón
+            'Playa Koopa': 'PlayaKoopa',
+            'Sabana Salpicante': 'SabanaSalpicante',
+            'Ciudad Corona (2)': 'CiudadCorona2',
+            'Estadio Peach (1)': 'EstadioPeach1',
+            
+            // Copa Plátano
+            'Playa Peach': 'PlayaPeach',
+            'Ciudad Salina': 'CiudadSalina',
+            'Jungla Dino Dino': 'JunglaDinoDino',
+            'Templo del Bloque ?': 'TemplodelBloque',
+            
+            // Copa Hoja
+            'Cascadas Cheep Cheep': 'CascadasCheepCheep',
+            'Gruta Diente de León': 'GrutaDientedeLeon',
+            'Cine Boo': 'CineBoo',
+            'Caverna Ósea': 'CavernaOsea',
+            
+            // Copa Centella
+            'Pradera Mu-Mu': 'PraderaMuMu',
+            'Monte Chocolate': 'MonteChocolate',
+            'Fábrica de Toad': 'FabricadeToad',
+            'Castillo de Bowser': 'CastillodeBowser',
+            
+            // Copa Especial
+            'Aldea Arbórea': 'AldeaArbrea',
+            'Circuito Mario': 'CircuitoMario',
+            'Estadio Peach (2)': 'EstadioPeach2',
+            'Senda Arco Iris': 'SendaArcoIris'
+        };
+        
+        // Buscar en el mapping, si no existe, usar el formato original
+        return mapping[circuitoNombre] || circuitoNombre
             .replace(/[^\w\s]/gi, '')
             .replace(/\s+/g, '')
-            .replace(/[()]/g, '');
+            .replace(/[()]/g, '')
+            .replace(/[áéíóúÁÉÍÓÚ]/g, function(match) {
+                // Eliminar tildes
+                const tildes = {
+                    'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
+                    'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U'
+                };
+                return tildes[match] || match;
+            });
     }
     
     static showAlert(message, type = 'info') {

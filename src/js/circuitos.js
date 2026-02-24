@@ -305,7 +305,7 @@ class CircuitosApp {
             'Copa Caparazón': 'caparazon',
             'Copa Plátano': 'platano',
             'Copa Hoja': 'hoja',
-            'Copa Rayo': 'rayo',
+            'Copa Centella': 'centella',
             'Copa Especial': 'especial'
         };
         return mapping[copaNombre] || copaNombre.toLowerCase().replace(/[^a-z0-9]/g, '');

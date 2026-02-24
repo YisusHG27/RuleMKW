@@ -11,6 +11,11 @@ class CircuitosApp {
         // Cargar circuitos
         this.loadCircuits();
         this.setupEventListeners();
+        
+        // Inicializar la ruleta
+        if (window.RuletaApp && typeof window.RuletaApp.init === 'function') {
+            window.RuletaApp.init();
+        }
     }
     
     static checkSession() {
@@ -37,7 +42,7 @@ class CircuitosApp {
     static setupEventListeners() {
         console.log('Configurando event listeners generales');
         
-        // Listener para el botón de reiniciar selección (si existe)
+        // Listener para el botón de reiniciar selección
         const btnReset = document.getElementById('btnReset');
         if (btnReset) {
             btnReset.addEventListener('click', () => {
@@ -49,9 +54,8 @@ class CircuitosApp {
         const btnGirar = document.getElementById('btnGirar');
         if (btnGirar) {
             btnGirar.addEventListener('click', () => {
-                // Aquí llamaremos a la función de la ruleta cuando exista
-                if (window.RuletaApp && typeof window.RuletaApp.girar === 'function') {
-                    window.RuletaApp.girar();
+                if (window.RuletaApp && typeof window.RuletaApp.girarRuleta === 'function') {
+                    window.RuletaApp.girarRuleta();
                 }
             });
         }
@@ -92,16 +96,16 @@ class CircuitosApp {
             if (this.selectedCircuits.length < this.maxSelections) {
                 this.selectedCircuits.push(circuito);
                 elemento.classList.add('selected');
-                this.showAlert(`"${this.formatCircuitoNombre(circuito.nombre)}" añadido`, 'success');
+                this.showAlert(`"${this.formatCircuitoNombre(circuito.nombre)}" añadido a la ruleta`, 'success');
             } else {
-                this.showAlert(`Máximo ${this.maxSelections} circuitos seleccionados`, 'warning');
+                this.showAlert(`Máximo ${this.maxSelections} circuitos en la ruleta`, 'warning');
                 return;
             }
         } else {
             // Quitar circuito
             this.selectedCircuits.splice(index, 1);
             elemento.classList.remove('selected');
-            this.showAlert(`"${this.formatCircuitoNombre(circuito.nombre)}" eliminado`, 'info');
+            this.showAlert(`"${this.formatCircuitoNombre(circuito.nombre)}" eliminado de la ruleta`, 'info');
         }
         
         // Actualizar contador
@@ -110,8 +114,10 @@ class CircuitosApp {
         // Actualizar estado del botón girar
         this.updateGirarButtonState();
         
-        // Actualizar grid de seleccionados
-        this.updateSelectedGrid();
+        // ACTUALIZAR LA RULETA CON LOS CIRCUITOS SELECCIONADOS
+        if (window.RuletaApp && typeof window.RuletaApp.actualizarRuletaConCircuitos === 'function') {
+            window.RuletaApp.actualizarRuletaConCircuitos(this.selectedCircuits);
+        }
     }
     
     static updateSelectedCounter() {
@@ -120,7 +126,7 @@ class CircuitosApp {
         const selectedCount = document.getElementById('selectedCount');
         
         if (contadorTexto) {
-            contadorTexto.textContent = `${this.selectedCircuits.length}/${this.maxSelections} circuitos seleccionados`;
+            contadorTexto.textContent = `${this.selectedCircuits.length}/${this.maxSelections} circuitos en la ruleta`;
         }
         
         if (progressBar) {
@@ -148,51 +154,6 @@ class CircuitosApp {
         }
     }
     
-    static updateSelectedGrid() {
-        const container = document.getElementById('circuitosSeleccionados');
-        if (!container) return;
-        
-        if (this.selectedCircuits.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state text-center py-5">
-                    <i class="fas fa-map-marked-alt fa-4x text-muted mb-4"></i>
-                    <h4 class="text-muted">Sin circuitos seleccionados</h4>
-                    <p class="text-muted">Selecciona circuitos de las copas para comenzar</p>
-                </div>
-            `;
-            return;
-        }
-        
-        container.innerHTML = this.selectedCircuits.map(circuito => `
-            <div class="selected-circuito-item">
-                <div class="selected-circuito-image">
-                    <img src="media/circuitos/${this.getCircuitoImageName(circuito.nombre)}.jpg" 
-                         alt="${circuito.nombre}"
-                         onerror="this.src='media/circuitos/default.jpg'">
-                </div>
-                <div class="selected-circuito-info">
-                    <h6>${this.formatCircuitoNombre(circuito.nombre)}</h6>
-                    <small>${circuito.copa_nombre}</small>
-                </div>
-                <button class="btn-remove-selected" data-id="${circuito.id}">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        `).join('');
-        
-        // Añadir listeners a los botones de eliminar
-        container.querySelectorAll('.btn-remove-selected').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const id = parseInt(btn.dataset.id);
-                const elemento = document.querySelector(`.circuito-selector[data-circuit-id="${id}"]`);
-                if (elemento) {
-                    elemento.click();
-                }
-            });
-        });
-    }
-    
     static clearSelectedCircuits() {
         // Quitar clase selected de todos los elementos
         document.querySelectorAll('.circuito-selector.selected').forEach(el => {
@@ -202,13 +163,18 @@ class CircuitosApp {
         // Vaciar array
         this.selectedCircuits = [];
         
-        // Actualizar UI
+        // Actualizar contador
         this.updateSelectedCounter();
-        this.updateSelectedGrid();
         this.updateGirarButtonState();
+        
+        // Limpiar la ruleta
+        if (window.RuletaApp && typeof window.RuletaApp.actualizarRuletaConCircuitos === 'function') {
+            window.RuletaApp.actualizarRuletaConCircuitos([]);
+        }
         
         this.showAlert('Selección reiniciada', 'info');
     }
+    
     static renderCopas(copasData) {
         const accordion = document.getElementById('copasAccordion');
         accordion.innerHTML = '';
@@ -292,13 +258,13 @@ class CircuitosApp {
             `;
         }).join('');
     }
+    
     static formatCircuitoNombre(circuitoNombre) {
         if (circuitoNombre === 'CanionFerroviario') {
             return 'Cañon Ferroviario';
         }
         return circuitoNombre;
     }
-    
     
     static async guardarEstadisticas(resultados) {
         // Solo guardar estadísticas si el usuario está logueado
@@ -397,13 +363,11 @@ class CircuitosApp {
             'Senda Arco Iris': 'SendaArcoIris'
         };
         
-        // Buscar en el mapping, si no existe, usar el formato original
         return mapping[circuitoNombre] || circuitoNombre
             .replace(/[^\w\s]/gi, '')
             .replace(/\s+/g, '')
             .replace(/[()]/g, '')
             .replace(/[áéíóúÁÉÍÓÚ]/g, function(match) {
-                // Eliminar tildes
                 const tildes = {
                     'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
                     'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U'

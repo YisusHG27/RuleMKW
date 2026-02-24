@@ -141,31 +141,27 @@ session_start();
                     </div>
                 </div>
                 
-                <!-- Panel de Circuitos Seleccionados -->
+                <!-- ========== PANEL DE RESULTADOS ========== -->
                 <div class="col-lg-5">
                     <div class="selected-container p-4 rounded-4 shadow-lg h-100">
                         <h3 class="text-center mb-4">
-                            <i class="fas fa-list-check me-2 text-primary"></i>
-                            Circuitos Seleccionados
+                            <i class="fas fa-trophy me-2 text-warning"></i>
+                            Último Resultado
                         </h3>
                         
-                        <div id="circuitosSeleccionados" class="selected-grid">
+                        <div id="resultadosGrid" class="selected-grid">
                             <div class="empty-state text-center py-5">
-                                <i class="fas fa-map-marked-alt fa-4x text-muted mb-4"></i>
-                                <h4 class="text-muted">Sin circuitos seleccionados</h4>
-                                <p class="text-muted">Selecciona circuitos de las copas para comenzar</p>
+                                <i class="fas fa-history fa-4x text-muted mb-4"></i>
+                                <h4 class="text-muted">Sin resultados</h4>
+                                <p class="text-muted">Gira la ruleta para ver el circuito ganador</p>
                             </div>
                         </div>
                         
                         <div class="selected-info mt-4 p-3 bg-light rounded">
                             <div class="row text-center">
-                                <div class="col-6">
-                                    <h5 id="selectedCount" class="fw-bold">0</h5>
-                                    <small class="text-muted">Seleccionados</small>
-                                </div>
-                                <div class="col-6">
-                                    <h5 id="maxCount" class="fw-bold">4</h5>
-                                    <small class="text-muted">Máximo</small>
+                                <div class="col-12">
+                                    <h5 id="resultadosCount" class="fw-bold">0</h5>
+                                    <small class="text-muted">Veces girada</small>
                                 </div>
                             </div>
                         </div>
@@ -205,7 +201,6 @@ session_start();
         <section class="selection-section">
             <div class="text-center mb-5">
                 <h2 class="display-5 fw-bold mb-3">
-                    <i class="fas fa-map-marked-alt me-3 text-success"></i>
                     Selecciona tus Circuitos
                 </h2>
                 <p class="lead text-muted">Elige entre 2 y 4 circuitos para la ruleta</p>

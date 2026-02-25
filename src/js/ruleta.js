@@ -1,11 +1,17 @@
-class RuletaApp {
-    static resultados = [];
-    static isSpinning = false;
-    static currentSlot = 0;
-    static animationInterval = null;
-    static winners = [];
-    static spinCount = 0; // Contador de veces girada
+/* ==========================================================================
+   RULETAAPP - GESTIÓN DE LA RULETA Y ANIMACIONES
+   ========================================================================== */
+
+   class RuletaApp {
+    /* ========== 1. PROPIEDADES ESTÁTICAS ========== */
+    static resultados = [];              // Historial de resultados
+    static isSpinning = false;            // Estado de giro
+    static currentSlot = 0;               // Slot actual en animación
+    static animationInterval = null;       // Intervalo de animación
+    static winners = [];                   // Ganadores actuales
+    static spinCount = 0;                  // Contador de veces girada
     
+    /* ========== 2. INICIALIZACIÓN ========== */
     static init() {
         this.resetSlots();
         this.setupEventListeners();
@@ -13,12 +19,14 @@ class RuletaApp {
         this.updateSpinCount();
     }
     
+    /* ========== 3. EVENT LISTENERS ========== */
     static setupEventListeners() {
         document.getElementById('btnGirar').addEventListener('click', () => this.girarRuleta());
         document.getElementById('btnReset').addEventListener('click', () => this.resetRuleta());
         document.getElementById('btnNuevoIntento')?.addEventListener('click', () => this.resetRuleta());
     }
     
+    /* ========== 4. ACTUALIZACIÓN DE UI ========== */
     static updateSpinCount() {
         const countElement = document.getElementById('resultadosCount');
         if (countElement) {
@@ -26,7 +34,7 @@ class RuletaApp {
         }
     }
     
-    // Actualizar la ruleta con los circuitos seleccionados
+    /* ========== 5. GESTIÓN DE SLOTS ========== */
     static actualizarRuletaConCircuitos(circuitos) {
         const slots = document.querySelectorAll('.ruleta-slot');
         
@@ -72,6 +80,17 @@ class RuletaApp {
         });
         
         // Añadir event listeners a los botones de eliminar
+        this.addRemoveListeners();
+    }
+    
+    /* ========== 6. GESTIÓN DE BOTONES ELIMINAR ========== */
+    static addRemoveListeners() {
+        document.querySelectorAll('.btn-remove-ruleta').forEach(btn => {
+            // Eliminar listener anterior para evitar duplicados
+            btn.replaceWith(btn.cloneNode(true));
+        });
+        
+        // Añadir nuevos listeners
         document.querySelectorAll('.btn-remove-ruleta').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -87,6 +106,7 @@ class RuletaApp {
         });
     }
     
+    /* ========== 7. FUNCIÓN PRINCIPAL DE GIRAR ========== */
     static async girarRuleta() {
         if (this.isSpinning) return;
         
@@ -142,10 +162,34 @@ class RuletaApp {
         }, 3000);
     }
     
+    /* ========== 8. SELECCIÓN DE GANADOR ========== */
     static selectSingleWinner(circuitos) {
         // Seleccionar SOLO 1 circuito aleatorio
         const randomIndex = Math.floor(Math.random() * circuitos.length);
         this.winners = [circuitos[randomIndex]]; // Solo un ganador
+    }
+    
+    /* ========== 9. ANIMACIONES ========== */
+    static startSlotAnimation() {
+        const slots = document.querySelectorAll('.ruleta-slot');
+        let slotIndex = 0;
+        
+        this.animationInterval = setInterval(() => {
+            slots.forEach(slot => slot.classList.remove('active'));
+            slots[slotIndex].classList.add('active');
+            slotIndex = (slotIndex + 1) % slots.length;
+        }, 150);
+    }
+    
+    static stopSlotAnimation() {
+        if (this.animationInterval) {
+            clearInterval(this.animationInterval);
+            this.animationInterval = null;
+        }
+        
+        document.querySelectorAll('.ruleta-slot').forEach(slot => {
+            slot.classList.remove('active');
+        });
     }
     
     static animateWinner() {
@@ -179,35 +223,30 @@ class RuletaApp {
                                 <small>${winner.copa_nombre || ''}</small>
                                 <span class="badge bg-warning text-dark mt-1">¡GANADOR!</span>
                             </div>
+                            <button class="btn-remove-ruleta" data-id="${winner.id}" data-index="${index}">
+                                <i class="fas fa-times"></i>
+                            </button>
                         `;
+                        
+                        // Reasignar el event listener al nuevo botón
+                        const newBtn = content.querySelector('.btn-remove-ruleta');
+                        newBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            
+                            const id = parseInt(newBtn.dataset.id);
+                            const elementoSelector = document.querySelector(`.circuito-selector[data-circuit-id="${id}"]`);
+                            if (elementoSelector) {
+                                elementoSelector.click();
+                            }
+                        });
                     }, 500);
                 }
             }
         });
     }
     
-    static startSlotAnimation() {
-        const slots = document.querySelectorAll('.ruleta-slot');
-        let slotIndex = 0;
-        
-        this.animationInterval = setInterval(() => {
-            slots.forEach(slot => slot.classList.remove('active'));
-            slots[slotIndex].classList.add('active');
-            slotIndex = (slotIndex + 1) % slots.length;
-        }, 150);
-    }
-    
-    static stopSlotAnimation() {
-        if (this.animationInterval) {
-            clearInterval(this.animationInterval);
-            this.animationInterval = null;
-        }
-        
-        document.querySelectorAll('.ruleta-slot').forEach(slot => {
-            slot.classList.remove('active');
-        });
-    }
-    
+    /* ========== 10. RESULTADOS ========== */
     static mostrarResultadoUnico() {
         const container = document.getElementById('resultadosGrid');
         
@@ -229,23 +268,26 @@ class RuletaApp {
         const imageName = CircuitosApp.getCircuitoImageName(winner.nombre);
         
         container.innerHTML = `
-            <div class="selected-circuito-item resultado-item winner-card">
-                <div class="winner-badge">
-                    <i class="fas fa-crown"></i> GANADOR
+            <div class="winner-card-simple">
+                <div class="winner-header">
+                    <span class="winner-crown">👑</span>
+                    <span class="winner-title">GANADOR</span>
                 </div>
-                <div class="selected-circuito-image">
+                <div class="winner-image-container-simple">
                     <img src="media/circuitos/${imageName}.jpg" 
-                         alt="${displayName}"
-                         onerror="this.src='media/circuitos/default.jpg'">
+                        alt="${displayName}"
+                        class="winner-image-simple"
+                        onerror="this.src='media/circuitos/default.jpg'">
                 </div>
-                <div class="selected-circuito-info">
-                    <h6>${displayName}</h6>
-                    <small>${winner.copa_nombre || ''}</small>
+                <div class="winner-info-simple">
+                    <h3 class="winner-name-simple">${displayName}</h3>
+                    <p class="winner-copa-simple">${winner.copa_nombre || ''}</p>
                 </div>
             </div>
         `;
     }
     
+    /* ========== 11. RESETEO ========== */
     static resetSlots() {
         const slots = document.querySelectorAll('.ruleta-slot');
         
@@ -294,6 +336,7 @@ class RuletaApp {
         this.showAlert('Ruleta reiniciada', 'info');
     }
     
+    /* ========== 12. SISTEMA DE ALERTAS ========== */
     static showAlert(message, type = 'info') {
         const alertContainer = document.getElementById('alertContainer');
         const alertId = 'alert-' + Date.now();
@@ -325,6 +368,7 @@ class RuletaApp {
         }, 5000);
     }
     
+    /* ========== 13. ESTADÍSTICAS ========== */
     static async guardarEstadisticas() {
         if (!CircuitosApp.isLoggedIn) {
             return;

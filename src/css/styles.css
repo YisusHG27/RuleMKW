@@ -147,7 +147,7 @@ body {
     justify-content: center;
     align-items: center;
     gap: 20px;
-    min-height: 220px; /* Ajustado para slots horizontales */
+    min-height: 220px;
     flex-wrap: wrap;
     padding-top: 30px;
     margin-top: 10px;
@@ -195,7 +195,6 @@ body {
 }
 
 .slot-content {
-    /* Versión por defecto (sin imagen) */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -465,7 +464,7 @@ body {
     border: 2px solid #f0f0f0;
 }
 
-/* ========== 9. PANEL DE RESULTADOS (CIRCUITOS GANADORES) ========== */
+/* ========== 9. PANEL DE RESULTADOS ========== */
 .selected-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -536,13 +535,51 @@ body {
     text-overflow: ellipsis;
 }
 
-/* 9.1. Estilos específicos para el ganador */
+/* ========== 9.1. ESTILOS PARA EL GANADOR (MÁS GRANDE Y CENTRADO) ========== */
 .winner-card {
-    border: 3px solid #FFD700 !important;
-    background: linear-gradient(135deg, #fff9e6, white);
-    animation: winnerCardPulse 2s infinite;
-    position: relative;
+    grid-column: 1 / -1; /* Ocupa toda la columna */
+    justify-self: center; /* Centrado horizontal */
+    background: white;
+    border-radius: 20px;
     overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    border: 4px solid #FFD700;
+    position: relative;
+    animation: winnerAppear 0.5s ease-out;
+    max-width: 350px;
+    width: 100%;
+    margin: 10px auto;
+}
+
+.winner-card .selected-circuito-image {
+    height: 200px; /* Imagen más grande */
+}
+
+.winner-card .selected-circuito-info h6 {
+    font-size: 1.2rem; /* Texto más grande */
+    white-space: normal; /* Permite que el texto se rompa en varias líneas */
+}
+
+.winner-card .selected-circuito-info small {
+    font-size: 0.9rem; /* Texto más grande */
+}
+
+.winner-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #FFD700;
+    color: #000;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    z-index: 20;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    animation: badgePulse 1.5s infinite;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .winner-card::before {
@@ -560,29 +597,17 @@ body {
     );
     transform: rotate(45deg);
     animation: winnerShine 3s infinite;
+    pointer-events: none;
 }
 
-.winner-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #FFD700;
-    color: #000;
-    padding: 5px 15px;
-    border-radius: 20px;
-    font-weight: bold;
-    font-size: 0.9rem;
-    z-index: 20;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    animation: badgePulse 1.5s infinite;
-}
-
-@keyframes winnerCardPulse {
-    0%, 100% {
-        box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+@keyframes winnerAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
     }
-    50% {
-        box-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
 }
 
@@ -604,7 +629,28 @@ body {
     }
 }
 
-/* 9.2. Badge de posición (para resultados) */
+/* Responsive para el ganador */
+@media (max-width: 768px) {
+    .winner-card {
+        max-width: 300px;
+    }
+    
+    .winner-card .selected-circuito-image {
+        height: 160px;
+    }
+}
+
+@media (max-width: 576px) {
+    .winner-card {
+        max-width: 100%;
+    }
+    
+    .winner-card .selected-circuito-image {
+        height: 180px;
+    }
+}
+
+/* 9.2. Badge de posición (para resultados múltiples - opcional) */
 .position-badge-small {
     position: absolute;
     top: 8px;
@@ -638,7 +684,6 @@ body {
     color: #fff;
 }
 
-/* 9.3. Bordes de color según posición */
 .resultado-item {
     position: relative;
     border-left: 5px solid transparent;
@@ -763,6 +808,24 @@ body {
         width: 100%;
         margin-bottom: 10px;
     }
+    
+    /* Responsive para el ganador */
+    .winner-card {
+        max-width: 300px;
+    }
+    
+    .winner-image-container {
+        height: 180px;
+    }
+    
+    .winner-name {
+        font-size: 1.3rem;
+    }
+    
+    .winner-badge {
+        padding: 6px 15px;
+        font-size: 0.9rem;
+    }
 }
 
 @media (max-width: 576px) {
@@ -772,5 +835,290 @@ body {
     
     .selected-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .winner-card {
+        max-width: 100%;
+    }
+    
+    .winner-image-container {
+        height: 200px;
+    }
+}
+/* ========== 15. WINNER CARD GRANDE (MISMO ESTILO QUE LA RULETA) ========== */
+.winner-card-grande {
+    width: 100% !important;
+    max-width: 350px !important;
+    height: 280px !important;
+    margin: 0 auto !important;
+    border: 4px solid #FFD700 !important;
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.5) !important;
+    animation: winnerCardPulse 2s infinite !important;
+}
+
+.winner-card-grande .slot-content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+}
+
+.winner-card-grande .slot-circuit-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.winner-card-grande .slot-circuit-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.4), transparent);
+    padding: 30px 15px 15px 15px;
+    color: white;
+    text-align: center;
+}
+
+.winner-card-grande .slot-circuit-info h6 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0 0 5px 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.winner-card-grande .slot-circuit-info small {
+    font-size: 1rem;
+    opacity: 0.9;
+    display: block;
+}
+
+.winner-badge-grande {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #FFD700;
+    color: #000;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    z-index: 30;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    animation: badgePulse 1.5s infinite;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.winner-badge-grande i {
+    font-size: 1.3rem;
+}
+
+/* Efecto de brillo para el ganador grande */
+.winner-card-grande::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 215, 0, 0.2),
+        transparent
+    );
+    transform: rotate(45deg);
+    animation: winnerShine 3s infinite;
+    pointer-events: none;
+    z-index: 25;
+}
+
+.winner-card-grande::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    animation: winnerGlide 3s infinite;
+    pointer-events: none;
+    z-index: 25;
+}
+
+@keyframes winnerCardPulse {
+    0%, 100% {
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 60px rgba(255, 215, 0, 0.8);
+        transform: scale(1.02);
+    }
+}
+
+@keyframes winnerShine {
+    0% {
+        transform: rotate(45deg) translateX(-100%);
+    }
+    100% {
+        transform: rotate(45deg) translateX(100%);
+    }
+}
+
+@keyframes winnerGlide {
+    0% {
+        left: -100%;
+    }
+    20%, 100% {
+        left: 200%;
+    }
+}
+
+/* Responsive para el ganador grande */
+@media (max-width: 768px) {
+    .winner-card-grande {
+        max-width: 300px !important;
+        height: 240px !important;
+    }
+    
+    .winner-card-grande .slot-circuit-info h6 {
+        font-size: 1.2rem;
+    }
+    
+    .winner-badge-grande {
+        padding: 6px 15px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .winner-card-grande {
+        max-width: 100% !important;
+        height: 260px !important;
+    }
+}
+/* ========== 16. WINNER CARD SIMPLE (MÁS ANCHA QUE ALTA) ========== */
+.winner-card-simple {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    border: 3px solid #FFD700;
+    max-width: 500px;  /* Más ancho */
+    width: 100%;
+    margin: 0 auto;
+    animation: simpleAppear 0.5s ease-out;
+}
+
+.winner-header {
+    background: #FFD700;
+    padding: 12px 20px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.winner-crown {
+    font-size: 1.6rem;
+    line-height: 1;
+}
+
+.winner-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #000;
+    letter-spacing: 1px;
+}
+
+.winner-image-container-simple {
+    width: 100%;
+    height: 280px;  /* Aumentado para que la imagen se vea bien */
+    overflow: hidden;
+    background: #f5f5f5;
+}
+
+.winner-image-simple {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* La imagen cubre todo el espacio */
+    display: block;
+}
+
+.winner-info-simple {
+    padding: 20px 15px;
+    text-align: center;
+    background: white;
+}
+
+.winner-name-simple {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: #2D3047;
+}
+
+.winner-copa-simple {
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin: 0;
+    font-weight: 400;
+}
+
+@keyframes simpleAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .winner-card-simple {
+        max-width: 450px;
+    }
+    
+    .winner-image-container-simple {
+        height: 250px;
+    }
+}
+
+@media (max-width: 576px) {
+    .winner-card-simple {
+        max-width: 100%;
+    }
+    
+    .winner-image-container-simple {
+        height: 220px;
+    }
+    
+    .winner-header {
+        padding: 10px 15px;
+    }
+    
+    .winner-title {
+        font-size: 1.2rem;
+    }
+    
+    .winner-crown {
+        font-size: 1.4rem;
+    }
+    
+    .winner-name-simple {
+        font-size: 1.2rem;
     }
 }

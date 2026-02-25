@@ -1,10 +1,16 @@
-class CircuitosApp {
-    static selectedCircuits = [];
-    static maxSelections = 4;
-    static minSelections = 2;
-    static isLoggedIn = false;
-    static userId = null;
+/* ==========================================================================
+   CIRCUITOSAPP - GESTIÓN DE CIRCUITOS Y SELECCIÓN
+   ========================================================================== */
+
+   class CircuitosApp {
+    /* ========== 1. PROPIEDADES ESTÁTICAS ========== */
+    static selectedCircuits = [];      // Circuitos seleccionados actualmente
+    static maxSelections = 4;          // Máximo de circuitos permitidos
+    static minSelections = 2;          // Mínimo de circuitos requeridos
+    static isLoggedIn = false;          // Estado de autenticación
+    static userId = null;               // ID del usuario logueado
     
+    /* ========== 2. INICIALIZACIÓN ========== */
     static init() {
         // Verificar si hay sesión
         this.checkSession();
@@ -18,12 +24,14 @@ class CircuitosApp {
         }
     }
     
+    /* ========== 3. GESTIÓN DE SESIÓN ========== */
     static checkSession() {
         // Verificar si hay sesión activa (esto debería venir del backend)
         this.isLoggedIn = false;
         this.userId = null;
     }
     
+    /* ========== 4. CARGA DE DATOS ========== */
     static async loadCircuits() {
         try {
             const response = await fetch('../backend/api/get_circuitos.php');
@@ -39,6 +47,7 @@ class CircuitosApp {
         }
     }
     
+    /* ========== 5. EVENT LISTENERS PRINCIPALES ========== */
     static setupEventListeners() {
         console.log('Configurando event listeners generales');
         
@@ -64,6 +73,7 @@ class CircuitosApp {
         this.updateGirarButtonState();
     }
     
+    /* ========== 6. LISTENERS DE CIRCUITOS ========== */
     static setupCircuitosListeners() {
         console.log('Configurando listeners de circuitos');
         
@@ -88,6 +98,7 @@ class CircuitosApp {
         });
     }
     
+    /* ========== 7. GESTIÓN DE SELECCIÓN ========== */
     static toggleCircuitSelection(circuito, elemento) {
         const index = this.selectedCircuits.findIndex(c => c.id === circuito.id);
         
@@ -120,6 +131,7 @@ class CircuitosApp {
         }
     }
     
+    /* ========== 8. ACTUALIZACIÓN DE UI ========== */
     static updateSelectedCounter() {
         const contadorTexto = document.getElementById('contadorTexto');
         const progressBar = document.getElementById('progressBar');
@@ -175,6 +187,7 @@ class CircuitosApp {
         this.showAlert('Selección reiniciada', 'info');
     }
     
+    /* ========== 9. RENDERIZADO DE COPAS ========== */
     static renderCopas(copasData) {
         const accordion = document.getElementById('copasAccordion');
         accordion.innerHTML = '';
@@ -259,42 +272,12 @@ class CircuitosApp {
         }).join('');
     }
     
+    /* ========== 10. UTILIDADES DE FORMATEO ========== */
     static formatCircuitoNombre(circuitoNombre) {
         if (circuitoNombre === 'CanionFerroviario') {
             return 'Cañon Ferroviario';
         }
         return circuitoNombre;
-    }
-    
-    static async guardarEstadisticas(resultados) {
-        // Solo guardar estadísticas si el usuario está logueado
-        if (!this.isLoggedIn || !this.userId) {
-            console.log('Usuario no logueado, no se guardan estadísticas');
-            return;
-        }
-        
-        try {
-            const response = await fetch('../backend/api/guardar_estadisticas.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    usuario_id: this.userId,
-                    resultados: resultados
-                })
-            });
-            
-            const data = await response.json();
-            
-            if (data.success) {
-                console.log('Estadísticas guardadas exitosamente');
-            } else {
-                console.error('Error guardando estadísticas:', data.message);
-            }
-        } catch (error) {
-            console.error('Error de conexión al guardar estadísticas:', error);
-        }
     }
     
     static getCopaImageName(copaNombre) {
@@ -376,6 +359,39 @@ class CircuitosApp {
             });
     }
     
+    /* ========== 11. ESTADÍSTICAS ========== */
+    static async guardarEstadisticas(resultados) {
+        // Solo guardar estadísticas si el usuario está logueado
+        if (!this.isLoggedIn || !this.userId) {
+            console.log('Usuario no logueado, no se guardan estadísticas');
+            return;
+        }
+        
+        try {
+            const response = await fetch('../backend/api/guardar_estadisticas.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    usuario_id: this.userId,
+                    resultados: resultados
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                console.log('Estadísticas guardadas exitosamente');
+            } else {
+                console.error('Error guardando estadísticas:', data.message);
+            }
+        } catch (error) {
+            console.error('Error de conexión al guardar estadísticas:', error);
+        }
+    }
+    
+    /* ========== 12. SISTEMA DE ALERTAS ========== */
     static showAlert(message, type = 'info') {
         const alertContainer = document.getElementById('alertContainer');
         const alertId = 'alert-' + Date.now();

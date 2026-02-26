@@ -1,5 +1,4 @@
 <?php
-// src/backend/includes/conexion.php
 
 $vendorPath = __DIR__ . '/../../vendor/autoload.php';
 if (file_exists($vendorPath)) {
@@ -23,7 +22,5 @@ if ($enlace->connect_error) {
 
 $enlace->set_charset("utf8mb4");
 
-if (class_exists('AppLogger')) {
-    AppLogger::init($enlace);
-}
+// ✅ ELIMINADO: AppLogger::init($enlace); - Ya no es necesario
 ?>

@@ -2,13 +2,10 @@
 // admin/dashboard.php
 require_once '../backend/includes/check_session.php';
 require_once '../backend/includes/conexion.php';
-require_once '../backend/includes/Logger.php';
+require_once '../backend/includes/logger.php';
 
-// Verificar que es admin (usando la nueva función)
+// Verificar que es admin
 $session = requireRole('admin');
-
-// Activar logging de acceso para el dashboard (opcional)
-$GLOBALS['log_page_access'] = true;
 
 // Obtener estadísticas
 $stats = [
@@ -30,7 +27,7 @@ if ($result) $stats['admins'] = $result->fetch_assoc()['total'];
 
 $stats['usuarios_normales'] = $stats['usuarios'] - $stats['admins'];
 
-// Verificar si existen las tablas (por si no se han creado aún)
+// Verificar si existen las tablas
 $tablas = [
     'copas' => "SELECT COUNT(*) as total FROM copas",
     'circuitos' => "SELECT COUNT(*) as total FROM circuitos"
@@ -43,17 +40,23 @@ foreach ($tablas as $key => $query) {
     }
 }
 
-// Tiradas totales (puede que la tabla se llame diferente)
+// Tiradas totales
 $result = $enlace->query("SELECT SUM(veces_seleccionado) as total FROM estadisticas_usuario");
 if ($result) {
     $row = $result->fetch_assoc();
     $stats['tiradas'] = $row['total'] ?? 0;
 }
 
-// Logs de hoy
-$result = $enlace->query("SELECT COUNT(*) as total FROM logs_sistema WHERE DATE(fecha) = CURDATE()");
-if ($result) {
-    $stats['logs_hoy'] = $result->fetch_assoc()['total'];
+// Logs de hoy - AHORA LEE DEL ARCHIVO EN VEZ DE LA BD
+$logsDir = __DIR__ . '/../logs/';
+$fechaHoy = date('Y-m-d');
+$archivoHoy = $logsDir . 'rulemkw-' . $fechaHoy . '.log';
+$stats['logs_hoy'] = 0;
+
+if (file_exists($archivoHoy)) {
+    // Contar líneas del archivo de hoy
+    $lineas = file($archivoHoy, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $stats['logs_hoy'] = count($lineas);
 }
 
 // Obtener últimos usuarios registrados
@@ -64,25 +67,64 @@ $ultimos_usuarios = $enlace->query("
     LIMIT 5
 ");
 
-// Obtener últimas acciones (logs) usando Monolog/Logger
+// Obtener últimas acciones - AHORA LEE DEL ARCHIVO MÁS RECIENTE
 $ultimos_logs = [];
-$result_logs = $enlace->query("
-    SELECT 
-        l.*,
-        u.usuario as usuario_nombre
-    FROM logs_sistema l
-    LEFT JOIN usuarios u ON l.usuario_id = u.id
-    ORDER BY l.fecha DESC 
-    LIMIT 10
-");
-
-if ($result_logs) {
-    while ($row = $result_logs->fetch_assoc()) {
-        $ultimos_logs[] = $row;
+$archivosLog = glob($logsDir . 'rulemkw-*.log');
+if (!empty($archivosLog)) {
+    rsort($archivosLog); // Ordenar por fecha (más reciente primero)
+    $archivoReciente = $archivosLog[0];
+    
+    if (file_exists($archivoReciente)) {
+        $lineas = file($archivoReciente, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        // Tomar las últimas 10 líneas (más recientes)
+        $ultimasLineas = array_slice($lineas, -10);
+        
+        foreach ($ultimasLineas as $linea) {
+            $log = parsearLogLineaSimple($linea);
+            if ($log) {
+                $ultimos_logs[] = $log;
+            }
+        }
+        // Revertir para mostrar las más recientes primero
+        $ultimos_logs = array_reverse($ultimos_logs);
     }
 }
 
-// LOG: Acceso al dashboard (solo una vez por sesión, para no saturar)
+// Función simple para parsear logs (para el dashboard)
+function parsearLogLineaSimple($linea) {
+    $patron = '/^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\] \w+\.(\w+): (.*?)(\s+\{.*\})?$/';
+    
+    if (preg_match($patron, $linea, $matches)) {
+        $fecha = $matches[1];
+        $tipo = $matches[2];
+        $mensaje = $matches[3];
+        $contextoJson = isset($matches[4]) ? trim($matches[4]) : '';
+        $contexto = !empty($contextoJson) ? json_decode($contextoJson, true) : [];
+        
+        // Determinar acción
+        $accion = 'OTRO';
+        if (stripos($mensaje, 'login') !== false) $accion = 'LOGIN';
+        else if (stripos($mensaje, 'sesión') !== false || stripos($mensaje, 'logout') !== false) $accion = 'LOGOUT';
+        else if (stripos($mensaje, 'registro') !== false) $accion = 'REGISTRO';
+        else if (stripos($mensaje, 'dashboard') !== false) $accion = 'DASHBOARD';
+        
+        // Obtener usuario
+        $usuario = 'Sistema';
+        if (isset($contexto['usuario'])) {
+            $usuario = $contexto['usuario'];
+        }
+        
+        return [
+            'fecha' => $fecha,
+            'tipo' => $tipo,
+            'accion' => $accion,
+            'usuario_nombre' => $usuario
+        ];
+    }
+    return null;
+}
+
+// LOG: Acceso al dashboard
 if (!isset($_SESSION['dashboard_logged'])) {
     AppLogger::info("Acceso al dashboard de administración", [
         'usuario_id' => $session['user_id'],
@@ -177,13 +219,13 @@ require_once 'layout/sidebar.php';
                     <?php foreach($ultimos_logs as $log): ?>
                     <tr>
                         <td><?php echo htmlspecialchars($log['usuario_nombre'] ?? 'Sistema'); ?></td>
-                        <td><?php echo htmlspecialchars(substr($log['accion'] ?? 'N/A', 0, 30)); ?></td>
+                        <td><?php echo htmlspecialchars($log['accion'] ?? 'N/A'); ?></td>
                         <td>
                             <span class="log-badge log-<?php echo strtolower($log['tipo'] ?? 'info'); ?>">
                                 <?php echo $log['tipo'] ?? 'INFO'; ?>
                             </span>
                         </td>
-                        <td><?php echo date('H:i:s', strtotime($log['fecha'] ?? 'now')); ?></td>
+                        <td><?php echo date('H:i', strtotime($log['fecha'] ?? 'now')); ?></td>
                     </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
@@ -196,7 +238,7 @@ require_once 'layout/sidebar.php';
     </div>
 </div>
 
-<!-- Últimas estadísticas adicionales (opcional) -->
+<!-- Últimas estadísticas adicionales -->
 <div style="margin-top: 30px; background: rgba(255,255,255,0.05); border-radius: 10px; padding: 20px;">
     <h3 style="margin-bottom: 15px; color: #e94560;">📊 Estadísticas rápidas</h3>
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align: center;">
@@ -219,8 +261,20 @@ require_once 'layout/sidebar.php';
     </div>
 </div>
 
+<style>
+.log-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+.log-info { background: #6a9955; color: white; }
+.log-warning { background: #dcdcaa; color: black; }
+.log-error { background: #f48771; color: black; }
+</style>
+
 <?php
-// Cerrar el contenido principal y el wrapper
 echo '</main></div>';
 ?>
 </body>

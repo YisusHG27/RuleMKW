@@ -1,6 +1,7 @@
 <?php
 session_start();
 include 'includes/conexion.php';
+require_once 'includes/Logger.php'; // Añadido para logging
 
 $mensaje = '';
 $tipo_mensaje = '';
@@ -44,6 +45,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registro'])) {
         if ($stmt->num_rows > 0) {
             $mensaje = "Este correo ya está registrado";
             $tipo_mensaje = "error";
+            // LOG: Intento de registro con email existente
+            AppLogger::warning("Intento de registro con email ya existente", [
+                'email' => $email,
+                'ip' => $_SERVER['REMOTE_ADDR']
+            ]);
         } else {
             // Verificar si el usuario ya existe
             $stmt2 = $enlace->prepare("SELECT id FROM usuarios WHERE usuario = ?");
@@ -54,22 +60,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registro'])) {
             if ($stmt2->num_rows > 0) {
                 $mensaje = "Este nombre de usuario ya está en uso";
                 $tipo_mensaje = "error";
+                // LOG: Intento de registro con usuario existente
+                AppLogger::warning("Intento de registro con nombre de usuario ya existente", [
+                    'usuario' => $nombre,
+                    'ip' => $_SERVER['REMOTE_ADDR']
+                ]);
             } else {
                 // Encriptar contraseña
                 $passHash = password_hash($pass, PASSWORD_DEFAULT);
                 
-                // INSERTAR USUARIO (NO especificar fecha_registro - MySQL la pone automáticamente)
+                // INSERTAR USUARIO
                 $stmt3 = $enlace->prepare("INSERT INTO usuarios (usuario, email, pass) VALUES (?, ?, ?)");
                 
                 if ($stmt3 === false) {
                     $mensaje = "Error al preparar la consulta: " . $enlace->error;
                     $tipo_mensaje = "error";
+                    // LOG: Error en preparación de consulta
+                    AppLogger::error("Error preparando consulta de registro", [
+                        'error' => $enlace->error,
+                        'ip' => $_SERVER['REMOTE_ADDR']
+                    ]);
                 } else {
                     $stmt3->bind_param("sss", $nombre, $email, $passHash);
                     
                     if ($stmt3->execute()) {
                         // Obtener ID del nuevo usuario
                         $usuario_id = $stmt3->insert_id;
+                        $es_admin = false;
                         
                         // Hacer admin al PRIMER usuario registrado
                         if ($usuario_id == 1) {
@@ -78,6 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registro'])) {
                             $stmt4->execute();
                             $stmt4->close();
                             $_SESSION['usuario_rol'] = 'admin';
+                            $es_admin = true;
                         } else {
                             $_SESSION['usuario_rol'] = 'usuario';
                         }
@@ -87,12 +105,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registro'])) {
                         $_SESSION['usuario_nombre'] = $nombre;
                         $_SESSION['usuario_email'] = $email;
                         
+                        // LOG: Registro exitoso
+                        AppLogger::info("Nuevo usuario registrado", [
+                            'usuario_id' => $usuario_id,
+                            'usuario' => $nombre,
+                            'email' => $email,
+                            'es_admin' => $es_admin,
+                            'ip' => $_SERVER['REMOTE_ADDR'],
+                            'user_agent' => $_SERVER['HTTP_USER_AGENT']
+                        ]);
+                        
                         // Redirigir a la página principal
                         header("Location: ../index.php");
                         exit();
                     } else {
                         $mensaje = "Error al registrar: " . $stmt3->error;
                         $tipo_mensaje = "error";
+                        // LOG: Error en ejecución de registro
+                        AppLogger::error("Error ejecutando registro de usuario", [
+                            'error' => $stmt3->error,
+                            'usuario' => $nombre,
+                            'email' => $email,
+                            'ip' => $_SERVER['REMOTE_ADDR']
+                        ]);
                     }
                     
                     $stmt3->close();
@@ -105,6 +140,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registro'])) {
         // Mostrar errores
         $mensaje = implode("<br>", $errores);
         $tipo_mensaje = "error";
+        // LOG: Errores de validación
+        AppLogger::warning("Errores de validación en registro", [
+            'errores' => $errores,
+            'ip' => $_SERVER['REMOTE_ADDR']
+        ]);
     }
 }
 ?>

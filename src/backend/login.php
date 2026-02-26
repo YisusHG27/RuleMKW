@@ -1,6 +1,7 @@
 <?php
 session_start();
 include 'includes/conexion.php';
+require_once 'includes/Logger.php'; // Añadido para logging
 
 // Inicializar variable de error
 $error = '';
@@ -10,6 +11,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
     // Validar que los campos no estén vacíos
     if (empty($_POST["email"]) || empty($_POST["password"])) {
         $error = "Por favor complete todos los campos";
+        AppLogger::warning("Intento de login con campos vacíos", [
+            'ip' => $_SERVER['REMOTE_ADDR']
+        ]);
     } else {
         // Limpiar datos
         $email = trim($_POST["email"]);
@@ -32,18 +36,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
                 $_SESSION['usuario_rol'] = $fila['rol'];
                 $_SESSION['usuario_email'] = $email;
                 
+                // LOG: Login exitoso
+                AppLogger::info("Login exitoso", [
+                    'usuario_id' => $fila['id'],
+                    'usuario' => $fila['usuario'],
+                    'rol' => $fila['rol'],
+                    'ip' => $_SERVER['REMOTE_ADDR'],
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT']
+                ]);
+                
                 // Redirigir
                 if ($fila['rol'] === 'admin') {
-                    header("Location: ../admin_panel.php");
+                    header("Location: /admin/dashboard.php");
                 } else {
                     header("Location: ../index.php");
                 }
                 exit();
             } else {
                 $error = "Correo o contraseña incorrectos";
+                // LOG: Contraseña incorrecta
+                AppLogger::warning("Intento de login fallido - contraseña incorrecta", [
+                    'email' => $email,
+                    'ip' => $_SERVER['REMOTE_ADDR'],
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT']
+                ]);
             }
         } else {
             $error = "Correo o contraseña incorrectos";
+            // LOG: Email no encontrado
+            AppLogger::warning("Intento de login fallido - email no registrado", [
+                'email' => $email,
+                'ip' => $_SERVER['REMOTE_ADDR'],
+                'user_agent' => $_SERVER['HTTP_USER_AGENT']
+            ]);
         }
         
         $stmt->close();
@@ -53,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
 // Si ya está logueado, redirigir
 if (isset($_SESSION['usuario_id'])) {
     if ($_SESSION['usuario_rol'] === 'admin') {
-        header("Location: ../admin_panel.php");
+        header("Location: /admin/dashboard.php");
     } else {
         header("Location: ../index.php");
     }

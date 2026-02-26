@@ -53,7 +53,7 @@
             slot.classList.remove('winner');
         });
         
-        // Llenar los slots con los circuitos seleccionados
+        // Llenar los slots con los circuitos seleccionados (SIN badge de ganador)
         circuitos.forEach((circuito, index) => {
             if (index < slots.length) {
                 const slot = slots[index];
@@ -63,9 +63,9 @@
                 
                 content.innerHTML = `
                     <img src="media/circuitos/${imageName}.jpg" 
-                         alt="${displayName}"
-                         class="slot-circuit-image"
-                         onerror="this.src='media/circuitos/default.jpg'">
+                        alt="${displayName}"
+                        class="slot-circuit-image"
+                        onerror="this.src='media/circuitos/default.jpg'">
                     <div class="slot-circuit-info">
                         <h6 class="fw-bold mb-1">${displayName}</h6>
                         <small>${circuito.copa_nombre || ''}</small>
@@ -123,10 +123,14 @@
         btnGirar.disabled = true;
         btnGirar.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> GIRANDO...';
         
+        // ===== REINICIAR LOS SLOTS A SU ESTADO ORIGINAL =====
         // Quitar clase winner de todos los slots
         document.querySelectorAll('.ruleta-slot').forEach(slot => {
             slot.classList.remove('winner');
         });
+        
+        // Restaurar los slots con los circuitos seleccionados (sin badge de ganador)
+        this.actualizarRuletaConCircuitos(circuitos);
         
         // Ocultar resultados anteriores
         document.getElementById('resultsSection').style.display = 'none';
@@ -208,16 +212,16 @@
                     setTimeout(() => {
                         slot.classList.add('winner');
                         
-                        // Actualizar el contenido para mostrar que es el ganador
+                        // Actualizar el contenido para mostrar que es el ganador (CON badge)
                         const content = slot.querySelector('.slot-content');
                         const displayName = CircuitosApp.formatCircuitoNombre(winner.nombre);
                         const imageName = CircuitosApp.getCircuitoImageName(winner.nombre);
                         
                         content.innerHTML = `
                             <img src="media/circuitos/${imageName}.jpg" 
-                                 alt="${displayName}"
-                                 class="slot-circuit-image"
-                                 onerror="this.src='media/circuitos/default.jpg'">
+                                alt="${displayName}"
+                                class="slot-circuit-image"
+                                onerror="this.src='media/circuitos/default.jpg'">
                             <div class="slot-circuit-info">
                                 <h6 class="fw-bold mb-1">${displayName}</h6>
                                 <small>${winner.copa_nombre || ''}</small>
@@ -268,20 +272,20 @@
         const imageName = CircuitosApp.getCircuitoImageName(winner.nombre);
         
         container.innerHTML = `
-            <div class="winner-card-simple">
+            <div class="winner-card">
                 <div class="winner-header">
                     <span class="winner-crown">👑</span>
                     <span class="winner-title">GANADOR</span>
                 </div>
-                <div class="winner-image-container-simple">
+                <div class="winner-image-container">
                     <img src="media/circuitos/${imageName}.jpg" 
                         alt="${displayName}"
-                        class="winner-image-simple"
+                        class="winner-image"
                         onerror="this.src='media/circuitos/default.jpg'">
                 </div>
-                <div class="winner-info-simple">
-                    <h3 class="winner-name-simple">${displayName}</h3>
-                    <p class="winner-copa-simple">${winner.copa_nombre || ''}</p>
+                <div class="winner-info">
+                    <h3 class="winner-name">${displayName}</h3>
+                    <p class="winner-copa">${winner.copa_nombre || ''}</p>
                 </div>
             </div>
         `;

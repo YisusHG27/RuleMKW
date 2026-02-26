@@ -1,0 +1,11 @@
+{
+    "name": "rulemkw/ruleta",
+    "description": "Sistema de ruleta con logs",
+    "type": "project",
+    "require": {
+        "monolog/monolog": "^3.10"
+    },
+    "config": {
+        "vendor-dir": "src/vendor"
+    }
+}

@@ -1,17 +1,29 @@
 <?php
-// CONFIGURACIÓN PARA DOCKER - CAMBIA ESTO
-$host = "mysql";        // ← IMPORTANTE: "mysql" es el nombre del contenedor
-$usuario_bd = "rulemkw_user";
-$password_bd = "password_segura";
-$nombre_bd = "rulemkw";
+// src/backend/includes/conexion.php
 
-$enlace = new mysqli($host, $usuario_bd, $password_bd, $nombre_bd);
+$vendorPath = __DIR__ . '/../../vendor/autoload.php';
+if (file_exists($vendorPath)) {
+    require_once $vendorPath;
+    require_once 'Logger.php';
+} else {
+    require_once 'LoggerSimple.php';
+}
+
+// Usar el usuario específico creado en docker-compose
+$host = 'mysql';
+$usuario = 'rulemkw_user';      // MYSQL_USER del .env
+$password = 'password_segura';  // MYSQL_PASSWORD del .env
+$base_datos = 'rulemkw';         // MYSQL_DATABASE del .env
+
+$enlace = new mysqli($host, $usuario, $password, $base_datos);
 
 if ($enlace->connect_error) {
-    die("Error de conexión: " . $enlace->connect_error . 
-        "<br>Host: " . $host . 
-        "<br>Usuario: " . $usuario_bd);
+    die("Error de conexión: " . $enlace->connect_error);
 }
 
 $enlace->set_charset("utf8mb4");
+
+if (class_exists('AppLogger')) {
+    AppLogger::init($enlace);
+}
 ?>

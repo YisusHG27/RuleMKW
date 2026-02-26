@@ -139,6 +139,25 @@ INSERT INTO `usuarios` (`id`, `usuario`, `email`, `pass`, `rol`, `fecha_registro
 (2, 'Jesus', 'jahernandezg20@educarex.es', '$2y$10$flwgyS/OTHizGI0k7QVmV.lHbX2hWc8Z6T2Y9k7P4AfuUzzNmNYYu', 'usuario', '2026-02-06 01:33:33');
 
 --
+-- Estructura de tabla para la tabla `logs_sistema`
+--
+
+CREATE TABLE IF NOT EXISTS logs_sistema (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NULL,
+    tipo VARCHAR(20) NOT NULL,
+    accion VARCHAR(50) NOT NULL,
+    descripcion TEXT,
+    ip_address VARCHAR(45),
+    user_agent TEXT,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_usuario (usuario_id),
+    INDEX idx_tipo (tipo),
+    INDEX idx_fecha (fecha),
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
 -- Índices para tablas volcadas
 --
 

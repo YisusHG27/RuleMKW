@@ -2,7 +2,7 @@
 // admin/logs.php
 require_once 'layout/sidebar.php';
 require_once '../backend/includes/conexion.php';
-require_once '../backend/includes/Logger.php'; // Opcional, si quieres logs
+require_once '../backend/includes/Logger.php';
 
 // Verificar que es admin
 if (!isset($_SESSION['usuario_rol']) || $_SESSION['usuario_rol'] !== 'admin') {
@@ -251,8 +251,7 @@ function limpiarFiltros() {
 // Cargar logs iniciales
 cargarLogs();
 
-// Auto-refresh cada 30 segundos (opcional - descomentar si quieres)
-// setInterval(() => cargarLogs(true), 30000);
+setInterval(() => cargarLogs(true), 30000);
 </script>
 
 <?php

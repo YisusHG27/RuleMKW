@@ -62,7 +62,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         </a>
                     </li>
                     <li class="logout">
-                        <a href="../logout.php">
+                        <a href="../backend/logout.php">
                             <span class="icon">🚪</span>
                             <span>Cerrar Sesión</span>
                         </a>

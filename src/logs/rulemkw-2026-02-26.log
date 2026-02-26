@@ -11,3 +11,8 @@
 [2026-02-26 01:38:52] rulemkw.WARNING: Intento de acceso sin sesión {"pagina":"/admin/dashboard.php","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"}
 [2026-02-26 01:39:07] rulemkw.INFO: Login exitoso {"usuario_id":1,"usuario":"admin","rol":"admin","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"}
 [2026-02-26 01:39:07] rulemkw.INFO: Acceso al dashboard de administración {"usuario_id":1,"usuario":"admin"}
+[2026-02-26 01:43:01] rulemkw.INFO: Usuario cerró sesión {"usuario_id":1,"usuario":"admin","rol":"admin","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36","metodo":"logout_manual"}
+[2026-02-26 01:43:48] rulemkw.INFO: Login exitoso {"usuario_id":2,"usuario":"Jesus","rol":"usuario","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"}
+[2026-02-26 01:44:14] rulemkw.INFO: Usuario cerró sesión {"usuario_id":2,"usuario":"Jesus","rol":"usuario","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36","metodo":"logout_manual"}
+[2026-02-26 01:44:19] rulemkw.INFO: Login exitoso {"usuario_id":1,"usuario":"admin","rol":"admin","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"}
+[2026-02-26 01:44:19] rulemkw.INFO: Acceso al dashboard de administración {"usuario_id":1,"usuario":"admin"}

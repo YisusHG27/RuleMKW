@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 06-02-2026 a las 03:26:25
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Servidor: mysql:3306
+-- Tiempo de generación: 26-02-2026 a las 01:18:52
+-- Versión del servidor: 8.0.45
+-- Versión de PHP: 8.3.26
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -21,17 +21,16 @@ SET time_zone = "+00:00";
 -- Base de datos: `rulemkw`
 --
 
-CREATE DATABASE IF NOT EXISTS rulemkw CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE rulemkw;
+-- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `circuitos`
 --
 
 CREATE TABLE `circuitos` (
-  `id` int(11) NOT NULL,
-  `nombre` varchar(100) NOT NULL,
-  `id_copa` int(11) NOT NULL
+  `id` int NOT NULL,
+  `nombre` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `id_copa` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -79,8 +78,8 @@ INSERT INTO `circuitos` (`id`, `nombre`, `id_copa`) VALUES
 --
 
 CREATE TABLE `copas` (
-  `id` int(11) NOT NULL,
-  `nombre` varchar(50) NOT NULL
+  `id` int NOT NULL,
+  `nombre` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -104,16 +103,29 @@ INSERT INTO `copas` (`id`, `nombre`) VALUES
 --
 
 CREATE TABLE `estadisticas_usuario` (
-  `id` int(11) NOT NULL,
-  `usuario_id` int(11) NOT NULL,
-  `circuito_id` int(11) NOT NULL,
-  `veces_seleccionado` int(11) DEFAULT 0,
-  `fecha_ultima_seleccion` timestamp NOT NULL DEFAULT current_timestamp()
+  `id` int NOT NULL,
+  `usuario_id` int NOT NULL,
+  `circuito_id` int NOT NULL,
+  `veces_seleccionado` int DEFAULT '0',
+  `fecha_ultima_seleccion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
 --
--- Volcado de datos para la tabla `estadisticas_usuario`
+-- Estructura de tabla para la tabla `logs_sistema`
 --
+
+CREATE TABLE `logs_sistema` (
+  `id` int NOT NULL,
+  `usuario_id` int DEFAULT NULL,
+  `tipo` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `accion` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `descripcion` text COLLATE utf8mb4_unicode_ci,
+  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_agent` text COLLATE utf8mb4_unicode_ci,
+  `fecha` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -122,12 +134,12 @@ CREATE TABLE `estadisticas_usuario` (
 --
 
 CREATE TABLE `usuarios` (
-  `id` int(11) NOT NULL,
-  `usuario` varchar(50) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `pass` varchar(255) NOT NULL,
-  `rol` enum('usuario','admin') DEFAULT 'usuario',
-  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
+  `id` int NOT NULL,
+  `usuario` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `pass` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `rol` enum('usuario','admin') COLLATE utf8mb4_general_ci DEFAULT 'usuario',
+  `fecha_registro` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -137,25 +149,6 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`id`, `usuario`, `email`, `pass`, `rol`, `fecha_registro`) VALUES
 (1, 'admin', 'admin@rulemkw.com', '$2y$10$z5lMnmH3FBmqIgca0/6v0.H3Xg/7C/vzTZ4cXhSeOIbmNx2wdBuBe', 'admin', '2025-12-03 01:04:22'),
 (2, 'Jesus', 'jahernandezg20@educarex.es', '$2y$10$flwgyS/OTHizGI0k7QVmV.lHbX2hWc8Z6T2Y9k7P4AfuUzzNmNYYu', 'usuario', '2026-02-06 01:33:33');
-
---
--- Estructura de tabla para la tabla `logs_sistema`
---
-
-CREATE TABLE IF NOT EXISTS logs_sistema (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id INT NULL,
-    tipo VARCHAR(20) NOT NULL,
-    accion VARCHAR(50) NOT NULL,
-    descripcion TEXT,
-    ip_address VARCHAR(45),
-    user_agent TEXT,
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_usuario (usuario_id),
-    INDEX idx_tipo (tipo),
-    INDEX idx_fecha (fecha),
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Índices para tablas volcadas
@@ -183,6 +176,15 @@ ALTER TABLE `estadisticas_usuario`
   ADD KEY `circuito_id` (`circuito_id`);
 
 --
+-- Indices de la tabla `logs_sistema`
+--
+ALTER TABLE `logs_sistema`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_usuario` (`usuario_id`),
+  ADD KEY `idx_tipo` (`tipo`),
+  ADD KEY `idx_fecha` (`fecha`);
+
+--
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
@@ -198,25 +200,31 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `circuitos`
 --
 ALTER TABLE `circuitos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT de la tabla `copas`
 --
 ALTER TABLE `copas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `estadisticas_usuario`
 --
 ALTER TABLE `estadisticas_usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+
+--
+-- AUTO_INCREMENT de la tabla `logs_sistema`
+--
+ALTER TABLE `logs_sistema`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Restricciones para tablas volcadas
@@ -234,6 +242,12 @@ ALTER TABLE `circuitos`
 ALTER TABLE `estadisticas_usuario`
   ADD CONSTRAINT `estadisticas_usuario_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `estadisticas_usuario_ibfk_2` FOREIGN KEY (`circuito_id`) REFERENCES `circuitos` (`id`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `logs_sistema`
+--
+ALTER TABLE `logs_sistema`
+  ADD CONSTRAINT `logs_sistema_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

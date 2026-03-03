@@ -14,3 +14,25 @@
 [2026-03-03 01:27:14] rulemkw.INFO: Login exitoso {"usuario_id":1,"usuario":"admin","rol":"admin","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"}
 [2026-03-03 01:27:14] rulemkw.INFO: Acceso al dashboard de administración {"usuario_id":1,"usuario":"admin"}
 [2026-03-03 01:30:01] rulemkw.INFO: Cookie consent: aceptadas {"accion":"aceptadas","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36","screen_resolution":"1680x1050","language":"es-ES","timestamp":"2026-03-03T00:30:01.518Z"}
+[2026-03-03 02:30:54] rulemkw.INFO: Usuario cerró sesión {"usuario_id":1,"usuario":"admin","rol":"admin","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36","metodo":"logout_manual"}
+[2026-03-03 02:31:01] rulemkw.INFO: Login exitoso {"usuario_id":2,"usuario":"Jesus","rol":"usuario","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"}
+[2026-03-03 03:28:12] rulemkw.INFO: Estadísticas guardadas exitosamente {"usuario_id":2,"usuario":"Jesus","ganador_id":7,"total_circuitos":4,"ip":"172.18.0.1"}
+[2026-03-03 03:30:01] rulemkw.INFO: Estadísticas guardadas exitosamente {"usuario_id":2,"usuario":"Jesus","ganador_id":12,"total_circuitos":4,"ip":"172.18.0.1"}
+[2026-03-03 03:30:16] rulemkw.INFO: Estadísticas guardadas exitosamente {"usuario_id":2,"usuario":"Jesus","ganador_id":18,"total_circuitos":4,"ip":"172.18.0.1"}
+[2026-03-03 03:30:56] rulemkw.INFO: Estadísticas guardadas exitosamente {"usuario_id":2,"usuario":"Jesus","ganador_id":3,"total_circuitos":4,"ip":"172.18.0.1"}
+[2026-03-03 03:33:11] rulemkw.INFO: Usuario cerró sesión {"usuario_id":2,"usuario":"Jesus","rol":"usuario","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36","metodo":"logout_manual"}
+[2026-03-03 03:33:16] rulemkw.INFO: Login exitoso {"usuario_id":1,"usuario":"admin","rol":"admin","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"}
+[2026-03-03 03:33:16] rulemkw.INFO: Acceso al dashboard de administración {"usuario_id":1,"usuario":"admin"}
+[2026-03-03 03:35:23] rulemkw.INFO: Usuario cerró sesión {"usuario_id":1,"usuario":"admin","rol":"admin","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36","metodo":"logout_manual"}
+[2026-03-03 03:35:29] rulemkw.INFO: Login exitoso {"usuario_id":2,"usuario":"Jesus","rol":"usuario","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"}
+[2026-03-03 03:36:07] rulemkw.INFO: Estadísticas guardadas exitosamente {"usuario_id":2,"usuario":"Jesus","ganador_id":7,"total_circuitos":4,"ip":"172.18.0.1"}
+[2026-03-03 03:37:48] rulemkw.INFO: Estadísticas guardadas exitosamente {"usuario_id":2,"usuario":"Jesus","ganador_id":3,"total_circuitos":4,"ip":"172.18.0.1"}
+[2026-03-03 03:38:20] rulemkw.INFO: Estadísticas guardadas exitosamente {"usuario_id":2,"usuario":"Jesus","ganador_id":14,"total_circuitos":4,"ip":"172.18.0.1"}
+[2026-03-03 03:38:30] rulemkw.INFO: Estadísticas guardadas exitosamente {"usuario_id":2,"usuario":"Jesus","ganador_id":24,"total_circuitos":2,"ip":"172.18.0.1"}
+[2026-03-03 03:38:59] rulemkw.INFO: Estadísticas guardadas exitosamente {"usuario_id":2,"usuario":"Jesus","ganador_id":27,"total_circuitos":4,"ip":"172.18.0.1"}
+[2026-03-03 03:39:28] rulemkw.INFO: Estadísticas guardadas exitosamente {"usuario_id":2,"usuario":"Jesus","ganador_id":27,"total_circuitos":4,"ip":"172.18.0.1"}
+[2026-03-03 03:40:40] rulemkw.INFO: Estadísticas guardadas exitosamente {"usuario_id":2,"usuario":"Jesus","ganador_id":27,"total_circuitos":4,"ip":"172.18.0.1"}
+[2026-03-03 03:47:54] rulemkw.INFO: Estadísticas guardadas exitosamente {"usuario_id":2,"usuario":"Jesus","ganador_id":3,"total_circuitos":2,"ip":"172.18.0.1"}
+[2026-03-03 03:48:15] rulemkw.INFO: Estadísticas guardadas exitosamente {"usuario_id":2,"usuario":"Jesus","ganador_id":27,"total_circuitos":2,"ip":"172.18.0.1"}
+[2026-03-03 03:48:28] rulemkw.INFO: Estadísticas guardadas exitosamente {"usuario_id":2,"usuario":"Jesus","ganador_id":14,"total_circuitos":2,"ip":"172.18.0.1"}
+[2026-03-03 03:49:00] rulemkw.INFO: Estadísticas guardadas exitosamente {"usuario_id":2,"usuario":"Jesus","ganador_id":3,"total_circuitos":2,"ip":"172.18.0.1"}

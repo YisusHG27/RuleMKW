@@ -9,6 +9,7 @@
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/perfil.css">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -30,54 +31,45 @@
                             <div class="avatar">
                                 <i class="fas fa-user-circle fa-6x text-primary"></i>
                             </div>
-                            <div class="avatar-badge">
-                                <i class="fas fa-crown text-warning"></i>
-                            </div>
                         </div>
-                        <h3 id="userName" class="fw-bold">Usuario Ejemplo</h3>
-                        <p class="text-muted" id="userEmail">usuario@ejemplo.com</p>
+                        <h3 id="userName" class="fw-bold">Cargando...</h3>
+                        <p class="text-muted" id="userEmail">cargando...</p>
                         
                         <div class="mt-4">
-                            <span class="badge bg-primary">
-                                <i class="fas fa-medal me-1"></i> Nivel 5
-                            </span>
-                            <span class="badge bg-success ms-2">
-                                <i class="fas fa-trophy me-1"></i> Premium
+                            <span class="badge bg-primary ms-2" id="rolBadge">
+                                <i class="fas fa-user me-1"></i> Usuario
                             </span>
                         </div>
                     </div>
                     
+                    <!-- SOLO VECES GIRADO (eliminados los otros dos) -->
                     <div class="stats-grid mb-4">
                         <div class="stat-item text-center p-3">
-                            <h2 class="fw-bold text-primary">24</h2>
-                            <small>Partidas Jugadas</small>
-                        </div>
-                        <div class="stat-item text-center p-3">
-                            <h2 class="fw-bold text-success">18</h2>
-                            <small>Circuitos Únicos</small>
-                        </div>
-                        <div class="stat-item text-center p-3">
-                            <h2 class="fw-bold text-warning">156</h2>
+                            <h2 class="fw-bold text-primary" id="vecesGirado">0</h2>
                             <small>Veces Girado</small>
                         </div>
                     </div>
                     
                     <div class="user-info">
-                        <p><i class="fas fa-calendar me-2 text-muted"></i> Miembro desde: <span id="memberSince">Ene 2024</span></p>
-                        <p><i class="fas fa-clock me-2 text-muted"></i> Última actividad: <span id="lastActivity">Hoy</span></p>
+                        <p><i class="fas fa-calendar me-2 text-muted"></i> Miembro desde: <span id="memberSince">-</span></p>
+                        <p><i class="fas fa-clock me-2 text-muted"></i> Última actividad: <span id="lastActivity">-</span></p>
                     </div>
                 </div>
             </div>
             
             <!-- Estadísticas -->
             <div class="col-lg-8">
-                <!-- Gráfico de Estadísticas -->
+                <!-- Gráfico de Estadísticas (TODOS LOS CIRCUITOS) -->
                 <div class="card mb-4 rounded-4 shadow-lg border-0">
                     <div class="card-header bg-primary text-white rounded-top-4">
-                        <h4 class="mb-0"><i class="fas fa-chart-line me-2"></i>Mis Estadísticas</h4>
+                        <h4 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Frecuencia de Circuitos</h4>
                     </div>
                     <div class="card-body">
-                        <canvas id="statsChart" height="300"></canvas>
+                        <canvas id="statsChart" height="400"></canvas>
+                        <div id="chartNoData" class="text-center py-4" style="display: none;">
+                            <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No hay datos suficientes para mostrar el gráfico</p>
+                        </div>
                     </div>
                 </div>
                 
@@ -88,7 +80,6 @@
                     </div>
                     <div class="card-body">
                         <div class="row" id="topCircuits">
-                            <!-- Se llenará con JavaScript -->
                             <div class="col-12 text-center py-5">
                                 <div class="spinner-border text-primary" role="status">
                                     <span class="visually-hidden">Cargando...</span>
@@ -110,15 +101,15 @@
                                     <tr>
                                         <th><i class="fas fa-calendar me-1"></i> Fecha</th>
                                         <th><i class="fas fa-map me-1"></i> Circuitos</th>
-                                        <th><i class="fas fa-star me-1"></i> Resultado</th>
-                                        <th><i class="fas fa-cog me-1"></i> Acciones</th>
+                                        <th><i class="fas fa-trophy me-1"></i> Ganador</th>
                                     </tr>
                                 </thead>
                                 <tbody id="historyTable">
                                     <tr>
-                                        <td colspan="4" class="text-center py-5">
-                                            <i class="fas fa-history fa-3x text-muted mb-3"></i>
-                                            <p class="text-muted">No hay historial disponible</p>
+                                        <td colspan="3" class="text-center py-5">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Cargando...</span>
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>

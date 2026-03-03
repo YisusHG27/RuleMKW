@@ -1,359 +1,357 @@
-class CircuitosApp {
-    static selectedCircuits = [];
-    static maxSelections = 4;
-    static minSelections = 2;
-    
-    static init(copasData = null) {
-        if (copasData) {
-            this.renderCopas(copasData);
-        } else {
-            this.loadCopas();
-        }
-        
-        this.setupEventListeners();
-        this.updateUI();
-    }
-    
-    static loadCopas() {
-        // En desarrollo, usar datos de ejemplo
-        const copasEjemplo = [
-            {
-                id: 1,
-                nombre: "Copa Champiñón",
-                circuitos: [
-                    {id: 1, nombre: "Circuito Mario Bros.", copa_nombre: "Copa Champiñón"},
-                    {id: 2, nombre: "Ciudad Corona (1)", copa_nombre: "Copa Champiñón"},
-                    {id: 3, nombre: "Cañón Ferroviario", copa_nombre: "Copa Champiñón"},
-                    {id: 4, nombre: "Puerto Espacial DK", copa_nombre: "Copa Champiñón"}
-                ]
-            },
-            {
-                id: 2,
-                nombre: "Copa Flor",
-                circuitos: [
-                    {id: 5, nombre: "Desierto Sol-Sol", copa_nombre: "Copa Flor"},
-                    {id: 6, nombre: "Bazar Shy Guy", copa_nombre: "Copa Flor"},
-                    {id: 7, nombre: "Estadio Wario", copa_nombre: "Copa Flor"},
-                    {id: 8, nombre: "Fortaleza Aérea", copa_nombre: "Copa Flor"}
-                ]
-            },
-            {
-                id: 3,
-                nombre: "Copa Estrella",
-                circuitos: [
-                    {id: 9, nombre: "DK Alpino", copa_nombre: "Copa Estrella"},
-                    {id: 10, nombre: "Mirador Estelar", copa_nombre: "Copa Estrella"},
-                    {id: 11, nombre: "Cielos Helados", copa_nombre: "Copa Estrella"},
-                    {id: 12, nombre: "Galeón de Wario", copa_nombre: "Copa Estrella"}
-                ]
-            }
-        ];
-        
-        this.renderCopas(copasEjemplo);
-    }
-    
-    static renderCopas(copasData) {
-        const accordion = document.getElementById('copasAccordion');
-        accordion.innerHTML = '';
-        
-        copasData.forEach((copa, index) => {
-            const copaId = `copa${copa.id}`;
-            const isFirst = index === 0;
-            
-            const copaHTML = `
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button ${!isFirst ? 'collapsed' : ''}" 
-                                type="button" 
-                                data-bs-toggle="collapse" 
-                                data-bs-target="#${copaId}"
-                                aria-expanded="${isFirst ? 'true' : 'false'}">
-                            <div class="d-flex align-items-center w-100">
-                                <img src="media/copas/${this.getCopaImageName(copa.nombre)}.png" 
-                                     alt="${copa.nombre}" 
-                                     class="me-3"
-                                     style="width: 50px; height: 50px; object-fit: contain;">
-                                <div class="flex-grow-1">
-                                    <h5 class="mb-0">${copa.nombre}</h5>
-                                    <small class="text-white-80">${copa.circuitos.length} circuitos</small>
-                                </div>
-                                <i class="fas fa-chevron-down ms-2"></i>
-                            </div>
-                        </button>
-                    </h2>
-                    <div id="${copaId}" 
-                         class="accordion-collapse collapse ${isFirst ? 'show' : ''}"
-                         data-bs-parent="#copasAccordion">
-                        <div class="accordion-body">
-                            <div class="circuitos-grid">
-                                ${this.renderCircuitos(copa.circuitos)}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            accordion.innerHTML += copaHTML;
-        });
-        
-        this.setupCircuitosListeners();
-    }
-    
-    static renderCircuitos(circuitos) {
-        return circuitos.map(circuito => {
-            const isSelected = this.selectedCircuits.some(c => c.id === circuito.id);
-            const displayName = this.formatCircuitoNombre(circuito.nombre);
+/* ==========================================================================
+   PERFIL APP - GESTIÓN DE PERFIL DE USUARIO
+   ========================================================================== */
 
-            return `
-                <div class="circuito-selector ${isSelected ? 'selected' : ''}" 
-                    data-circuit-id="${circuito.id}"
-                    data-circuit-name="${circuito.nombre}"
-                    data-circuit-copa="${circuito.copa_nombre}">
-                    <div class="circuito-image">
-                        <img src="media/circuitos/${this.getCircuitoImageName(circuito.nombre)}.jpg" 
-                            alt="${displayName}"
-                            class="img-fluid rounded">
-                        <div class="circuito-overlay">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                    </div>
-                    <div class="circuito-info mt-2">
-                        <h6 class="mb-1">${displayName}</h6>
-                        <small class="text-muted">${circuito.copa_nombre}</small>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    static formatCircuitoNombre(circuitoNombre) {
-        if (circuitoNombre === 'CanionFerroviario') {
-            return 'Cañon Ferroviario';
-        }
-        return circuitoNombre;
+class PerfilApp {
+    /* ========== 1. PROPIEDADES ESTÁTICAS ========== */
+    static userId = null;
+    static userName = null;
+    static userEmail = null;
+    static userRol = null;
+    static fechaRegistro = null;
+    static ultimaActividad = null;
+    static estadisticas = [];
+    static chart = null;
+    
+    /* ========== 2. INICIALIZACIÓN ========== */
+    static init() {
+        this.cargarDatosUsuario();
+        this.cargarEstadisticas();
+        this.cargarHistorial();
     }
     
-    static setupCircuitosListeners() {
-        document.querySelectorAll('.circuito-selector').forEach(circuito => {
-            circuito.addEventListener('click', (e) => {
-                const circuitId = parseInt(circuito.dataset.circuitId);
-                const circuitName = circuito.dataset.circuitName;
-                const circuitCopa = circuito.dataset.circuitCopa;
-                
-                this.toggleCircuitoSeleccion({
-                    id: circuitId,
-                    nombre: circuitName,
-                    copa_nombre: circuitCopa
-                }, circuito);
+    /* ========== 3. CARGAR DATOS DE USUARIO ========== */
+    static cargarDatosUsuario() {
+        fetch('../backend/api/get_usuario_actual.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.userId = data.usuario.id;
+                    this.userName = data.usuario.nombre;
+                    this.userEmail = data.usuario.email;
+                    this.userRol = data.usuario.rol;
+                    this.fechaRegistro = data.usuario.fecha_registro;
+                    this.ultimaActividad = data.usuario.ultima_actividad;
+                    
+                    this.actualizarInfoUsuario();
+                } else {
+                    console.error('Error cargando usuario:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error cargando usuario:', error);
             });
+    }
+    
+    /* ========== 4. ACTUALIZAR INFO DE USUARIO EN HTML ========== */
+    static actualizarInfoUsuario() {
+        document.getElementById('userName').textContent = this.userName || 'Usuario';
+        document.getElementById('userEmail').textContent = this.userEmail || 'email@ejemplo.com';
+        
+        // Actualizar badge de rol
+        const rolBadge = document.getElementById('rolBadge');
+        if (rolBadge) {
+            if (this.userRol === 'admin') {
+                rolBadge.innerHTML = '<i class="fas fa-shield-alt me-1"></i> Administrador';
+                rolBadge.className = 'badge bg-danger ms-2';
+            } else {
+                rolBadge.innerHTML = '<i class="fas fa-user me-1"></i> Usuario';
+                rolBadge.className = 'badge bg-primary ms-2';
+            }
+        }
+        
+        // Actualizar fechas
+        if (this.fechaRegistro) {
+            const fecha = new Date(this.fechaRegistro);
+            const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            document.getElementById('memberSince').textContent = 
+                `${meses[fecha.getMonth()]} ${fecha.getFullYear()}`;
+        }
+        
+        if (this.ultimaActividad) {
+            const fecha = new Date(this.ultimaActividad);
+            const hoy = new Date();
+            if (fecha.toDateString() === hoy.toDateString()) {
+                document.getElementById('lastActivity').textContent = 'Hoy';
+            } else {
+                document.getElementById('lastActivity').textContent = 
+                    fecha.toLocaleDateString('es-ES');
+            }
+        }
+    }
+    
+    /* ========== 5. CARGAR ESTADÍSTICAS ========== */
+    static cargarEstadisticas() {
+        fetch('../backend/api/get_estadisticas.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.estadisticas = data.estadisticas;
+                    document.getElementById('vecesGirado').textContent = data.totales.veces_girado || 0;
+                    this.crearGrafico();
+                    this.mostrarTopCircuitos();
+                } else {
+                    console.error('Error cargando estadísticas:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error cargando estadísticas:', error);
+            });
+    }
+    
+    /* ========== 6. ACTUALIZAR ESTADÍSTICAS GENERALES ========== */
+    static actualizarEstadisticas(totales) {
+        // Actualizar solo "Veces Girado"
+        document.querySelectorAll('.stat-item')[0].innerHTML = `
+            <h2 class="fw-bold text-primary">${totales.veces_girado || 0}</h2>
+            <small>Veces Girado</small>
+        `;
+    }
+    
+    /* ========== 7. CREAR GRÁFICO DE ESTADÍSTICAS ========== */
+    static crearGrafico() {
+        const ctx = document.getElementById('statsChart').getContext('2d');
+        const noDataDiv = document.getElementById('chartNoData');
+        
+        // Filtrar solo circuitos con veces_ganador > 0
+        const circuitosGanadores = this.estadisticas.filter(stat => stat.veces_ganador > 0);
+        
+        if (circuitosGanadores.length === 0) {
+            document.getElementById('statsChart').style.display = 'none';
+            if (noDataDiv) noDataDiv.style.display = 'block';
+            return;
+        }
+        
+        document.getElementById('statsChart').style.display = 'block';
+        if (noDataDiv) noDataDiv.style.display = 'none';
+        
+        // Preparar datos para el gráfico (usando veces_ganador)
+        const labels = circuitosGanadores.map(stat => 
+            this.abreviarNombreCircuito(stat.circuito_nombre)
+        );
+        
+        const data = circuitosGanadores.map(stat => stat.veces_ganador);
+        
+        // Colores degradados
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(233, 69, 96, 0.8)');
+        gradient.addColorStop(1, 'rgba(78, 205, 196, 0.8)');
+        
+        // Destruir gráfico anterior si existe
+        if (this.chart) {
+            this.chart.destroy();
+        }
+        
+        this.chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Veces ganador',
+                    data: data,
+                    backgroundColor: gradient,
+                    borderColor: 'rgba(233, 69, 96, 1)',
+                    borderWidth: 1,
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            color: '#fff'
+                        },
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#fff',
+                            font: {
+                                size: 10
+                            }
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label;
+                            },
+                            label: function(context) {
+                                return `Victorias: ${context.raw}`;
+                            }
+                        }
+                    }
+                }
+            }
         });
     }
     
-    static toggleCircuitoSeleccion(circuitoData, element) {
-        const index = this.selectedCircuits.findIndex(c => c.id === circuitoData.id);
+    /* ========== 8. ABREVIAR NOMBRES DE CIRCUITOS ========== */
+    static abreviarNombreCircuito(nombre) {
+        if (!nombre) return '';
         
-        if (index === -1) {
-            // Agregar
-            if (this.selectedCircuits.length >= this.maxSelections) {
-                this.showAlert(`Máximo ${this.maxSelections} circuitos permitidos`, 'warning');
-                return;
-            }
-            
-            this.selectedCircuits.push(circuitoData);
-            element.classList.add('selected');
-            
-            // Efecto visual
-            element.classList.add('animate__animated', 'animate__pulse');
-            setTimeout(() => {
-                element.classList.remove('animate__animated', 'animate__pulse');
-            }, 1000);
-            
-        } else {
-            // Remover
-            this.selectedCircuits.splice(index, 1);
-            element.classList.remove('selected');
-        }
+        const abreviaturas = {
+            'Circuito Mario Bros.': 'Mario Bros.',
+            'Ciudad Corona (1)': 'C. Corona 1',
+            'Ciudad Corona (2)': 'C. Corona 2',
+            'Cañón Ferroviario': 'Cañón Ferr.',
+            'Puerto Espacial DK': 'Pto. DK',
+            'Desierto Sol-Sol': 'Desierto',
+            'Bazar Shy Guy': 'Bazar',
+            'Estadio Wario': 'Est. Wario',
+            'Fortaleza Aérea': 'Fortaleza',
+            'DK Alpino': 'DK Alpino',
+            'Mirador Estelar': 'Mirador',
+            'Cielos Helados': 'Cielos',
+            'Galeón de Wario': 'Galeón',
+            'Playa Koopa': 'P. Koopa',
+            'Sabana Salpicante': 'Sabana',
+            'Estadio Peach (1)': 'Est. Peach 1',
+            'Estadio Peach (2)': 'Est. Peach 2',
+            'Playa Peach': 'P. Peach',
+            'Ciudad Salina': 'C. Salina',
+            'Jungla Dino Dino': 'Jungla',
+            'Templo del Bloque ?': 'Templo ?',
+            'Cascadas Cheep Cheep': 'Cascadas',
+            'Gruta Diente de León': 'Gruta',
+            'Cine Boo': 'Cine Boo',
+            'Caverna Ósea': 'Caverna',
+            'Pradera Mu-Mu': 'Pradera',
+            'Monte Chocolate': 'M. Chocolate',
+            'Fábrica de Toad': 'Fáb. Toad',
+            'Castillo de Bowser': 'Castillo',
+            'Aldea Arbórea': 'Aldea',
+            'Circuito Mario': 'C. Mario',
+            'Senda Arco Iris': 'Arco Iris'
+        };
         
-        this.updateUI();
+        return abreviaturas[nombre] || nombre.substring(0, 12) + '...';
     }
     
-    static updateUI() {
-        this.updateContador();
-        this.updateSelectedCircuitsDisplay();
-        this.updateGirarButton();
-        this.updateProgressBar();
-    }
-    
-    static updateContador() {
-        const contador = document.getElementById('contadorSeleccionados');
-        const texto = document.getElementById('contadorTexto');
-        const countElement = document.getElementById('selectedCount');
+    /* ========== 9. MOSTRAR TOP 3 CIRCUITOS ========== */
+    static mostrarTopCircuitos() {
+        const container = document.getElementById('topCircuits');
         
-        const count = this.selectedCircuits.length;
-        texto.textContent = `${count}/${this.maxSelections} circuitos seleccionados`;
+        // Filtrar solo circuitos con veces_ganador > 0
+        const circuitosGanadores = this.estadisticas.filter(stat => stat.veces_ganador > 0);
         
-        if (countElement) {
-            countElement.textContent = count;
-        }
-        
-        if (count > 0) {
-            contador.classList.remove('d-none');
-            
-            // Cambiar color según cantidad
-            if (count >= this.minSelections) {
-                contador.style.borderLeftColor = '#06D6A0';
-            } else {
-                contador.style.borderLeftColor = '#FF6B6B';
-            }
-        } else {
-            contador.classList.add('d-none');
-        }
-    }
-    
-    static updateProgressBar() {
-        const progressBar = document.getElementById('progressBar');
-        if (progressBar) {
-            const progress = (this.selectedCircuits.length / this.maxSelections) * 100;
-            progressBar.style.width = `${progress}%`;
-            progressBar.style.backgroundColor = this.selectedCircuits.length >= this.minSelections ? '#06D6A0' : '#FF6B6B';
-        }
-    }
-    
-    static updateGirarButton() {
-        const btn = document.getElementById('btnGirar');
-        if (!btn) return;
-        
-        const canSpin = this.selectedCircuits.length >= this.minSelections;
-        btn.disabled = !canSpin;
-        
-        if (canSpin) {
-            btn.classList.remove('btn-secondary');
-            btn.classList.add('btn-danger');
-        } else {
-            btn.classList.remove('btn-danger');
-            btn.classList.add('btn-secondary');
-        }
-    }
-    
-    static updateSelectedCircuitsDisplay() {
-        const container = document.getElementById('circuitosSeleccionados');
-        
-        if (this.selectedCircuits.length === 0) {
+        if (circuitosGanadores.length === 0) {
             container.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-map-marked-alt fa-4x text-muted mb-4"></i>
-                    <h4 class="text-muted">Sin circuitos seleccionados</h4>
-                    <p class="text-muted">Selecciona circuitos de las copas para comenzar</p>
+                <div class="col-12 text-center py-4">
+                    <i class="fas fa-trophy fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No hay circuitos ganadores todavía</p>
                 </div>
             `;
             return;
         }
         
-        container.innerHTML = this.selectedCircuits.map((circuito, index) => `
-            <div class="circuito-card animate__animated animate__fadeIn" style="animation-delay: ${index * 0.1}s">
-                <button class="remove-btn" onclick="CircuitosApp.removeCircuito(${circuito.id})">
-                    <i class="fas fa-times"></i>
-                </button>
-                <img src="media/circuitos/${this.getCircuitoImageName(circuito.nombre)}.jpg" 
-                     alt="${circuito.nombre}">
-                <div class="card-body">
-                    <h6 class="fw-bold mb-1">${circuito.nombre}</h6>
-                    <small class="text-muted d-block mb-2">${circuito.copa_nombre}</small>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-primary">#${circuito.id}</span>
-                        <span class="text-muted"><small>${index + 1}º</small></span>
+        // Ordenar por veces_ganador y tomar top 3
+        const top3 = [...circuitosGanadores]
+            .sort((a, b) => b.veces_ganador - a.veces_ganador)
+            .slice(0, 3);
+        
+        const medallas = ['🥇', '🥈', '🥉'];
+        const colores = ['#FFD700', '#C0C0C0', '#CD7F32'];
+        
+        container.innerHTML = top3.map((circuito, index) => `
+            <div class="col-md-4 mb-3">
+                <div class="card h-100 border-0 shadow-sm" style="border-top: 4px solid ${colores[index]};">
+                    <div class="card-body text-center">
+                        <div class="display-4 mb-2" style="color: ${colores[index]};">${medallas[index]}</div>
+                        <h5 class="fw-bold">${this.formatearNombreCircuito(circuito.circuito_nombre)}</h5>
+                        <p class="text-muted mb-2">${circuito.copa_nombre || 'Copa'}</p>
+                        <div class="mt-3">
+                            <span class="badge bg-primary">🏆 ${circuito.veces_ganador} victorias</span>
+                        </div>
                     </div>
                 </div>
             </div>
         `).join('');
     }
     
-    static removeCircuito(circuitId) {
-        const index = this.selectedCircuits.findIndex(c => c.id === circuitId);
-        if (index !== -1) {
-            this.selectedCircuits.splice(index, 1);
-            
-            // Actualizar UI del circuito en el acordeón
-            const circuitoElement = document.querySelector(`[data-circuit-id="${circuitId}"]`);
-            if (circuitoElement) {
-                circuitoElement.classList.remove('selected');
-            }
-            
-            this.updateUI();
-            this.showAlert('Circuito removido', 'info');
-        }
+    /* ========== 10. CARGAR HISTORIAL RECIENTE ========== */
+    static cargarHistorial() {
+        const tbody = document.getElementById('historyTable');
+        
+        fetch('../backend/api/get_historial.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.historial.length > 0) {
+                    tbody.innerHTML = data.historial.map(item => `
+                        <tr>
+                            <td>${item.fecha}</td>
+                            <td>
+                                <div class="circuitos-lista">
+                                    ${item.circuitos.map(circuito => `
+                                        <span class="badge bg-secondary me-1">${circuito}</span>
+                                    `).join('')}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-trophy me-1"></i> ${item.ganador}
+                                </span>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="3" class="text-center py-5">
+                                <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No hay historial disponible</p>
+                            </td>
+                        </tr>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error cargando historial:', error);
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="text-center py-5">
+                            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                            <p class="text-muted">Error cargando historial</p>
+                        </td>
+                    </tr>
+                `;
+            });
     }
     
-    static resetSeleccion() {
-        this.selectedCircuits = [];
-        
-        // Limpiar selecciones en UI
-        document.querySelectorAll('.circuito-selector.selected').forEach(el => {
-            el.classList.remove('selected');
-        });
-        
-        this.updateUI();
-        RuletaApp.resetRuleta();
-        
-        this.showAlert('Selección reiniciada', 'info');
-    }
-    
-    static getCopaImageName(copaNombre) {
-        const mapping = {
-            'Copa Champiñón': 'champ',
-            'Copa Flor': 'flor',
-            'Copa Estrella': 'estrella',
-            'Copa Caparazón': 'caparazon',
-            'Copa Plátano': 'platano',
-            'Copa Hoja': 'hoja',
-            'Copa Centella': 'centella',
-            'Copa Especial': 'especial'
+    /* ========== 11. FORMATEAR NOMBRES ========== */
+    static formatearNombreCircuito(nombre) {
+        if (!nombre) return '';
+        const cambios = {
+            'CanionFerroviario': 'Cañón Ferroviario',
+            'Circuito Mario Bros.': 'Circuito Mario Bros.',
+            'Ciudad Corona (1)': 'Ciudad Corona',
+            'Ciudad Corona (2)': 'Ciudad Corona',
+            'Estadio Peach (1)': 'Estadio Peach',
+            'Estadio Peach (2)': 'Estadio Peach',
+            'Templo del Bloque ?': 'Templo del Bloque ?',
+            'Senda Arco Iris': 'Senda Arco Iris',
+            'Puerto Espacial DK': 'Puerto Espacial DK'
         };
-        return mapping[copaNombre] || 'champ';
-    }
-    
-    static getCircuitoImageName(circuitoNombre) {
-        if (circuitoNombre === 'Cañon Ferroviario' || circuitoNombre === 'CanionFerroviario') {
-            return 'CanionFerroviario';
-        }
-        return circuitoNombre
-            .replace(/[^\w\s]/gi, '')
-            .replace(/\s+/g, '')
-            .replace(/[()]/g, '');
-    }
-    
-    static showAlert(message, type = 'info') {
-        const alertContainer = document.getElementById('alertContainer');
-        const alertId = 'alert-' + Date.now();
-        
-        const icons = {
-            'success': 'check-circle',
-            'warning': 'exclamation-triangle',
-            'error': 'times-circle',
-            'info': 'info-circle'
-        };
-        
-        const alertHTML = `
-            <div id="${alertId}" class="alert alert-${type} alert-dismissible fade show animate__animated animate__fadeInDown" role="alert">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-${icons[type] || 'info-circle'} me-3"></i>
-                    <div>${message}</div>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        `;
-        
-        alertContainer.innerHTML = alertHTML;
-        
-        setTimeout(() => {
-            const alert = document.getElementById(alertId);
-            if (alert) {
-                alert.remove();
-            }
-        }, 5000);
+        return cambios[nombre] || nombre;
     }
 }
 
-// Hacer funciones disponibles globalmente
-window.CircuitosApp = CircuitosApp;
-window.RuletaApp = RuletaApp;
+/* ========== 12. INICIALIZAR AL CARGAR LA PÁGINA ========== */
+document.addEventListener('DOMContentLoaded', function() {
+    PerfilApp.init();
+});

@@ -13,18 +13,24 @@ if (!$session['logged_in']) {
 $usuario_id = $session['user_id'];
 
 try {
-    // SOLO CIRCUITOS QUE HAN GANADO (veces_ganador > 0)
     $query = "
         SELECT 
-            eu.*,
-            c.nombre as circuito_nombre,
-            cop.nombre as copa_nombre
-        FROM estadisticas_usuario eu
-        JOIN circuitos c ON eu.circuito_id = c.id
-        JOIN copas cop ON c.id_copa = cop.id
-        WHERE eu.usuario_id = ? 
-        AND eu.veces_ganador > 0
-        ORDER BY eu.veces_ganador DESC, eu.veces_seleccionado DESC
+            h.id,
+            DATE_FORMAT(h.fecha, '%d/%m/%Y %H:%i') as fecha,
+            c1.nombre as circuito1,
+            c2.nombre as circuito2,
+            c3.nombre as circuito3,
+            c4.nombre as circuito4,
+            cg.nombre as ganador_nombre
+        FROM historial_tiradas h
+        LEFT JOIN circuitos c1 ON h.circuito1_id = c1.id
+        LEFT JOIN circuitos c2 ON h.circuito2_id = c2.id
+        LEFT JOIN circuitos c3 ON h.circuito3_id = c3.id
+        LEFT JOIN circuitos c4 ON h.circuito4_id = c4.id
+        LEFT JOIN circuitos cg ON h.ganador_id = cg.id
+        WHERE h.usuario_id = ?
+        ORDER BY h.fecha DESC
+        LIMIT 10
     ";
     
     $stmt = $enlace->prepare($query);
@@ -32,50 +38,40 @@ try {
     $stmt->execute();
     $result = $stmt->get_result();
     
-    $estadisticas = [];
+    $historial = [];
     while ($row = $result->fetch_assoc()) {
-        // Formatear nombre del circuito
-        $row['circuito_nombre_formateado'] = formatearNombreCircuito($row['circuito_nombre']);
-        $estadisticas[] = $row;
+        // Crear array con todos los circuitos (filtrando nulls)
+        $circuitos = [];
+        if ($row['circuito1']) $circuitos[] = formatearNombreCircuito($row['circuito1']);
+        if ($row['circuito2']) $circuitos[] = formatearNombreCircuito($row['circuito2']);
+        if ($row['circuito3']) $circuitos[] = formatearNombreCircuito($row['circuito3']);
+        if ($row['circuito4']) $circuitos[] = formatearNombreCircuito($row['circuito4']);
+        
+        $historial[] = [
+            'id' => $row['id'],
+            'fecha' => $row['fecha'],
+            'circuitos' => $circuitos,
+            'circuitos_texto' => implode(' · ', $circuitos),
+            'ganador' => formatearNombreCircuito($row['ganador_nombre'])
+        ];
     }
-    
-    // Calcular total de VECES GIRADO (contando registros en historial_tiradas)
-    $query_veces_girado = "SELECT COUNT(*) as total FROM historial_tiradas WHERE usuario_id = ?";
-    $stmt_girado = $enlace->prepare($query_veces_girado);
-    $stmt_girado->bind_param("i", $usuario_id);
-    $stmt_girado->execute();
-    $result_girado = $stmt_girado->get_result();
-    $veces_girado = $result_girado->fetch_assoc()['total'];
-    
-    // Calcular total de VECES GANADOR (suma de veces_ganador de todos los circuitos)
-    $query_veces_ganador = "SELECT SUM(veces_ganador) as total FROM estadisticas_usuario WHERE usuario_id = ?";
-    $stmt_ganador = $enlace->prepare($query_veces_ganador);
-    $stmt_ganador->bind_param("i", $usuario_id);
-    $stmt_ganador->execute();
-    $result_ganador = $stmt_ganador->get_result();
-    $veces_ganador = $result_ganador->fetch_assoc()['total'] ?? 0;
-    
-    $totales = [
-        'veces_girado' => (int)$veces_girado,
-        'veces_ganador' => (int)$veces_ganador,
-        'circuitos_unicos' => count($estadisticas)
-    ];
     
     echo json_encode([
         'success' => true,
-        'estadisticas' => $estadisticas,
-        'totales' => $totales
+        'historial' => $historial
     ]);
     
 } catch (Exception $e) {
     echo json_encode([
-        'success' => false, 
+        'success' => false,
         'message' => $e->getMessage()
     ]);
 }
 
 // Función auxiliar para formatear nombres de circuitos
 function formatearNombreCircuito($nombre) {
+    if (!$nombre) return '';
+    
     $cambios = [
         'CanionFerroviario' => 'Cañón Ferroviario',
         'Circuito Mario Bros.' => 'Circuito Mario Bros.',

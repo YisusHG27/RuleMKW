@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: mysql:3306
--- Tiempo de generación: 26-02-2026 a las 01:18:52
+-- Tiempo de generación: 03-03-2026 a las 02:50:13
 -- Versión del servidor: 8.0.45
 -- Versión de PHP: 8.3.26
 
@@ -107,25 +107,64 @@ CREATE TABLE `estadisticas_usuario` (
   `usuario_id` int NOT NULL,
   `circuito_id` int NOT NULL,
   `veces_seleccionado` int DEFAULT '0',
-  `fecha_ultima_seleccion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `veces_ganador` int DEFAULT '0',
+  `fecha_ultima_seleccion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_registro` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `estadisticas_usuario`
+--
+
+INSERT INTO `estadisticas_usuario` (`id`, `usuario_id`, `circuito_id`, `veces_seleccionado`, `veces_ganador`, `fecha_ultima_seleccion`, `fecha_registro`) VALUES
+(1, 2, 3, 6, 3, '2026-03-03 02:49:00', '2026-03-03 02:37:48'),
+(2, 2, 8, 1, 0, '2026-03-03 02:37:48', '2026-03-03 02:37:48'),
+(3, 2, 7, 1, 0, '2026-03-03 02:37:48', '2026-03-03 02:37:48'),
+(4, 2, 6, 1, 0, '2026-03-03 02:37:48', '2026-03-03 02:37:48'),
+(5, 2, 12, 1, 0, '2026-03-03 02:38:20', '2026-03-03 02:38:20'),
+(6, 2, 14, 5, 2, '2026-03-03 02:48:28', '2026-03-03 02:38:20'),
+(7, 2, 19, 1, 0, '2026-03-03 02:38:20', '2026-03-03 02:38:20'),
+(8, 2, 20, 1, 0, '2026-03-03 02:38:20', '2026-03-03 02:38:20'),
+(9, 2, 28, 1, 0, '2026-03-03 02:38:30', '2026-03-03 02:38:30'),
+(10, 2, 24, 3, 1, '2026-03-03 02:40:40', '2026-03-03 02:38:30'),
+(11, 2, 27, 5, 4, '2026-03-03 02:48:15', '2026-03-03 02:38:59'),
+(12, 2, 32, 1, 0, '2026-03-03 02:38:59', '2026-03-03 02:38:59'),
+(13, 2, 29, 1, 0, '2026-03-03 02:38:59', '2026-03-03 02:38:59'),
+(14, 2, 30, 1, 0, '2026-03-03 02:38:59', '2026-03-03 02:38:59'),
+(15, 2, 25, 1, 0, '2026-03-03 02:49:00', '2026-03-03 02:49:00');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `logs_sistema`
+-- Estructura de tabla para la tabla `historial_tiradas`
 --
 
-CREATE TABLE `logs_sistema` (
+CREATE TABLE `historial_tiradas` (
   `id` int NOT NULL,
-  `usuario_id` int DEFAULT NULL,
-  `tipo` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `accion` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `descripcion` text COLLATE utf8mb4_unicode_ci,
-  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_agent` text COLLATE utf8mb4_unicode_ci,
-  `fecha` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `usuario_id` int NOT NULL,
+  `fecha` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `circuito1_id` int DEFAULT NULL,
+  `circuito2_id` int DEFAULT NULL,
+  `circuito3_id` int DEFAULT NULL,
+  `circuito4_id` int DEFAULT NULL,
+  `ganador_id` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `historial_tiradas`
+--
+
+INSERT INTO `historial_tiradas` (`id`, `usuario_id`, `fecha`, `circuito1_id`, `circuito2_id`, `circuito3_id`, `circuito4_id`, `ganador_id`) VALUES
+(1, 2, '2026-03-03 02:37:48', 3, 8, 7, 6, 3),
+(2, 2, '2026-03-03 02:38:20', 12, 14, 19, 20, 14),
+(3, 2, '2026-03-03 02:38:30', 28, 24, NULL, NULL, 24),
+(4, 2, '2026-03-03 02:38:59', 27, 32, 29, 30, 27),
+(5, 2, '2026-03-03 02:39:28', 27, 24, 14, 3, 27),
+(6, 2, '2026-03-03 02:40:40', 27, 24, 14, 3, 27),
+(7, 2, '2026-03-03 02:47:54', 3, 27, NULL, NULL, 3),
+(8, 2, '2026-03-03 02:48:15', 27, 14, NULL, NULL, 27),
+(9, 2, '2026-03-03 02:48:28', 14, 3, NULL, NULL, 14),
+(10, 2, '2026-03-03 02:49:00', 3, 25, NULL, NULL, 3);
 
 -- --------------------------------------------------------
 
@@ -176,13 +215,16 @@ ALTER TABLE `estadisticas_usuario`
   ADD KEY `circuito_id` (`circuito_id`);
 
 --
--- Indices de la tabla `logs_sistema`
+-- Indices de la tabla `historial_tiradas`
 --
-ALTER TABLE `logs_sistema`
+ALTER TABLE `historial_tiradas`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_usuario` (`usuario_id`),
-  ADD KEY `idx_tipo` (`tipo`),
-  ADD KEY `idx_fecha` (`fecha`);
+  ADD KEY `usuario_id` (`usuario_id`),
+  ADD KEY `circuito1_id` (`circuito1_id`),
+  ADD KEY `circuito2_id` (`circuito2_id`),
+  ADD KEY `circuito3_id` (`circuito3_id`),
+  ADD KEY `circuito4_id` (`circuito4_id`),
+  ADD KEY `ganador_id` (`ganador_id`);
 
 --
 -- Indices de la tabla `usuarios`
@@ -212,19 +254,19 @@ ALTER TABLE `copas`
 -- AUTO_INCREMENT de la tabla `estadisticas_usuario`
 --
 ALTER TABLE `estadisticas_usuario`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
--- AUTO_INCREMENT de la tabla `logs_sistema`
+-- AUTO_INCREMENT de la tabla `historial_tiradas`
 --
-ALTER TABLE `logs_sistema`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `historial_tiradas`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Restricciones para tablas volcadas
@@ -244,10 +286,15 @@ ALTER TABLE `estadisticas_usuario`
   ADD CONSTRAINT `estadisticas_usuario_ibfk_2` FOREIGN KEY (`circuito_id`) REFERENCES `circuitos` (`id`) ON DELETE CASCADE;
 
 --
--- Filtros para la tabla `logs_sistema`
+-- Filtros para la tabla `historial_tiradas`
 --
-ALTER TABLE `logs_sistema`
-  ADD CONSTRAINT `logs_sistema_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL;
+ALTER TABLE `historial_tiradas`
+  ADD CONSTRAINT `historial_tiradas_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `historial_tiradas_ibfk_2` FOREIGN KEY (`circuito1_id`) REFERENCES `circuitos` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `historial_tiradas_ibfk_3` FOREIGN KEY (`circuito2_id`) REFERENCES `circuitos` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `historial_tiradas_ibfk_4` FOREIGN KEY (`circuito3_id`) REFERENCES `circuitos` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `historial_tiradas_ibfk_5` FOREIGN KEY (`circuito4_id`) REFERENCES `circuitos` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `historial_tiradas_ibfk_6` FOREIGN KEY (`ganador_id`) REFERENCES `circuitos` (`id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

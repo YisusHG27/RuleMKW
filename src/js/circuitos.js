@@ -26,9 +26,44 @@
     
     /* ========== 3. GESTIÓN DE SESIÓN ========== */
     static checkSession() {
-        // Verificar si hay sesión activa (esto debería venir del backend)
+        // Por defecto, asumimos que no está logueado
         this.isLoggedIn = false;
         this.userId = null;
+        
+        // Verificar si hay cookie de sesión
+        const cookies = document.cookie.split(';');
+        const hasPHPSession = cookies.some(cookie => 
+            cookie.trim().startsWith('PHPSESSID=')
+        );
+        
+        if (hasPHPSession) {
+            // Si hay cookie, verificamos con el backend
+            this.verificarSesionBackend();
+        } else {
+            console.log('No hay cookie de sesión');
+        }
+    }
+
+    /* ========== 3.1. VERIFICAR SESIÓN CON BACKEND ========== */
+    static async verificarSesionBackend() {
+        try {
+            const response = await fetch('../backend/api/procesar_session.php');
+            const data = await response.json();
+            
+            if (data.logged_in) {
+                this.isLoggedIn = true;
+                this.userId = data.user_id;
+                console.log('Usuario logueado:', data.user_name);
+            } else {
+                this.isLoggedIn = false;
+                this.userId = null;
+                console.log('Usuario no logueado');
+            }
+        } catch (error) {
+            console.error('Error verificando sesión:', error);
+            this.isLoggedIn = false;
+            this.userId = null;
+        }
     }
     
     /* ========== 4. CARGA DE DATOS ========== */

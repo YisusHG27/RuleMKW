@@ -2,13 +2,14 @@
    RULETAAPP - GESTIÓN DE LA RULETA Y ANIMACIONES
    ========================================================================== */
 
-   class RuletaApp {
+class RuletaApp {
     /* ========== 1. PROPIEDADES ESTÁTICAS ========== */
     static resultados = [];              // Historial de resultados
     static isSpinning = false;            // Estado de giro
     static currentSlot = 0;               // Slot actual en animación
     static animationInterval = null;       // Intervalo de animación
-    static winners = [];                   // Ganadores actuales
+    static winners = [];                   // Ganadores actuales (solo el ganador para mostrar)
+    static ultimaTirada = [];              // Tirada completa (todos los circuitos)
     static spinCount = 0;                  // Contador de veces girada
     
     /* ========== 2. INICIALIZACIÓN ========== */
@@ -118,6 +119,7 @@
         
         this.isSpinning = true;
         this.winners = [];
+        this.ultimaTirada = []; // Reiniciar la última tirada
         
         const btnGirar = document.getElementById('btnGirar');
         btnGirar.disabled = true;
@@ -168,9 +170,15 @@
     
     /* ========== 8. SELECCIÓN DE GANADOR ========== */
     static selectSingleWinner(circuitos) {
-        // Seleccionar SOLO 1 circuito aleatorio
+        // Guardar la tirada completa para el historial (EN EL MISMO ORDEN)
+        this.ultimaTirada = [...circuitos]; // Copia del array original
+        console.log('📋 Tirada completa guardada:', this.ultimaTirada);
+        
+        // Seleccionar SOLO 1 circuito aleatorio para mostrar como ganador
         const randomIndex = Math.floor(Math.random() * circuitos.length);
-        this.winners = [circuitos[randomIndex]]; // Solo un ganador
+        this.winners = [circuitos[randomIndex]];
+        console.log('🏆 Ganador seleccionado:', this.winners[0]);
+        console.log('🏆 ID del ganador:', this.winners[0].id);
     }
     
     /* ========== 9. ANIMACIONES ========== */
@@ -318,6 +326,7 @@
         
         this.isSpinning = false;
         this.winners = [];
+        this.ultimaTirada = [];
         
         const btnGirar = document.getElementById('btnGirar');
         btnGirar.disabled = circuitos.length < 2;
@@ -375,13 +384,44 @@
     /* ========== 13. ESTADÍSTICAS ========== */
     static async guardarEstadisticas() {
         if (!CircuitosApp.isLoggedIn) {
+            console.log('Usuario no logueado, no se guardan estadísticas');
             return;
         }
         
+        // Usar ultimaTirada (todos los circuitos) pero necesitamos identificar al ganador
+        const datosAGuardar = this.ultimaTirada;
+        const ganador = this.winners[0]; // El ganador está en winners
+        
+        if (!datosAGuardar || datosAGuardar.length === 0) {
+            console.log('No hay datos para guardar');
+            return;
+        }
+        
+        console.log('Usuario logueado, guardando estadísticas...');
+        console.log('Todos los circuitos:', datosAGuardar);
+        console.log('Ganador:', ganador);
+        
         try {
-            await CircuitosApp.guardarEstadisticas(this.winners);
+            const response = await fetch('../backend/api/guardar_estadisticas.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    resultados: datosAGuardar,
+                    ganador_id: ganador.id // Enviamos explícitamente el ID del ganador
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                console.log('Estadísticas guardadas exitosamente');
+            } else {
+                console.error('Error guardando estadísticas:', data.message);
+            }
         } catch (error) {
-            console.error('Error guardando estadísticas:', error);
+            console.error('Error de conexión al guardar estadísticas:', error);
         }
     }
 }

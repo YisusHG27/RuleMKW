@@ -41,10 +41,13 @@ foreach ($tablas as $key => $query) {
 }
 
 // Tiradas totales
-$result = $enlace->query("SELECT SUM(veces_seleccionado) as total FROM estadisticas_usuario");
+$result = $enlace->query("SELECT COUNT(*) as total FROM historial_tiradas");
 if ($result) {
     $row = $result->fetch_assoc();
     $stats['tiradas'] = $row['total'] ?? 0;
+} else {
+    // Si la tabla no existe, mostrar 0
+    $stats['tiradas'] = 0;
 }
 
 // Logs de hoy - AHORA LEE DEL ARCHIVO EN VEZ DE LA BD

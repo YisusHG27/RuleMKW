@@ -209,8 +209,8 @@ require_once 'layout/sidebar.php';
             <thead>
                 <tr>
                     <th>Usuario</th>
-                    <th>Acción</th>
-                    <th>Tipo</th>
+                    <th>Tipo</th>      <!-- Tipo antes que Acción -->
+                    <th>Acción</th>     <!-- Acción después de Tipo -->
                     <th>Hora</th>
                 </tr>
             </thead>
@@ -219,10 +219,14 @@ require_once 'layout/sidebar.php';
                     <?php foreach($ultimos_logs as $log): ?>
                     <tr>
                         <td><?php echo htmlspecialchars($log['usuario_nombre'] ?? 'Sistema'); ?></td>
-                        <td><?php echo htmlspecialchars($log['accion'] ?? 'N/A'); ?></td>
                         <td>
                             <span class="log-badge log-<?php echo strtolower($log['tipo'] ?? 'info'); ?>">
                                 <?php echo $log['tipo'] ?? 'INFO'; ?>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="log-accion log-accion-<?php echo strtolower($log['accion'] ?? 'otro'); ?>">
+                                <?php echo htmlspecialchars($log['accion'] ?? 'N/A'); ?>
                             </span>
                         </td>
                         <td><?php echo date('H:i', strtotime($log['fecha'] ?? 'now')); ?></td>
@@ -260,19 +264,6 @@ require_once 'layout/sidebar.php';
         </div>
     </div>
 </div>
-
-<style>
-.log-badge {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: bold;
-}
-.log-info { background: #6a9955; color: white; }
-.log-warning { background: #dcdcaa; color: black; }
-.log-error { background: #f48771; color: black; }
-</style>
 
 <?php
 echo '</main></div>';

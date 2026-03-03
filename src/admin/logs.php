@@ -10,60 +10,16 @@ if (!isset($_SESSION['usuario_rol']) || $_SESSION['usuario_rol'] !== 'admin') {
 }
 
 // Configuración - RUTA CORREGIDA
-$logsDir = __DIR__ . '/../logs/';  // Sube un nivel desde admin a src, luego a logs
+$logsDir = __DIR__ . '/../logs/';
 $limite = 50;
 $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
 $filtroTipo = $_GET['tipo'] ?? '';
 $filtroUsuario = $_GET['usuario_id'] ?? '';
 $filtroBusqueda = $_GET['busqueda'] ?? '';
-$filtroFechaDesde = $_GET['fecha_desde'] ?? '';
-$filtroFechaHasta = $_GET['fecha_hasta'] ?? '';
+$filtroFecha = $_GET['fecha'] ?? ''; // NUEVO: filtro de fecha única
 
 // Obtener lista de usuarios para el filtro
 $usuarios = $enlace->query("SELECT id, usuario FROM usuarios ORDER BY usuario");
-
-// Función para leer logs del archivo
-function leerLogsDeArchivo($archivo, $filtroTipo, $filtroBusqueda, $offset, $limite) {
-    $logs = [];
-    $todasLasLineas = [];
-    
-    if (!file_exists($archivo)) {
-        return ['logs' => [], 'total' => 0];
-    }
-    
-    $lineas = file($archivo, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    
-    foreach ($lineas as $linea) {
-        $log = parsearLogLinea($linea);
-        if (!$log) continue;
-        
-        // Aplicar filtros
-        if (!empty($filtroTipo) && $log['tipo'] !== $filtroTipo) continue;
-        
-        if (!empty($filtroBusqueda)) {
-            $textoBusqueda = strtolower($log['descripcion'] . ' ' . $log['accion']);
-            if (strpos($textoBusqueda, strtolower($filtroBusqueda)) === false) continue;
-        }
-        
-        // Filtro por usuario
-        if (!empty($filtroUsuario) && isset($log['contexto']['usuario_id']) && $log['contexto']['usuario_id'] != $filtroUsuario) continue;
-        
-        $todasLasLineas[] = $log;
-    }
-    
-    // Ordenar por fecha (más reciente primero)
-    usort($todasLasLineas, function($a, $b) {
-        return strtotime($b['fecha']) - strtotime($a['fecha']);
-    });
-    
-    $total = count($todasLasLineas);
-    $logs = array_slice($todasLasLineas, $offset, $limite);
-    
-    return [
-        'logs' => $logs,
-        'total' => $total
-    ];
-}
 
 // Función para parsear una línea de log
 function parsearLogLinea($linea) {
@@ -86,6 +42,7 @@ function parsearLogLinea($linea) {
         else if (stripos($mensajeCompleto, 'dashboard') !== false) $accion = 'DASHBOARD';
         else if (stripos($mensajeCompleto, 'estadísticas') !== false) $accion = 'ESTADISTICAS';
         else if (stripos($mensajeCompleto, 'error') !== false) $accion = 'ERROR';
+        else if (stripos($mensajeCompleto, 'cookie') !== false) $accion = 'COOKIES';
         
         // Obtener nombre de usuario
         $usuario_nombre = 'Sistema';
@@ -93,6 +50,8 @@ function parsearLogLinea($linea) {
             $usuario_nombre = $contexto['usuario'];
         } elseif (isset($contexto['user'])) {
             $usuario_nombre = $contexto['user'];
+        } elseif ($accion === 'COOKIES') {
+            $usuario_nombre = 'Visitante';
         }
         
         return [
@@ -104,22 +63,98 @@ function parsearLogLinea($linea) {
             'usuario_id' => $contexto['usuario_id'] ?? null,
             'ip_address' => $contexto['ip'] ?? '0.0.0.0',
             'user_agent' => $contexto['user_agent'] ?? '',
+            'screen_resolution' => $contexto['screen_resolution'] ?? '',
+            'language' => $contexto['language'] ?? '',
             'contexto' => $contexto
         ];
     }
     return null;
 }
 
+// Función para leer logs del archivo
+function leerLogsDeArchivo($logsDir, $filtroFecha, $filtroTipo, $filtroBusqueda, $filtroUsuario, $offset, $limite) {
+    $logs = [];
+    $todasLasLineas = [];
+    
+    // Determinar qué archivo(s) cargar
+    $archivosACargar = [];
+    
+    if (!empty($filtroFecha)) {
+        // Si hay filtro de fecha, cargar solo ese archivo
+        $archivoFecha = $logsDir . 'rulemkw-' . $filtroFecha . '.log';
+        if (file_exists($archivoFecha)) {
+            $archivosACargar[] = $archivoFecha;
+        }
+    } else {
+        // Si no hay filtro, cargar todos los archivos
+        $archivosACargar = glob($logsDir . 'rulemkw-*.log');
+    }
+    
+    // Si no hay archivos, retornar vacío
+    if (empty($archivosACargar)) {
+        return ['logs' => [], 'total' => 0];
+    }
+    
+    // Procesar cada archivo
+    foreach ($archivosACargar as $archivo) {
+        if (!file_exists($archivo)) continue;
+        
+        $lineas = file($archivo, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        
+        foreach ($lineas as $linea) {
+            $log = parsearLogLinea($linea);
+            if (!$log) continue;
+            
+            // Aplicar filtros
+            if (!empty($filtroTipo) && $log['tipo'] !== $filtroTipo) continue;
+            
+            if (!empty($filtroBusqueda)) {
+                $textoBusqueda = strtolower($log['descripcion'] . ' ' . $log['accion']);
+                if (strpos($textoBusqueda, strtolower($filtroBusqueda)) === false) continue;
+            }
+            
+            // Filtro por usuario
+            if (!empty($filtroUsuario) && isset($log['contexto']['usuario_id']) && $log['contexto']['usuario_id'] != $filtroUsuario) continue;
+            
+            $todasLasLineas[] = $log;
+        }
+    }
+    
+    // Ordenar por fecha (más reciente primero)
+    usort($todasLasLineas, function($a, $b) {
+        return strtotime($b['fecha']) - strtotime($a['fecha']);
+    });
+    
+    $total = count($todasLasLineas);
+    $logs = array_slice($todasLasLineas, $offset, $limite);
+    
+    return [
+        'logs' => $logs,
+        'total' => $total
+    ];
+}
+
 // Función para obtener estadísticas
-function obtenerEstadisticasLogs($logsDir) {
+function obtenerEstadisticasLogs($logsDir, $filtroFecha = '') {
     $stats = [
         'total' => 0,
-        'por_tipo' => ['INFO' => 0, 'WARNING' => 0, 'ERROR' => 0]
+        'por_tipo' => ['INFO' => 0, 'WARNING' => 0, 'ERROR' => 0],
+        'por_accion' => ['LOGIN' => 0, 'LOGOUT' => 0, 'REGISTRO' => 0, 'USER' => 0, 'DASHBOARD' => 0, 'ESTADISTICAS' => 0, 'ERROR' => 0, 'COOKIES' => 0, 'OTRO' => 0]
     ];
     
-    $archivos = glob($logsDir . 'rulemkw-*.log');
+    // Determinar qué archivos procesar
+    $archivosAProcesar = [];
     
-    foreach ($archivos as $archivo) {
+    if (!empty($filtroFecha)) {
+        $archivoFecha = $logsDir . 'rulemkw-' . $filtroFecha . '.log';
+        if (file_exists($archivoFecha)) {
+            $archivosAProcesar[] = $archivoFecha;
+        }
+    } else {
+        $archivosAProcesar = glob($logsDir . 'rulemkw-*.log');
+    }
+    
+    foreach ($archivosAProcesar as $archivo) {
         if (!file_exists($archivo)) continue;
         
         $lineas = file($archivo, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -130,6 +165,9 @@ function obtenerEstadisticasLogs($logsDir) {
                 if (isset($stats['por_tipo'][$log['tipo']])) {
                     $stats['por_tipo'][$log['tipo']]++;
                 }
+                if (isset($stats['por_accion'][$log['accion']])) {
+                    $stats['por_accion'][$log['accion']]++;
+                }
             }
         }
     }
@@ -137,27 +175,11 @@ function obtenerEstadisticasLogs($logsDir) {
     return $stats;
 }
 
-// Obtener el archivo de log del día actual
-$fechaHoy = date('Y-m-d');
-$archivoHoy = $logsDir . 'rulemkw-' . $fechaHoy . '.log';
-
-// Si no existe el de hoy, buscar el más reciente
-if (!file_exists($archivoHoy)) {
-    $archivosLog = glob($logsDir . 'rulemkw-*.log');
-    rsort($archivosLog);
-    $archivoActual = !empty($archivosLog) ? $archivosLog[0] : null;
-} else {
-    $archivoActual = $archivoHoy;
-}
-
 // Cargar logs
-$logsData = ['logs' => [], 'total' => 0];
-if ($archivoActual) {
-    $logsData = leerLogsDeArchivo($archivoActual, $filtroTipo, $filtroBusqueda, $offset, $limite);
-}
+$logsData = leerLogsDeArchivo($logsDir, $filtroFecha, $filtroTipo, $filtroBusqueda, $filtroUsuario, $offset, $limite);
 
 // Obtener estadísticas
-$log_stats = obtenerEstadisticasLogs($logsDir);
+$log_stats = obtenerEstadisticasLogs($logsDir, $filtroFecha);
 ?>
 
 <div class="content-header">
@@ -182,6 +204,10 @@ $log_stats = obtenerEstadisticasLogs($logsDir);
     <div class="stat-card">
         <div class="stat-title">ERROR</div>
         <div class="stat-number"><?php echo $log_stats['por_tipo']['ERROR'] ?? 0; ?></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title">COOKIES</div>
+        <div class="stat-number"><?php echo $log_stats['por_accion']['COOKIES'] ?? 0; ?></div>
     </div>
     <div class="stat-card">
         <div class="stat-title">ACCIONES</div>
@@ -218,10 +244,8 @@ $log_stats = obtenerEstadisticasLogs($logsDir);
                placeholder="Buscar en descripción..." 
                style="padding: 8px; background: #16213e; color: white; border: 1px solid #e94560; border-radius: 4px; flex: 1;">
         
-        <input type="date" name="fecha_desde" value="<?php echo $filtroFechaDesde; ?>" 
-               style="padding: 8px; background: #16213e; color: white; border: 1px solid #e94560; border-radius: 4px;">
-        
-        <input type="date" name="fecha_hasta" value="<?php echo $filtroFechaHasta; ?>" 
+        <!-- FILTRO DE FECHA ÚNICA -->
+        <input type="date" name="fecha" value="<?php echo htmlspecialchars($filtroFecha); ?>" 
                style="padding: 8px; background: #16213e; color: white; border: 1px solid #e94560; border-radius: 4px;">
         
         <button type="submit" class="btn btn-primary">Filtrar</button>
@@ -235,8 +259,8 @@ $log_stats = obtenerEstadisticasLogs($logsDir);
         <h3>Registros del sistema</h3>
         <span style="color: #888;">
             Mostrando <?php echo count($logsData['logs']); ?> de <?php echo $logsData['total']; ?> logs
-            <?php if ($archivoActual): ?>
-            | Archivo: <?php echo basename($archivoActual); ?>
+            <?php if (!empty($filtroFecha)): ?>
+            | Fecha: <?php echo $filtroFecha; ?>
             <?php endif; ?>
         </span>
     </div>
@@ -256,7 +280,7 @@ $log_stats = obtenerEstadisticasLogs($logsDir);
         <tbody id="logs-tbody">
             <?php if (empty($logsData['logs'])): ?>
             <tr>
-                <td colspan="7" style="text-align: center; padding: 30px;">
+                <td colspan="7" style="text-align: center; padding: 30px; color: #888;">
                     No hay logs para mostrar con los filtros actuales
                 </td>
             </tr>
@@ -266,11 +290,21 @@ $log_stats = obtenerEstadisticasLogs($logsDir);
                     <td><?php echo $log['fecha']; ?></td>
                     <td><?php echo htmlspecialchars($log['usuario_nombre']); ?></td>
                     <td>
-                        <span class="log-badge log-<?php echo strtolower($log['tipo']); ?>">
+                        <?php 
+                        $badgeClass = 'log-' . strtolower($log['tipo']);
+                        if ($log['accion'] === 'COOKIES') {
+                            $badgeClass = 'log-cookie';
+                        }
+                        ?>
+                        <span class="log-badge <?php echo $badgeClass; ?>">
                             <?php echo $log['tipo']; ?>
                         </span>
                     </td>
-                    <td><?php echo $log['accion']; ?></td>
+                    <td>
+                        <span class="log-accion log-accion-<?php echo strtolower($log['accion']); ?>">
+                            <?php echo $log['accion']; ?>
+                        </span>
+                    </td>
                     <td><?php echo htmlspecialchars($log['descripcion']); ?></td>
                     <td><span class="log-ip"><?php echo $log['ip_address']; ?></span></td>
                     <td>
@@ -278,8 +312,8 @@ $log_stats = obtenerEstadisticasLogs($logsDir);
                         $userAgent = $log['user_agent'] ?? '';
                         if (strpos($userAgent, 'Mobile') !== false) echo '📱 Móvil';
                         elseif (strpos($userAgent, 'Tablet') !== false) echo '📱 Tablet';
-                        elseif (!empty($userAgent)) echo '💻 Escritorio';
-                        else echo 'Desconocido';
+                        elseif (!empty($userAgent)) echo '💻 PC / Laptop';
+                        else echo '❓ Desconocido';
                         ?>
                     </td>
                 </tr>
@@ -306,31 +340,6 @@ $log_stats = obtenerEstadisticasLogs($logsDir);
     </div>
     <?php endif; ?>
 </div>
-
-<style>
-.log-badge {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: bold;
-}
-.log-info { background: #6a9955; color: white; }
-.log-warning { background: #dcdcaa; color: black; }
-.log-error { background: #f48771; color: black; }
-.log-ip {
-    font-family: monospace;
-    background: rgba(255,255,255,0.1);
-    padding: 2px 5px;
-    border-radius: 3px;
-}
-.filters-bar {
-    background: rgba(255,255,255,0.05);
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
-}
-</style>
 
 <?php
 echo '</main></div>';

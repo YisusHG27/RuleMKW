@@ -19,7 +19,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Admin - RuleMKW</title>
     <link rel="stylesheet" href="../css/admin.css">
-    <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
     <div class="admin-wrapper">

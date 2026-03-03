@@ -1,0 +1,186 @@
+/* ==========================================================================
+   COOKIES BANNER - ESTILOS
+   ========================================================================== */
+
+/* ========== 1. BANNER PRINCIPAL ========== */
+.cookie-banner {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 9999;
+    display: flex;
+    justify-content: flex-start;
+    animation: slideUp 0.5s ease-out;
+}
+
+.cookie-content {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    max-width: 400px;
+    width: 100%;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-left: 5px solid #FF6B6B;
+    border-right: 5px solid #4ECDC4;
+}
+
+@media (max-width: 768px) {
+    .cookie-banner {
+        bottom: 10px;
+        left: 10px;
+        right: 10px; /* En móvil que ocupe todo el ancho */
+    }
+    
+    .cookie-content {
+        max-width: 100%; /* En móvil que ocupe todo el ancho disponible */
+        padding: 20px;
+    }
+    
+    .cookie-buttons {
+        flex-direction: column;
+    }
+    
+    .btn-cookie-accept,
+    .btn-cookie-reject {
+        width: 100%;
+    }
+}
+
+/* ========== 2. CONTENIDO DEL BANNER ========== */
+.cookie-content {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    max-width: 500px;
+    width: 100%;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-left: 5px solid #FF6B6B;
+    border-right: 5px solid #4ECDC4;
+}
+
+/* ========== 3. ICONO ========== */
+.cookie-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.cookie-icon i {
+    font-size: 30px;
+    color: white;
+}
+
+/* ========== 4. TEXTO ========== */
+.cookie-text h4 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    color: #2D3047;
+}
+
+.cookie-text p {
+    font-size: 0.95rem;
+    color: #666;
+    margin: 0 0 5px 0;
+    line-height: 1.5;
+}
+
+.cookie-link {
+    color: #FF6B6B;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.cookie-link:hover {
+    color: #4ECDC4;
+}
+
+/* ========== 5. BOTONES ========== */
+.cookie-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.btn-cookie-accept {
+    background: linear-gradient(135deg, #4ECDC4, #2a9d8f) !important;
+    color: white;
+    flex: 2;
+    padding: 12px !important;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.btn-cookie-reject {
+    background: linear-gradient(135deg, #FF6B6B, #EF476F) !important;
+    color: white;
+    flex: 1;
+    padding: 12px !important;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.btn-cookie-accept:hover, .btn-cookie-reject:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* ========== 6. ANIMACIÓN DE SALIDA ========== */
+.cookie-banner.hide {
+    animation: slideDown 0.5s ease-out forwards;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+
+/* ========== 7. RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .cookie-banner {
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+    }
+    
+    .cookie-content {
+        padding: 20px;
+    }
+    
+    .cookie-buttons {
+        flex-direction: column;
+    }
+    
+    .btn-cookie-accept,
+    .btn-cookie-reject {
+        width: 100%;
+    }
+}

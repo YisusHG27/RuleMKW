@@ -12,6 +12,8 @@ session_start();
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <!-- COOKIES CSS -->
+    <link rel="stylesheet" href="css/cookies.css">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -263,6 +265,8 @@ session_start();
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/circuitos.js"></script>
     <script src="js/ruleta.js"></script>
+    <!-- COOKIES JS -->
+    <script src="js/cookies.js"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {

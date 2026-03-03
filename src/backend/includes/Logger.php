@@ -1,8 +1,5 @@
 <?php
-// src/backend/includes/logger.php
-
-// FORZAR ZONA HORARIA DESDE PHP (funciona independientemente del contenedor)
-date_default_timezone_set('Europe/Madrid'); // Cambia a tu zona: Europe/Madrid, Europe/London, America/Mexico_City, etc.
+date_default_timezone_set('Europe/Madrid');
 
 $vendorPath = __DIR__ . '/../../vendor/autoload.php';
 
@@ -61,6 +58,11 @@ if (!class_exists('AppLogger')) {
         
         public static function critical($mensaje, $context = []) {
             self::getLogger()->critical($mensaje, $context);
+        }
+        
+        public static function cookie($accion, $context = []) {
+            $mensaje = "Cookie consent: " . $accion;
+            self::getLogger()->info($mensaje, $context);
         }
     }
 }

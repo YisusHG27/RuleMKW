@@ -198,7 +198,7 @@
     font-weight: 600;
 }
 
-/* ========== 6. TABLA CON TAMAÑO FIJO Y UNA SOLA LÍNEA ========== */
+/* ========== 6. TABLA CON TAMAÑO FIJO ========== */
 .table {
     table-layout: fixed;
     width: 100%;
@@ -220,9 +220,9 @@
 /* Anchos fijos para cada columna */
 .table th:nth-child(1), 
 .table td:nth-child(1) {
-    width: 100px;
-    min-width: 100px;
-    max-width: 100px;
+    width: 110px; /* Aumentado para fecha completa */
+    min-width: 110px;
+    max-width: 110px;
 }
 
 .table th:nth-child(2), 
@@ -232,38 +232,38 @@
 
 .table th:nth-child(3), 
 .table td:nth-child(3) {
-    width: 120px;
-    min-width: 120px;
-    max-width: 120px;
+    width: 220px; /* Aumentado para nombre completo sin puntos */
+    min-width: 220px;
+    max-width: 220px;
 }
 
 .table td {
     padding: 12px 10px;
     vertical-align: middle;
     border-bottom: 1px solid #e9ecef;
-    height: 60px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    height: 60px; /* Altura fija */
+    white-space: nowrap; /* Todo en una línea */
+    overflow: visible; /* Cambiado de hidden a visible */
+    text-overflow: clip; /* Cambiado de ellipsis a clip */
 }
 
 .table td:first-child {
     white-space: nowrap;
     font-family: monospace;
-    font-size: 0.85rem;
+    font-size: 0.9rem; /* Aumentado ligeramente */
 }
 
 .circuitos-lista {
     display: flex;
     gap: 4px;
-    overflow-x: auto;
+    overflow-x: auto; /* Scroll horizontal si hay muchos circuitos */
     white-space: nowrap;
     padding-bottom: 2px;
     width: 100%;
 }
 
 .circuitos-lista .badge {
-    background: #6c757d;
+    background: #4ECDC4; /* Color turquesa */
     color: white;
     padding: 4px 10px;
     font-size: 0.75rem;
@@ -284,20 +284,30 @@
 }
 
 .table td:last-child .badge {
-    width: 110px;
-    text-align: center;
+    width: 200px; /* Ancho suficiente para nombre completo */
+    text-align: left;
     display: inline-block;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 4px 8px;
-    font-size: 0.75rem;
+    overflow: visible; /* Cambiado de hidden a visible */
+    text-overflow: clip; /* Cambiado de ellipsis a clip */
+    padding: 6px 15px; /* Aumentado padding derecho */
+    font-size: 0.9rem; /* Aumentado */
+    background: #FFD166; /* Amarillo */
+    color: #2D3047;
+    font-weight: 600;
+    border-radius: 20px;
+    box-sizing: border-box; /* Asegura que el padding se incluya en el ancho */
 }
 
 .table-responsive {
     max-height: 360px;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+.table tbody tr {
+    height: calc(365px / 5 - 2px); /* Altura total / 5 filas - bordes */
+    min-height: 70px;
 }
 
 .table tbody tr:nth-child(even) {
@@ -311,16 +321,47 @@
 .empty-row td {
     color: #adb5bd;
     font-style: italic;
+    height: 60px;
 }
 
-/* ========== 7. ANIMACIONES ========== */
+/* ========== 7. GRÁFICO ========== */
+.card-header.bg-primary {
+    background: linear-gradient(135deg, #FF6B6B, #ff5252) !important;
+}
+
+.card-header.bg-success {
+    background: linear-gradient(135deg, #4ECDC4, #45b7aa) !important;
+}
+
+.card-header.bg-info {
+    background: linear-gradient(135deg, #118AB2, #0d6efd) !important;
+}
+
+/* Ajuste para las etiquetas del gráfico (nombres de circuitos) */
+.chart-container {
+    position: relative;
+    margin: auto;
+}
+
+#statsChart {
+    max-height: 300px;
+    width: 100% !important;
+}
+
+/* Para asegurar que los nombres de los circuitos se vean en el eje Y */
+.chartjs-y-axis text {
+    font-size: 11px !important;
+    font-weight: 500 !important;
+}
+
+/* ========== 8. ANIMACIONES ========== */
 @keyframes badgePop {
     0% { transform: scale(0); }
     50% { transform: scale(1.2); }
     100% { transform: scale(1); }
 }
 
-/* ========== 8. RESPONSIVE ========== */
+/* ========== 9. RESPONSIVE ========== */
 @media (max-width: 768px) {
     .avatar {
         width: 100px;
@@ -350,18 +391,24 @@
     
     .table th:nth-child(1), 
     .table td:nth-child(1) {
-        width: 80px;
-        min-width: 80px;
+        width: 90px;
+        min-width: 90px;
     }
     
     .table th:nth-child(3), 
     .table td:nth-child(3) {
-        width: 100px;
-        min-width: 100px;
+        width: 180px;
+        min-width: 180px;
     }
     
     .circuitos-lista .badge {
         padding: 3px 6px;
         font-size: 0.7rem;
+    }
+    
+    .table td:last-child .badge {
+        width: 160px;
+        font-size: 0.8rem;
+        padding: 4px 10px;
     }
 }

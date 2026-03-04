@@ -151,7 +151,7 @@
         if (noDataDiv) noDataDiv.style.display = 'none';
         
         const labels = circuitosGanadores.map(stat => 
-            this.abreviarNombreCircuito(stat.circuito_nombre)
+            stat.circuito_nombre // Usar nombre completo sin abreviar
         );
         
         const data = circuitosGanadores.map(stat => stat.veces_ganador);
@@ -181,19 +181,45 @@
                 responsive: true,
                 maintainAspectRatio: true,
                 indexAxis: 'y',
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 10,
+                        top: 10,
+                        bottom: 10
+                    }
+                },
                 scales: {
                     x: {
                         beginAtZero: true,
-                        ticks: { stepSize: 1, color: '#fff' },
-                        grid: { color: 'rgba(255,255,255,0.1)' }
+                        ticks: { 
+                            stepSize: 1, 
+                            color: '#fff' 
+                        },
+                        grid: { 
+                            color: 'rgba(255,255,255,0.1)' 
+                        }
                     },
                     y: {
-                        ticks: { color: '#fff', font: { size: 10 } },
-                        grid: { display: false }
+                        ticks: { 
+                            color: '#fff', 
+                            font: { 
+                                size: 11,
+                                weight: '500'
+                            },
+                            autoSkip: false,
+                            maxRotation: 0,
+                            minRotation: 0
+                        },
+                        grid: { 
+                            display: false 
+                        }
                     }
                 },
                 plugins: {
-                    legend: { display: false },
+                    legend: { 
+                        display: false 
+                    },
                     tooltip: {
                         callbacks: {
                             title: (context) => context[0].label,
@@ -328,7 +354,8 @@
         const filasRestantes = this.itemsPorPagina - paginacion.length;
         
         let html = paginacion.map(item => {
-            const fechaSola = item.fecha.split(' ')[0];
+            // Tomar solo la fecha (primera parte) sin la hora
+            const fechaSola = item.fecha.split(' ')[0]; // Esto toma solo "03/03/2026"
             
             return `
                 <tr>
@@ -336,12 +363,12 @@
                     <td>
                         <div class="circuitos-lista">
                             ${item.circuitos.map(circuito => `
-                                <span class="badge bg-secondary" title="${circuito}">${circuito}</span>
+                                <span class="badge" style="background-color: #4ECDC4;" title="${circuito}">${circuito}</span>
                             `).join('')}
                         </div>
                     </td>
                     <td class="pe-3">
-                        <span class="badge bg-warning text-dark" title="${item.ganador}">
+                        <span class="badge" style="background-color: #FFD166; color: #2D3047;" title="${item.ganador}">
                             <i class="fas fa-trophy me-1"></i> ${item.ganador}
                         </span>
                     </td>
@@ -349,6 +376,7 @@
             `;
         }).join('');
         
+        // Añadir filas vacías exactamente hasta completar 5 filas
         for (let i = 0; i < filasRestantes; i++) {
             html += `
                 <tr class="empty-row">

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: mysql:3306
--- Tiempo de generación: 03-03-2026 a las 02:50:13
+-- Tiempo de generación: 04-03-2026 a las 20:28:00
 -- Versión del servidor: 8.0.45
 -- Versión de PHP: 8.3.26
 
@@ -176,6 +176,7 @@ CREATE TABLE `usuarios` (
   `id` int NOT NULL,
   `usuario` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `foto_perfil` varchar(255) COLLATE utf8mb4_general_ci DEFAULT 'default.png',
   `pass` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `rol` enum('usuario','admin') COLLATE utf8mb4_general_ci DEFAULT 'usuario',
   `fecha_registro` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -185,9 +186,10 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `usuario`, `email`, `pass`, `rol`, `fecha_registro`) VALUES
-(1, 'admin', 'admin@rulemkw.com', '$2y$10$z5lMnmH3FBmqIgca0/6v0.H3Xg/7C/vzTZ4cXhSeOIbmNx2wdBuBe', 'admin', '2025-12-03 01:04:22'),
-(2, 'Jesus', 'jahernandezg20@educarex.es', '$2y$10$flwgyS/OTHizGI0k7QVmV.lHbX2hWc8Z6T2Y9k7P4AfuUzzNmNYYu', 'usuario', '2026-02-06 01:33:33');
+INSERT INTO `usuarios` (`id`, `usuario`, `email`, `foto_perfil`, `pass`, `rol`, `fecha_registro`) VALUES
+(1, 'admin', 'admin@rulemkw.com', 'default.png', '$2y$10$z5lMnmH3FBmqIgca0/6v0.H3Xg/7C/vzTZ4cXhSeOIbmNx2wdBuBe', 'admin', '2025-12-03 01:04:22'),
+(2, 'Jesus', 'jahernandezg20@educarex.es', 'perfil_2_1772655132.jpg', '$2y$10$flwgyS/OTHizGI0k7QVmV.lHbX2hWc8Z6T2Y9k7P4AfuUzzNmNYYu', 'usuario', '2026-02-06 01:33:33'),
+(3, 'Alberto', 'ariveron02@educarex.es', 'default.png', '$2y$10$2mAZ6NF2ky1i9jNG1w6We.2KHb8MQxjacdXCkrZgKgv6XMUzwY8u2', 'usuario', '2026-03-04 19:20:58');
 
 --
 -- Índices para tablas volcadas
@@ -205,26 +207,6 @@ ALTER TABLE `circuitos`
 --
 ALTER TABLE `copas`
   ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `estadisticas_usuario`
---
-ALTER TABLE `estadisticas_usuario`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `unique_usuario_circuito` (`usuario_id`,`circuito_id`),
-  ADD KEY `circuito_id` (`circuito_id`);
-
---
--- Indices de la tabla `historial_tiradas`
---
-ALTER TABLE `historial_tiradas`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `usuario_id` (`usuario_id`),
-  ADD KEY `circuito1_id` (`circuito1_id`),
-  ADD KEY `circuito2_id` (`circuito2_id`),
-  ADD KEY `circuito3_id` (`circuito3_id`),
-  ADD KEY `circuito4_id` (`circuito4_id`),
-  ADD KEY `ganador_id` (`ganador_id`);
 
 --
 -- Indices de la tabla `usuarios`
@@ -251,18 +233,6 @@ ALTER TABLE `copas`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT de la tabla `estadisticas_usuario`
---
-ALTER TABLE `estadisticas_usuario`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
-
---
--- AUTO_INCREMENT de la tabla `historial_tiradas`
---
-ALTER TABLE `historial_tiradas`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
@@ -277,24 +247,6 @@ ALTER TABLE `usuarios`
 --
 ALTER TABLE `circuitos`
   ADD CONSTRAINT `circuitos_ibfk_1` FOREIGN KEY (`id_copa`) REFERENCES `copas` (`id`);
-
---
--- Filtros para la tabla `estadisticas_usuario`
---
-ALTER TABLE `estadisticas_usuario`
-  ADD CONSTRAINT `estadisticas_usuario_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `estadisticas_usuario_ibfk_2` FOREIGN KEY (`circuito_id`) REFERENCES `circuitos` (`id`) ON DELETE CASCADE;
-
---
--- Filtros para la tabla `historial_tiradas`
---
-ALTER TABLE `historial_tiradas`
-  ADD CONSTRAINT `historial_tiradas_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `historial_tiradas_ibfk_2` FOREIGN KEY (`circuito1_id`) REFERENCES `circuitos` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `historial_tiradas_ibfk_3` FOREIGN KEY (`circuito2_id`) REFERENCES `circuitos` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `historial_tiradas_ibfk_4` FOREIGN KEY (`circuito3_id`) REFERENCES `circuitos` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `historial_tiradas_ibfk_5` FOREIGN KEY (`circuito4_id`) REFERENCES `circuitos` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `historial_tiradas_ibfk_6` FOREIGN KEY (`ganador_id`) REFERENCES `circuitos` (`id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

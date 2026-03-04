@@ -2,25 +2,33 @@
    PERFIL APP - GESTIÓN DE PERFIL DE USUARIO
    ========================================================================== */
 
-class PerfilApp {
+   class PerfilApp {
     /* ========== 1. PROPIEDADES ESTÁTICAS ========== */
     static userId = null;
     static userName = null;
     static userEmail = null;
+    static userFoto = null;
     static userRol = null;
     static fechaRegistro = null;
     static ultimaActividad = null;
     static estadisticas = [];
     static chart = null;
     
-    /* ========== 2. INICIALIZACIÓN ========== */
+    /* ========== 2. VARIABLES DE PAGINACIÓN ========== */
+    static historialCompleto = [];
+    static paginaActual = 1;
+    static itemsPorPagina = 5;
+    
+    /* ========== 3. INICIALIZACIÓN ========== */
     static init() {
         this.cargarDatosUsuario();
         this.cargarEstadisticas();
         this.cargarHistorial();
+        this.initFotoPerfil();
+        this.setupEventListeners();
     }
     
-    /* ========== 3. CARGAR DATOS DE USUARIO ========== */
+    /* ========== 4. CARGAR DATOS DE USUARIO ========== */
     static cargarDatosUsuario() {
         fetch('../backend/api/get_usuario_actual.php')
             .then(response => response.json())
@@ -29,6 +37,7 @@ class PerfilApp {
                     this.userId = data.usuario.id;
                     this.userName = data.usuario.nombre;
                     this.userEmail = data.usuario.email;
+                    this.userFoto = data.usuario.foto;
                     this.userRol = data.usuario.rol;
                     this.fechaRegistro = data.usuario.fecha_registro;
                     this.ultimaActividad = data.usuario.ultima_actividad;
@@ -43,10 +52,36 @@ class PerfilApp {
             });
     }
     
-    /* ========== 4. ACTUALIZAR INFO DE USUARIO EN HTML ========== */
+    /* ========== 5. ACTUALIZAR INFO DE USUARIO EN HTML ========== */
     static actualizarInfoUsuario() {
         document.getElementById('userName').textContent = this.userName || 'Usuario';
         document.getElementById('userEmail').textContent = this.userEmail || 'email@ejemplo.com';
+        
+        // Actualizar foto de perfil o mostrar inicial
+        const avatarImg = document.getElementById('avatarImg');
+        const avatarInicial = document.getElementById('avatarInicial');
+        const avatar = document.querySelector('.avatar');
+        
+        if (this.userFoto && this.userFoto !== 'default.png' && this.userFoto !== 'null') {
+            avatarImg.src = 'media/perfil/' + this.userFoto + '?t=' + new Date().getTime();
+            avatarImg.style.display = 'block';
+            if (avatarInicial) {
+                avatarInicial.style.display = 'none';
+            }
+            if (avatar) {
+                avatar.style.background = 'transparent';
+            }
+        } else {
+            const inicial = this.userName ? this.userName.charAt(0).toUpperCase() : '?';
+            if (avatarInicial) {
+                avatarInicial.textContent = inicial;
+                avatarInicial.style.display = 'flex';
+            }
+            avatarImg.style.display = 'none';
+            if (avatar) {
+                avatar.style.background = 'transparent';
+            }
+        }
         
         // Actualizar badge de rol
         const rolBadge = document.getElementById('rolBadge');
@@ -80,7 +115,7 @@ class PerfilApp {
         }
     }
     
-    /* ========== 5. CARGAR ESTADÍSTICAS ========== */
+    /* ========== 6. CARGAR ESTADÍSTICAS ========== */
     static cargarEstadisticas() {
         fetch('../backend/api/get_estadisticas.php')
             .then(response => response.json())
@@ -99,21 +134,11 @@ class PerfilApp {
             });
     }
     
-    /* ========== 6. ACTUALIZAR ESTADÍSTICAS GENERALES ========== */
-    static actualizarEstadisticas(totales) {
-        // Actualizar solo "Veces Girado"
-        document.querySelectorAll('.stat-item')[0].innerHTML = `
-            <h2 class="fw-bold text-primary">${totales.veces_girado || 0}</h2>
-            <small>Veces Girado</small>
-        `;
-    }
-    
     /* ========== 7. CREAR GRÁFICO DE ESTADÍSTICAS ========== */
     static crearGrafico() {
         const ctx = document.getElementById('statsChart').getContext('2d');
         const noDataDiv = document.getElementById('chartNoData');
         
-        // Filtrar solo circuitos con veces_ganador > 0
         const circuitosGanadores = this.estadisticas.filter(stat => stat.veces_ganador > 0);
         
         if (circuitosGanadores.length === 0) {
@@ -125,19 +150,16 @@ class PerfilApp {
         document.getElementById('statsChart').style.display = 'block';
         if (noDataDiv) noDataDiv.style.display = 'none';
         
-        // Preparar datos para el gráfico (usando veces_ganador)
         const labels = circuitosGanadores.map(stat => 
             this.abreviarNombreCircuito(stat.circuito_nombre)
         );
         
         const data = circuitosGanadores.map(stat => stat.veces_ganador);
         
-        // Colores degradados
         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-        gradient.addColorStop(0, 'rgba(233, 69, 96, 0.8)');
+        gradient.addColorStop(0, 'rgba(255, 107, 107, 0.8)');
         gradient.addColorStop(1, 'rgba(78, 205, 196, 0.8)');
         
-        // Destruir gráfico anterior si existe
         if (this.chart) {
             this.chart.destroy();
         }
@@ -150,7 +172,7 @@ class PerfilApp {
                     label: 'Veces ganador',
                     data: data,
                     backgroundColor: gradient,
-                    borderColor: 'rgba(233, 69, 96, 1)',
+                    borderColor: 'rgba(255, 107, 107, 1)',
                     borderWidth: 1,
                     borderRadius: 5
                 }]
@@ -162,38 +184,20 @@ class PerfilApp {
                 scales: {
                     x: {
                         beginAtZero: true,
-                        ticks: {
-                            stepSize: 1,
-                            color: '#fff'
-                        },
-                        grid: {
-                            color: 'rgba(255,255,255,0.1)'
-                        }
+                        ticks: { stepSize: 1, color: '#fff' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
                     },
                     y: {
-                        ticks: {
-                            color: '#fff',
-                            font: {
-                                size: 10
-                            }
-                        },
-                        grid: {
-                            display: false
-                        }
+                        ticks: { color: '#fff', font: { size: 10 } },
+                        grid: { display: false }
                     }
                 },
                 plugins: {
-                    legend: {
-                        display: false
-                    },
+                    legend: { display: false },
                     tooltip: {
                         callbacks: {
-                            title: function(context) {
-                                return context[0].label;
-                            },
-                            label: function(context) {
-                                return `Victorias: ${context.raw}`;
-                            }
+                            title: (context) => context[0].label,
+                            label: (context) => `Victorias: ${context.raw}`
                         }
                     }
                 }
@@ -240,14 +244,13 @@ class PerfilApp {
             'Senda Arco Iris': 'Arco Iris'
         };
         
-        return abreviaturas[nombre] || nombre.substring(0, 12) + '...';
+        return abreviaturas[nombre] || nombre.substring(0, 12) + '…';
     }
     
     /* ========== 9. MOSTRAR TOP 3 CIRCUITOS ========== */
     static mostrarTopCircuitos() {
         const container = document.getElementById('topCircuits');
         
-        // Filtrar solo circuitos con veces_ganador > 0
         const circuitosGanadores = this.estadisticas.filter(stat => stat.veces_ganador > 0);
         
         if (circuitosGanadores.length === 0) {
@@ -260,77 +263,165 @@ class PerfilApp {
             return;
         }
         
-        // Ordenar por veces_ganador y tomar top 3
         const top3 = [...circuitosGanadores]
             .sort((a, b) => b.veces_ganador - a.veces_ganador)
             .slice(0, 3);
         
-        const medallas = ['🥇', '🥈', '🥉'];
-        const colores = ['#FFD700', '#C0C0C0', '#CD7F32'];
+        const titulos = ['1º Más Jugado', '2º Más Jugado', '3º Más Jugado'];
+        const coloresFondo = ['#FFD700', '#C0C0C0', '#CD7F32'];
         
-        container.innerHTML = top3.map((circuito, index) => `
-            <div class="col-md-4 mb-3">
-                <div class="card h-100 border-0 shadow-sm" style="border-top: 4px solid ${colores[index]};">
-                    <div class="card-body text-center">
-                        <div class="display-4 mb-2" style="color: ${colores[index]};">${medallas[index]}</div>
-                        <h5 class="fw-bold">${this.formatearNombreCircuito(circuito.circuito_nombre)}</h5>
-                        <p class="text-muted mb-2">${circuito.copa_nombre || 'Copa'}</p>
-                        <div class="mt-3">
-                            <span class="badge bg-primary">🏆 ${circuito.veces_ganador} victorias</span>
+        container.innerHTML = top3.map((circuito, index) => {
+            const imageName = this.getCircuitoImageName(circuito.circuito_nombre);
+            
+            return `
+                <div class="col-md-4 mb-3">
+                    <div class="circuito-top-card" style="border-top: 4px solid ${coloresFondo[index]};">
+                        <div class="top-badge" style="background: ${coloresFondo[index]};">
+                            ${titulos[index]}
+                        </div>
+                        <div class="top-imagen-container">
+                            <img src="media/circuitos/${imageName}.jpg" 
+                                 alt="${circuito.circuito_nombre}"
+                                 class="top-imagen"
+                                 onerror="this.src='media/circuitos/default.jpg'">
+                        </div>
+                        <div class="top-info">
+                            <h5 class="top-nombre">${this.formatearNombreCircuito(circuito.circuito_nombre)}</h5>
+                            <p class="top-copa">${circuito.copa_nombre || 'Copa'}</p>
+                            <div class="top-victorias">
+                                <span class="badge-victorias">${circuito.veces_ganador} victorias</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
     
-    /* ========== 10. CARGAR HISTORIAL RECIENTE ========== */
+    /* ========== 10. CARGAR HISTORIAL RECIENTE CON PAGINACIÓN ========== */
     static cargarHistorial() {
-        const tbody = document.getElementById('historyTable');
-        
         fetch('../backend/api/get_historial.php')
             .then(response => response.json())
             .then(data => {
                 if (data.success && data.historial.length > 0) {
-                    tbody.innerHTML = data.historial.map(item => `
-                        <tr>
-                            <td>${item.fecha}</td>
-                            <td>
-                                <div class="circuitos-lista">
-                                    ${item.circuitos.map(circuito => `
-                                        <span class="badge bg-secondary me-1">${circuito}</span>
-                                    `).join('')}
-                                </div>
-                            </td>
-                            <td>
-                                <span class="badge bg-warning text-dark">
-                                    <i class="fas fa-trophy me-1"></i> ${item.ganador}
-                                </span>
-                            </td>
-                        </tr>
-                    `).join('');
+                    this.historialCompleto = data.historial;
+                    this.paginaActual = 1;
+                    this.mostrarPaginaHistorial();
+                    this.actualizarBotonesPaginacion();
                 } else {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="3" class="text-center py-5">
-                                <i class="fas fa-history fa-3x text-muted mb-3"></i>
-                                <p class="text-muted">No hay historial disponible</p>
-                            </td>
-                        </tr>
-                    `;
+                    this.mostrarHistorialVacio();
                 }
             })
             .catch(error => {
                 console.error('Error cargando historial:', error);
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="3" class="text-center py-5">
-                            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-                            <p class="text-muted">Error cargando historial</p>
-                        </td>
-                    </tr>
-                `;
+                this.mostrarHistorialVacio();
             });
+    }
+    
+    /* ========== 10.1. MOSTRAR PÁGINA DE HISTORIAL ========== */
+    static mostrarPaginaHistorial() {
+        const tbody = document.getElementById('historyTable');
+        const inicio = (this.paginaActual - 1) * this.itemsPorPagina;
+        const fin = inicio + this.itemsPorPagina;
+        const paginacion = this.historialCompleto.slice(inicio, fin);
+        
+        const filasRestantes = this.itemsPorPagina - paginacion.length;
+        
+        let html = paginacion.map(item => {
+            const fechaSola = item.fecha.split(' ')[0];
+            
+            return `
+                <tr>
+                    <td class="ps-3">${fechaSola}</td>
+                    <td>
+                        <div class="circuitos-lista">
+                            ${item.circuitos.map(circuito => `
+                                <span class="badge bg-secondary" title="${circuito}">${circuito}</span>
+                            `).join('')}
+                        </div>
+                    </td>
+                    <td class="pe-3">
+                        <span class="badge bg-warning text-dark" title="${item.ganador}">
+                            <i class="fas fa-trophy me-1"></i> ${item.ganador}
+                        </span>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+        
+        for (let i = 0; i < filasRestantes; i++) {
+            html += `
+                <tr class="empty-row">
+                    <td class="ps-3">-</td>
+                    <td>-</td>
+                    <td class="pe-3">-</td>
+                </tr>
+            `;
+        }
+        
+        tbody.innerHTML = html;
+        
+        const totalPaginas = Math.ceil(this.historialCompleto.length / this.itemsPorPagina);
+        document.getElementById('pageInfo').textContent = `Página ${this.paginaActual} de ${totalPaginas}`;
+    }
+    
+    /* ========== 10.2. MOSTRAR HISTORIAL VACÍO ========== */
+    static mostrarHistorialVacio() {
+        const tbody = document.getElementById('historyTable');
+        
+        let html = `
+            <tr>
+                <td colspan="3" class="text-center py-3">
+                    <i class="fas fa-history fa-2x text-muted mb-1"></i>
+                    <p class="text-muted small mb-0">No hay historial disponible</p>
+                </td>
+            </tr>
+        `;
+        
+        for (let i = 0; i < 4; i++) {
+            html += `
+                <tr class="empty-row">
+                    <td class="ps-3">-</td>
+                    <td>-</td>
+                    <td class="pe-3">-</td>
+                </tr>
+            `;
+        }
+        
+        tbody.innerHTML = html;
+        
+        document.getElementById('pageInfo').textContent = 'Página 1';
+        document.getElementById('prevPage').disabled = true;
+        document.getElementById('nextPage').disabled = true;
+    }
+    
+    /* ========== 10.3. ACTUALIZAR BOTONES DE PAGINACIÓN ========== */
+    static actualizarBotonesPaginacion() {
+        const prevBtn = document.getElementById('prevPage');
+        const nextBtn = document.getElementById('nextPage');
+        const totalPaginas = Math.ceil(this.historialCompleto.length / this.itemsPorPagina);
+        
+        prevBtn.disabled = this.paginaActual === 1;
+        nextBtn.disabled = this.paginaActual === totalPaginas || totalPaginas === 0;
+    }
+    
+    /* ========== 10.4. IR A PÁGINA ANTERIOR ========== */
+    static paginaAnterior() {
+        if (this.paginaActual > 1) {
+            this.paginaActual--;
+            this.mostrarPaginaHistorial();
+            this.actualizarBotonesPaginacion();
+        }
+    }
+    
+    /* ========== 10.5. IR A PÁGINA SIGUIENTE ========== */
+    static paginaSiguiente() {
+        const totalPaginas = Math.ceil(this.historialCompleto.length / this.itemsPorPagina);
+        if (this.paginaActual < totalPaginas) {
+            this.paginaActual++;
+            this.mostrarPaginaHistorial();
+            this.actualizarBotonesPaginacion();
+        }
     }
     
     /* ========== 11. FORMATEAR NOMBRES ========== */
@@ -345,13 +436,230 @@ class PerfilApp {
             'Estadio Peach (2)': 'Estadio Peach',
             'Templo del Bloque ?': 'Templo del Bloque ?',
             'Senda Arco Iris': 'Senda Arco Iris',
-            'Puerto Espacial DK': 'Puerto Espacial DK'
+            'Puerto Espacial DK': 'Puerto Espacial DK',
+            'Desierto Sol-Sol': 'Desierto Sol-Sol',
+            'Bazar Shy Guy': 'Bazar Shy Guy',
+            'Estadio Wario': 'Estadio Wario',
+            'Fortaleza Aérea': 'Fortaleza Aérea',
+            'DK Alpino': 'DK Alpino',
+            'Mirador Estelar': 'Mirador Estelar',
+            'Cielos Helados': 'Cielos Helados',
+            'Galeón de Wario': 'Galeón de Wario',
+            'Playa Koopa': 'Playa Koopa',
+            'Sabana Salpicante': 'Sabana Salpicante',
+            'Playa Peach': 'Playa Peach',
+            'Ciudad Salina': 'Ciudad Salina',
+            'Jungla Dino Dino': 'Jungla Dino Dino',
+            'Cascadas Cheep Cheep': 'Cascadas Cheep Cheep',
+            'Gruta Diente de León': 'Gruta Diente de León',
+            'Cine Boo': 'Cine Boo',
+            'Caverna Ósea': 'Caverna Ósea',
+            'Pradera Mu-Mu': 'Pradera Mu-Mu',
+            'Monte Chocolate': 'Monte Chocolate',
+            'Fábrica de Toad': 'Fábrica de Toad',
+            'Castillo de Bowser': 'Castillo de Bowser',
+            'Aldea Arbórea': 'Aldea Arbórea',
+            'Circuito Mario': 'Circuito Mario',
+            'Senda Arco Iris': 'Senda Arco Iris'
         };
         return cambios[nombre] || nombre;
     }
+    
+    /* ========== 12. GESTIÓN DE FOTO DE PERFIL ========== */
+    static initFotoPerfil() {
+        const btnSeleccionar = document.getElementById('btnSeleccionarFoto');
+        const inputFile = document.getElementById('fotoPerfilInput');
+        const fotoInfo = document.getElementById('fotoSeleccionadaInfo');
+        const nombreArchivo = document.getElementById('nombreArchivo');
+        const btnGuardar = document.getElementById('btnGuardarFoto');
+        const avatarImg = document.getElementById('avatarImg');
+        const avatarInicial = document.getElementById('avatarInicial');
+        const avatarBadge = document.getElementById('avatarBadge');
+
+        if (!btnSeleccionar) return;
+
+        btnSeleccionar.addEventListener('click', () => {
+            inputFile.click();
+        });
+
+        inputFile.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                nombreArchivo.textContent = file.name;
+                fotoInfo.style.display = 'block';
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    avatarImg.src = e.target.result;
+                    avatarImg.style.display = 'block';
+                    if (avatarInicial) avatarInicial.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        btnGuardar.addEventListener('click', () => {
+            this.subirFotoPerfil();
+        });
+        
+        const prevBtn = document.getElementById('prevPage');
+        const nextBtn = document.getElementById('nextPage');
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => this.paginaAnterior());
+        }
+        
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => this.paginaSiguiente());
+        }
+    }
+
+    /* ========== 13. SUBIR FOTO DE PERFIL ========== */
+    static async subirFotoPerfil() {
+        const inputFile = document.getElementById('fotoPerfilInput');
+        const btnGuardar = document.getElementById('btnGuardarFoto');
+        const fotoInfo = document.getElementById('fotoSeleccionadaInfo');
+        const avatarBadge = document.getElementById('avatarBadge');
+        
+        if (!inputFile.files.length) {
+            this.showAlert('Selecciona una imagen primero', 'warning');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('foto', inputFile.files[0]);
+
+        btnGuardar.disabled = true;
+        btnGuardar.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Subiendo...';
+
+        try {
+            const response = await fetch('../backend/api/subir_foto_perfil.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                this.showAlert('Foto actualizada correctamente', 'success');
+                fotoInfo.style.display = 'none';
+                inputFile.value = '';
+                
+                avatarBadge.style.display = 'flex';
+                setTimeout(() => {
+                    avatarBadge.style.display = 'none';
+                }, 3000);
+                
+                const avatarImg = document.getElementById('avatarImg');
+                const avatarInicial = document.getElementById('avatarInicial');
+                
+                avatarImg.src = 'media/perfil/' + data.foto + '?t=' + new Date().getTime();
+                avatarImg.style.display = 'block';
+                if (avatarInicial) avatarInicial.style.display = 'none';
+                
+                if (window.actualizarFotoNavbar) {
+                    window.actualizarFotoNavbar(data.foto);
+                }
+            } else {
+                this.showAlert(data.message || 'Error al subir la foto', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            this.showAlert('Error de conexión', 'error');
+        } finally {
+            btnGuardar.disabled = false;
+            btnGuardar.innerHTML = '<i class="fas fa-save me-1"></i> Guardar';
+        }
+    }
+
+    /* ========== 14. MOSTRAR ALERTAS ========== */
+    static showAlert(message, type = 'info') {
+        const alertContainer = document.getElementById('alertContainer') || this.crearAlertContainer();
+        
+        const alertId = 'alert-' + Date.now();
+        const icons = {
+            'success': 'check-circle',
+            'warning': 'exclamation-triangle',
+            'error': 'times-circle',
+            'info': 'info-circle'
+        };
+        
+        const alertHTML = `
+            <div id="${alertId}" class="alert alert-${type} alert-dismissible fade show animate__animated animate__fadeInDown" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-${icons[type] || 'info-circle'} me-3"></i>
+                    <div>${message}</div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+        
+        alertContainer.innerHTML = alertHTML;
+        
+        setTimeout(() => {
+            const alert = document.getElementById(alertId);
+            if (alert) alert.remove();
+        }, 5000);
+    }
+
+    static crearAlertContainer() {
+        const container = document.createElement('div');
+        container.id = 'alertContainer';
+        container.className = 'position-fixed top-0 end-0 p-3';
+        container.style.zIndex = '9999';
+        document.body.appendChild(container);
+        return container;
+    }
+    
+    /* ========== 15. OBTENER NOMBRE DE IMAGEN DE CIRCUITO ========== */
+    static getCircuitoImageName(nombre) {
+        if (!nombre) return 'default';
+        
+        const mapping = {
+            'Circuito Mario Bros.': 'CircuitoMarioBros',
+            'Ciudad Corona (1)': 'CiudadCorona1',
+            'Ciudad Corona (2)': 'CiudadCorona2',
+            'Cañón Ferroviario': 'CanFerroviario',
+            'Puerto Espacial DK': 'PuertoEspacialDK',
+            'Desierto Sol-Sol': 'DesiertoSolSol',
+            'Bazar Shy Guy': 'BazarShyGuy',
+            'Estadio Wario': 'EstadioWario',
+            'Fortaleza Aérea': 'FortalezaArea',
+            'DK Alpino': 'DKAlpino',
+            'Mirador Estelar': 'MiradorEstelar',
+            'Cielos Helados': 'CielosHelados',
+            'Galeón de Wario': 'GaleondeWario',
+            'Playa Koopa': 'PlayaKoopa',
+            'Sabana Salpicante': 'SabanaSalpicante',
+            'Estadio Peach (1)': 'EstadioPeach1',
+            'Estadio Peach (2)': 'EstadioPeach2',
+            'Playa Peach': 'PlayaPeach',
+            'Ciudad Salina': 'CiudadSalina',
+            'Jungla Dino Dino': 'JunglaDinoDino',
+            'Templo del Bloque ?': 'TemplodelBloque',
+            'Cascadas Cheep Cheep': 'CascadasCheepCheep',
+            'Gruta Diente de León': 'GrutaDientedeLeon',
+            'Cine Boo': 'CineBoo',
+            'Caverna Ósea': 'CavernaOsea',
+            'Pradera Mu-Mu': 'PraderaMuMu',
+            'Monte Chocolate': 'MonteChocolate',
+            'Fábrica de Toad': 'FabricadeToad',
+            'Castillo de Bowser': 'CastillodeBowser',
+            'Aldea Arbórea': 'AldeaArbrea',
+            'Circuito Mario': 'CircuitoMario',
+            'Senda Arco Iris': 'SendaArcoIris'
+        };
+        
+        return mapping[nombre] || nombre.replace(/\s+/g, '');
+    }
+    
+    /* ========== 16. SETUP EVENT LISTENERS ========== */
+    static setupEventListeners() {
+        // Listeners ya configurados en initFotoPerfil
+    }
 }
 
-/* ========== 12. INICIALIZAR AL CARGAR LA PÁGINA ========== */
+/* ========== 17. INICIALIZAR AL CARGAR LA PÁGINA ========== */
 document.addEventListener('DOMContentLoaded', function() {
     PerfilApp.init();
 });

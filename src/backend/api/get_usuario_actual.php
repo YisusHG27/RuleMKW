@@ -19,7 +19,7 @@ $usuario_id = $session['user_id'];
 
 try {
     // Obtener datos completos del usuario desde la BD
-    $query = "SELECT id, usuario as nombre, email, rol, fecha_registro FROM usuarios WHERE id = ?";
+    $query = "SELECT id, usuario as nombre, email, foto_perfil, rol, fecha_registro FROM usuarios WHERE id = ?";
     $stmt = $enlace->prepare($query);
     $stmt->bind_param("i", $usuario_id);
     $stmt->execute();
@@ -44,6 +44,7 @@ try {
                 'id' => (int)$row['id'],
                 'nombre' => $row['nombre'],
                 'email' => $row['email'],
+                'foto' => $row['foto_perfil'] ?: 'default.png',
                 'rol' => $row['rol'],
                 'fecha_registro' => $fecha_registro,
                 'ultima_actividad' => $ultima_act

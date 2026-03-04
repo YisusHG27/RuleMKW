@@ -41,7 +41,7 @@ class CookiesApp {
                 </div>
                 <div class="cookie-text">
                     <h4>🍪 Uso de cookies</h4>
-                    <p>Utilizamos cookies propias y de terceros para mejorar tu experiencia en RuleMKW. 
+                    <p>Utilizamos cookies propias para mejorar tu experiencia en RuleMKW. 
                        Al hacer clic en "Aceptar", consientes el uso de todas las cookies. 
                        Puedes obtener más información en nuestras 
                        <a href="#" id="downloadPoliticas" class="cookie-link">políticas de privacidad</a>.</p>

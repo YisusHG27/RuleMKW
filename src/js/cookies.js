@@ -163,15 +163,13 @@ class CookiesApp {
         
         // Intentar con diferentes rutas posibles
         const rutas = [
-            'media/politicas_privacidad.pdf',
-            '../media/politicas_privacidad.pdf',
-            '/media/politicas_privacidad.pdf'
+            '../media/PoliticasRuleMKW.pdf'
         ];
         
         // Probar la primera ruta
         const link = document.createElement('a');
         link.href = rutas[0];
-        link.download = 'politicas_privacidad_rulemkw.pdf';
+        link.download = 'PoliticasRuleMKW.pdf';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);

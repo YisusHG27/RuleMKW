@@ -8,11 +8,10 @@ if (file_exists($vendorPath)) {
     require_once 'LoggerSimple.php';
 }
 
-// Usar el usuario específico creado en docker-compose
 $host = 'mysql';
-$usuario = 'rulemkw_user';      // MYSQL_USER del .env
-$password = 'password_segura';  // MYSQL_PASSWORD del .env
-$base_datos = 'rulemkw';         // MYSQL_DATABASE del .env
+$usuario = 'rulemkw_user';
+$password = 'password_segura';
+$base_datos = 'rulemkw';
 
 $enlace = new mysqli($host, $usuario, $password, $base_datos);
 
@@ -21,6 +20,4 @@ if ($enlace->connect_error) {
 }
 
 $enlace->set_charset("utf8mb4");
-
-// ✅ ELIMINADO: AppLogger::init($enlace); - Ya no es necesario
 ?>

@@ -150,8 +150,8 @@ require_once 'layout/sidebar.php';
         <div class="stat-title">Total Usuarios</div>
         <div class="stat-number"><?php echo $stats['usuarios']; ?></div>
         <div class="stat-desc">
-            👑 <?php echo $stats['admins']; ?> admins · 
-            👤 <?php echo $stats['usuarios_normales']; ?> usuarios
+            <?php echo $stats['admins']; ?> admins · 
+            <?php echo $stats['usuarios_normales']; ?> usuarios
         </div>
     </div>
     
@@ -178,7 +178,7 @@ require_once 'layout/sidebar.php';
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 30px;">
     <!-- Últimos usuarios -->
     <div style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 20px;">
-        <h3 style="margin-bottom: 15px; color: #e94560;">📝 Últimos usuarios registrados</h3>
+        <h3 style="margin-bottom: 15px; color: #e94560;">Últimos usuarios registrados</h3>
         <table class="data-table">
             <thead>
                 <tr>
@@ -207,7 +207,7 @@ require_once 'layout/sidebar.php';
     
     <!-- Últimos logs -->
     <div style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 20px;">
-        <h3 style="margin-bottom: 15px; color: #e94560;">🔄 Últimas actividades</h3>
+        <h3 style="margin-bottom: 15px; color: #e94560;">Últimas actividades</h3>
         <table class="data-table">
             <thead>
                 <tr>
@@ -247,7 +247,7 @@ require_once 'layout/sidebar.php';
 
 <!-- Últimas estadísticas adicionales -->
 <div style="margin-top: 30px; background: rgba(255,255,255,0.05); border-radius: 10px; padding: 20px;">
-    <h3 style="margin-bottom: 15px; color: #e94560;">📊 Estadísticas rápidas</h3>
+    <h3 style="margin-bottom: 15px; color: #e94560;">Estadísticas rápidas</h3>
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align: center;">
         <div>
             <div style="font-size: 24px; color: #e94560;"><?php echo $stats['logs_hoy']; ?></div>

@@ -25,7 +25,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <!-- Sidebar -->
         <aside class="admin-sidebar">
             <div class="sidebar-header">
-                <h3>RuleMKW</h3>
+            <img src="../media/iconos/logo.png" alt="RuleMKW" height="40" width="160" class="me-2 p-0">
                 <p>Panel de Administración</p>
             </div>
             

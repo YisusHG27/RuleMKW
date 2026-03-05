@@ -1,6 +1,49 @@
 <?php
 // Iniciar sesión solo si existe
 session_start();
+
+// ========== GESTIÓN DE COOKIES CON PHP ==========
+$mostrar_banner_cookies = false;
+$cookie_consent = $_COOKIE['cookie_consent'] ?? null;
+
+// Si no existe la cookie, mostrar el banner
+if (!$cookie_consent) {
+    $mostrar_banner_cookies = true;
+}
+
+// Procesar si un usuario a aceptado o rechazado las cookies
+if (isset($_GET['cookie_action'])) {
+    $action = $_GET['cookie_action'];
+    $expires = time() + (365 * 24 * 60 * 60);
+    
+    if ($action === 'accept') {
+        setcookie('cookie_consent', 'accepted', $expires, '/');
+        
+        // Registrar log de cookie aceptada
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? 'Desconocido';
+        
+        // Para guardar en un archivo de log
+        $log_entry = date('Y-m-d H:i:s') . " - Cookie aceptada - IP: $ip - User Agent: $user_agent\n";
+        file_put_contents(__DIR__ . '/logs/cookies.log', $log_entry, FILE_APPEND);
+        
+        // Redirigir para quitar el parámetro de la URL
+        header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?'));
+        exit;
+    } elseif ($action === 'reject') {
+        setcookie('cookie_consent', 'rejected', $expires, '/');
+        
+        // Registrar log de cookie rechazada
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? 'Desconocido';
+        
+        $log_entry = date('Y-m-d H:i:s') . " - Cookie rechazada - IP: $ip - User Agent: $user_agent\n";
+        file_put_contents(__DIR__ . '/logs/cookies.log', $log_entry, FILE_APPEND);
+        
+        header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?'));
+        exit;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -27,6 +70,32 @@ session_start();
 <body class="d-flex flex-column min-vh-100">
     <!-- Incluir navbar desde PHP -->
     <?php include 'backend/includes/generar_navbar.php'; ?>
+    
+    <!-- ========== BANNER DE COOKIES (PHP) ========== -->
+    <?php if ($mostrar_banner_cookies): ?>
+    <div id="cookieBanner" class="cookie-banner">
+        <div class="cookie-content">
+            <div class="cookie-icon">
+                <i class="fas fa-cookie-bite"></i>
+            </div>
+            <div class="cookie-text">
+                <h4>Uso de cookies</h4>
+                <p>Utilizamos cookies propias para mejorar tu experiencia en RuleMKW. 
+                   Al hacer clic en "Aceptar", consientes el uso de todas las cookies. 
+                   Puedes obtener más información en nuestras 
+                   <a href="media/PoliticasRuleMKW.pdf" download class="cookie-link">políticas de privacidad</a>.</p>
+            </div>
+            <div class="cookie-buttons">
+                <a href="?cookie_action=accept" class="btn-cookie-accept">
+                    <i class="fas fa-check"></i> Aceptar
+                </a>
+                <a href="?cookie_action=reject" class="btn-cookie-reject">
+                    <i class="fas fa-times"></i> Rechazar
+                </a>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
     
     <main class="container py-5 mt-5 flex-grow-1">
         <!-- Alertas Dinámicas -->
@@ -244,7 +313,6 @@ session_start();
                     <h5 class="fw-bold mb-3">Enlaces Rápidos</h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="index.php" class="text-white-50 text-decoration-none">Inicio</a></li>
-                        <li class="mb-2"><a href="perfil.php" class="text-white-50 text-decoration-none">Perfil</a></li>
                         <li class="mb-2"><a href="backend/login.php" class="text-white-50 text-decoration-none">Iniciar Sesión</a></li>
                         <li><a href="backend/registro.php" class="text-white-50 text-decoration-none">Registro</a></li>
                     </ul>
@@ -265,7 +333,7 @@ session_start();
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/circuitos.js"></script>
     <script src="js/ruleta.js"></script>
-    <!-- COOKIES JS -->
+    <!-- COOKIES JS (opcional, para funcionalidades extra) -->
     <script src="js/cookies.js"></script>
     
     <script>

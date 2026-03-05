@@ -27,7 +27,7 @@ if (!isset($data['resultados']) || empty($data['resultados'])) {
     exit;
 }
 
-// Obtener el ID del ganador (viene explícitamente desde JavaScript)
+// Obtener el ID del ganador (viene desde JavaScript)
 $ganador_id = $data['ganador_id'] ?? null;
 
 // Si no viene, usamos el primero como fallback (no debería ocurrir)

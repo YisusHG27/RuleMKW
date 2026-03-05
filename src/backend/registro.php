@@ -1,7 +1,7 @@
 <?php
 session_start();
 include 'includes/conexion.php';
-require_once 'includes/Logger.php'; // Añadido para logging
+require_once 'includes/Logger.php';
 
 $mensaje = '';
 $tipo_mensaje = '';

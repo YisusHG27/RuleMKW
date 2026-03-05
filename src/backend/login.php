@@ -1,9 +1,8 @@
 <?php
 session_start();
 include 'includes/conexion.php';
-require_once 'includes/Logger.php'; // Añadido para logging
+require_once 'includes/Logger.php';
 
-// Inicializar variable de error
 $error = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {

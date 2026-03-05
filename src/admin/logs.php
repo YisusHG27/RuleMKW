@@ -1,5 +1,4 @@
 <?php
-// admin/logs.php
 require_once 'layout/sidebar.php';
 require_once '../backend/includes/conexion.php';
 
@@ -9,21 +8,20 @@ if (!isset($_SESSION['usuario_rol']) || $_SESSION['usuario_rol'] !== 'admin') {
     exit;
 }
 
-// Configuración - RUTA CORREGIDA
+// Configuración
 $logsDir = __DIR__ . '/../logs/';
 $limite = 50;
 $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
 $filtroTipo = $_GET['tipo'] ?? '';
 $filtroUsuario = $_GET['usuario_id'] ?? '';
 $filtroBusqueda = $_GET['busqueda'] ?? '';
-$filtroFecha = $_GET['fecha'] ?? ''; // NUEVO: filtro de fecha única
+$filtroFecha = $_GET['fecha'] ?? '';
 
 // Obtener lista de usuarios para el filtro
 $usuarios = $enlace->query("SELECT id, usuario FROM usuarios ORDER BY usuario");
 
 // Función para parsear una línea de log
 function parsearLogLinea($linea) {
-    // Formato: [2026-02-26 01:13:48] rulemkw.INFO: Login exitoso {"usuario_id":1,...}
     $patron = '/^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\] \w+\.(\w+): (.*?)(\s+\{.*\})?$/';
     
     if (preg_match($patron, $linea, $matches)) {

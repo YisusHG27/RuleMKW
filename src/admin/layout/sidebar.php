@@ -18,6 +18,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Admin - RuleMKW</title>
+    <link rel="icon" href="../media/iconos/Mario_Kart_World_Logo.png" type="image/png">
     <link rel="stylesheet" href="../css/admin.css">
 </head>
 <body>

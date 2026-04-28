@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: mysql:3306
--- Tiempo de generación: 04-03-2026 a las 20:28:00
+-- Tiempo de generación: 28-04-2026 a las 19:23:45
 -- Versión del servidor: 8.0.45
 -- Versión de PHP: 8.3.26
 
@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `circuitos` (
   `id` int NOT NULL,
-  `nombre` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `nombre` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `id_copa` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -79,7 +79,7 @@ INSERT INTO `circuitos` (`id`, `nombre`, `id_copa`) VALUES
 
 CREATE TABLE `copas` (
   `id` int NOT NULL,
-  `nombre` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
+  `nombre` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -117,10 +117,10 @@ CREATE TABLE `estadisticas_usuario` (
 --
 
 INSERT INTO `estadisticas_usuario` (`id`, `usuario_id`, `circuito_id`, `veces_seleccionado`, `veces_ganador`, `fecha_ultima_seleccion`, `fecha_registro`) VALUES
-(1, 2, 3, 6, 3, '2026-03-03 02:49:00', '2026-03-03 02:37:48'),
-(2, 2, 8, 1, 0, '2026-03-03 02:37:48', '2026-03-03 02:37:48'),
-(3, 2, 7, 1, 0, '2026-03-03 02:37:48', '2026-03-03 02:37:48'),
-(4, 2, 6, 1, 0, '2026-03-03 02:37:48', '2026-03-03 02:37:48'),
+(1, 2, 3, 9, 3, '2026-04-28 19:07:23', '2026-03-03 02:37:48'),
+(2, 2, 8, 4, 0, '2026-04-28 19:07:23', '2026-03-03 02:37:48'),
+(3, 2, 7, 4, 1, '2026-04-28 19:07:23', '2026-03-03 02:37:48'),
+(4, 2, 6, 4, 2, '2026-04-28 19:07:23', '2026-03-03 02:37:48'),
 (5, 2, 12, 1, 0, '2026-03-03 02:38:20', '2026-03-03 02:38:20'),
 (6, 2, 14, 5, 2, '2026-03-03 02:48:28', '2026-03-03 02:38:20'),
 (7, 2, 19, 1, 0, '2026-03-03 02:38:20', '2026-03-03 02:38:20'),
@@ -131,7 +131,11 @@ INSERT INTO `estadisticas_usuario` (`id`, `usuario_id`, `circuito_id`, `veces_se
 (12, 2, 32, 1, 0, '2026-03-03 02:38:59', '2026-03-03 02:38:59'),
 (13, 2, 29, 1, 0, '2026-03-03 02:38:59', '2026-03-03 02:38:59'),
 (14, 2, 30, 1, 0, '2026-03-03 02:38:59', '2026-03-03 02:38:59'),
-(15, 2, 25, 1, 0, '2026-03-03 02:49:00', '2026-03-03 02:49:00');
+(15, 2, 25, 1, 0, '2026-03-03 02:49:00', '2026-03-03 02:49:00'),
+(16, 4, 8, 2, 1, '2026-04-28 18:37:31', '2026-04-28 18:37:22'),
+(17, 4, 6, 2, 1, '2026-04-28 18:37:31', '2026-04-28 18:37:22'),
+(18, 4, 28, 2, 0, '2026-04-28 18:37:31', '2026-04-28 18:37:22'),
+(19, 4, 25, 2, 0, '2026-04-28 18:37:31', '2026-04-28 18:37:22');
 
 -- --------------------------------------------------------
 
@@ -164,7 +168,12 @@ INSERT INTO `historial_tiradas` (`id`, `usuario_id`, `fecha`, `circuito1_id`, `c
 (7, 2, '2026-03-03 02:47:54', 3, 27, NULL, NULL, 3),
 (8, 2, '2026-03-03 02:48:15', 27, 14, NULL, NULL, 27),
 (9, 2, '2026-03-03 02:48:28', 14, 3, NULL, NULL, 14),
-(10, 2, '2026-03-03 02:49:00', 3, 25, NULL, NULL, 3);
+(10, 2, '2026-03-03 02:49:00', 3, 25, NULL, NULL, 3),
+(11, 4, '2026-04-28 18:37:22', 8, 6, 28, 25, 8),
+(12, 4, '2026-04-28 18:37:31', 8, 6, 28, 25, 6),
+(13, 2, '2026-04-28 19:06:14', 3, 7, 8, 6, 6),
+(14, 2, '2026-04-28 19:06:49', 8, 6, 7, 3, 6),
+(15, 2, '2026-04-28 19:07:23', 8, 6, 7, 3, 7);
 
 -- --------------------------------------------------------
 
@@ -174,11 +183,11 @@ INSERT INTO `historial_tiradas` (`id`, `usuario_id`, `fecha`, `circuito1_id`, `c
 
 CREATE TABLE `usuarios` (
   `id` int NOT NULL,
-  `usuario` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `foto_perfil` varchar(255) COLLATE utf8mb4_general_ci DEFAULT 'default.png',
-  `pass` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `rol` enum('usuario','admin') COLLATE utf8mb4_general_ci DEFAULT 'usuario',
+  `usuario` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `foto_perfil` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'default.png',
+  `pass` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `rol` enum('usuario','admin') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'usuario',
   `fecha_registro` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -189,7 +198,9 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`id`, `usuario`, `email`, `foto_perfil`, `pass`, `rol`, `fecha_registro`) VALUES
 (1, 'admin', 'admin@rulemkw.com', 'default.png', '$2y$10$z5lMnmH3FBmqIgca0/6v0.H3Xg/7C/vzTZ4cXhSeOIbmNx2wdBuBe', 'admin', '2025-12-03 01:04:22'),
 (2, 'Jesus', 'jahernandezg20@educarex.es', 'perfil_2_1772655132.jpg', '$2y$10$flwgyS/OTHizGI0k7QVmV.lHbX2hWc8Z6T2Y9k7P4AfuUzzNmNYYu', 'usuario', '2026-02-06 01:33:33'),
-(3, 'Alberto', 'ariveron02@educarex.es', 'default.png', '$2y$10$2mAZ6NF2ky1i9jNG1w6We.2KHb8MQxjacdXCkrZgKgv6XMUzwY8u2', 'usuario', '2026-03-04 19:20:58');
+(3, 'Alberto', 'ariveron02@educarex.es', 'default.png', '$2y$10$2mAZ6NF2ky1i9jNG1w6We.2KHb8MQxjacdXCkrZgKgv6XMUzwY8u2', 'usuario', '2026-03-04 19:20:58'),
+(4, 'Dario', 'dariomarbau@gmail.com', 'default.png', '$2y$10$0Cj8iiLfWmRPXyp7pMANq.RJ2xL67oOOXqpH6BWeKaPfg92V4iSru', 'usuario', '2026-04-28 18:36:57'),
+(5, 'Mangel', 'Mangel@gmail.com', 'default.png', '$2y$10$dyFoBDlPnv0R.TL462lE4.VGJvLrUw3ZUCat8XaqRFaxt7wJjyLZu', 'usuario', '2026-04-28 18:42:26');
 
 --
 -- Índices para tablas volcadas
@@ -207,6 +218,26 @@ ALTER TABLE `circuitos`
 --
 ALTER TABLE `copas`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `estadisticas_usuario`
+--
+ALTER TABLE `estadisticas_usuario`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `usuario_id` (`usuario_id`),
+  ADD KEY `circuito_id` (`circuito_id`);
+
+--
+-- Indices de la tabla `historial_tiradas`
+--
+ALTER TABLE `historial_tiradas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `usuario_id` (`usuario_id`),
+  ADD KEY `circuito1_id` (`circuito1_id`),
+  ADD KEY `circuito2_id` (`circuito2_id`),
+  ADD KEY `circuito3_id` (`circuito3_id`),
+  ADD KEY `circuito4_id` (`circuito4_id`),
+  ADD KEY `ganador_id` (`ganador_id`);
 
 --
 -- Indices de la tabla `usuarios`
@@ -233,10 +264,22 @@ ALTER TABLE `copas`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
+-- AUTO_INCREMENT de la tabla `estadisticas_usuario`
+--
+ALTER TABLE `estadisticas_usuario`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
+-- AUTO_INCREMENT de la tabla `historial_tiradas`
+--
+ALTER TABLE `historial_tiradas`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas
@@ -247,6 +290,24 @@ ALTER TABLE `usuarios`
 --
 ALTER TABLE `circuitos`
   ADD CONSTRAINT `circuitos_ibfk_1` FOREIGN KEY (`id_copa`) REFERENCES `copas` (`id`);
+
+--
+-- Filtros para la tabla `estadisticas_usuario`
+--
+ALTER TABLE `estadisticas_usuario`
+  ADD CONSTRAINT `fk_stats_circuito` FOREIGN KEY (`circuito_id`) REFERENCES `circuitos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_stats_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `historial_tiradas`
+--
+ALTER TABLE `historial_tiradas`
+  ADD CONSTRAINT `fk_historial_c1` FOREIGN KEY (`circuito1_id`) REFERENCES `circuitos` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_historial_c2` FOREIGN KEY (`circuito2_id`) REFERENCES `circuitos` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_historial_c3` FOREIGN KEY (`circuito3_id`) REFERENCES `circuitos` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_historial_c4` FOREIGN KEY (`circuito4_id`) REFERENCES `circuitos` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_historial_ganador` FOREIGN KEY (`ganador_id`) REFERENCES `circuitos` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_historial_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

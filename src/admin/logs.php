@@ -13,6 +13,7 @@ $logsDir = __DIR__ . '/../logs/';
 $limite = 50;
 $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
 $filtroTipo = $_GET['tipo'] ?? '';
+$filtroAccion = $_GET['accion'] ?? '';
 $filtroUsuario = $_GET['usuario_id'] ?? '';
 $filtroBusqueda = $_GET['busqueda'] ?? '';
 $filtroFecha = $_GET['fecha'] ?? '';
@@ -70,7 +71,7 @@ function parsearLogLinea($linea) {
 }
 
 // Función para leer logs del archivo
-function leerLogsDeArchivo($logsDir, $filtroFecha, $filtroTipo, $filtroBusqueda, $filtroUsuario, $offset, $limite) {
+function leerLogsDeArchivo($logsDir, $filtroFecha, $filtroTipo, $filtroAccion, $filtroBusqueda, $filtroUsuario, $offset, $limite) {
     $logs = [];
     $todasLasLineas = [];
     
@@ -105,6 +106,7 @@ function leerLogsDeArchivo($logsDir, $filtroFecha, $filtroTipo, $filtroBusqueda,
             
             // Aplicar filtros
             if (!empty($filtroTipo) && $log['tipo'] !== $filtroTipo) continue;
+            if (!empty($filtroAccion) && $log['accion'] !== $filtroAccion) continue;
             
             if (!empty($filtroBusqueda)) {
                 $textoBusqueda = strtolower($log['descripcion'] . ' ' . $log['accion']);
@@ -174,7 +176,7 @@ function obtenerEstadisticasLogs($logsDir, $filtroFecha = '') {
 }
 
 // Cargar logs
-$logsData = leerLogsDeArchivo($logsDir, $filtroFecha, $filtroTipo, $filtroBusqueda, $filtroUsuario, $offset, $limite);
+$logsData = leerLogsDeArchivo($logsDir, $filtroFecha, $filtroTipo, $filtroAccion, $filtroBusqueda, $filtroUsuario, $offset, $limite);
 
 // Obtener estadísticas
 $log_stats = obtenerEstadisticasLogs($logsDir, $filtroFecha);
@@ -221,6 +223,19 @@ $log_stats = obtenerEstadisticasLogs($logsDir, $filtroFecha);
             <option value="INFO" <?php echo $filtroTipo == 'INFO' ? 'selected' : ''; ?>>INFO</option>
             <option value="WARNING" <?php echo $filtroTipo == 'WARNING' ? 'selected' : ''; ?>>WARNING</option>
             <option value="ERROR" <?php echo $filtroTipo == 'ERROR' ? 'selected' : ''; ?>>ERROR</option>
+        </select>
+
+        <select name="accion" style="padding: 8px; background: #16213e; color: white; border: 1px solid #e94560; border-radius: 4px;">
+            <option value="">Todas las acciones</option>
+            <option value="LOGIN" <?php echo $filtroAccion == 'LOGIN' ? 'selected' : ''; ?>>LOGIN</option>
+            <option value="DASHBOARD" <?php echo $filtroAccion == 'DASHBOARD' ? 'selected' : ''; ?>>DASHBOARD</option>
+            <option value="LOGOUT" <?php echo $filtroAccion == 'LOGOUT' ? 'selected' : ''; ?>>LOGOUT</option>
+            <option value="ESTADISTICAS" <?php echo $filtroAccion == 'ESTADISTICAS' ? 'selected' : ''; ?>>ESTADISTICAS</option>
+            <option value="COOKIES" <?php echo $filtroAccion == 'COOKIES' ? 'selected' : ''; ?>>COOKIES</option>
+            <option value="REGISTRO" <?php echo $filtroAccion == 'REGISTRO' ? 'selected' : ''; ?>>REGISTRO</option>
+            <option value="USER" <?php echo $filtroAccion == 'USER' ? 'selected' : ''; ?>>USER</option>
+            <option value="ERROR" <?php echo $filtroAccion == 'ERROR' ? 'selected' : ''; ?>>ERROR</option>
+            <option value="OTRO" <?php echo $filtroAccion == 'OTRO' ? 'selected' : ''; ?>>OTRO</option>
         </select>
         
         <select name="usuario_id" style="padding: 8px; background: #16213e; color: white; border: 1px solid #e94560; border-radius: 4px;">

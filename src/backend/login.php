@@ -90,6 +90,7 @@ if (isset($_SESSION['usuario_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de sesión - RuleMKW</title>
+    <link rel="icon" href="../media/iconos/Mario_Kart_World_Logo.png" type="image/png">
     <link rel="stylesheet" href="../css/loginRegistro.css">
     <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">

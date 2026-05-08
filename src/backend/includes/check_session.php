@@ -1,12 +1,25 @@
 <?php
-// includes/check_session.php
-require_once 'Logger.php'; // Añadido para logging
+/* ==========================================================================
+   CHECK_SESSION.PHP - GESTIÓN Y VALIDACIÓN DE SESIONES
+   ========================================================================== */
 
+/* ========== 1. INCLUIR DEPENDENCIAS ========== */
+// ===== 1.1. INCLUIR LOGGER =====
+require_once 'Logger.php';
+
+/* ========== 2. FUNCIÓN DE VERIFICACIÓN DE SESIÓN ========== */
+/**
+ * ===== 2.1. checkSession() =====
+ * Verifica si el usuario tiene una sesión activa
+ * @return array Array con estado de sesión y datos del usuario
+ */
 function checkSession() {
+    // ===== 2.1.1. INICIAR SESIÓN SI NO ESTÁ INICIADA =====
     if (session_status() == PHP_SESSION_NONE) {
         session_start();
     }
     
+    // ===== 2.1.2. ESTRUCTURA DE DATOS DE SESIÓN =====
     $session_data = [
         'logged_in' => false,
         'user_id' => null,
@@ -14,6 +27,7 @@ function checkSession() {
         'user_role' => ''
     ];
     
+    // ===== 2.1.3. VERIFICAR SI HAY VARIABLES DE SESIÓN =====
     if (isset($_SESSION['usuario_id'])) {
         $session_data = [
             'logged_in' => true,
@@ -22,8 +36,8 @@ function checkSession() {
             'user_role' => $_SESSION['usuario_rol']
         ];
         
-        // LOG: Registrar acceso a página (solo para páginas importantes, para no saturar)
-        // Esto es opcional y puedes activarlo solo para ciertas páginas
+        // ===== 2.1.4. LOGUEAR ACCESO A PÁGINA (OPCIONAL) =====
+        // Esto es opcional y puede activarse solo para ciertas páginas
         if (isset($GLOBALS['log_page_access']) && $GLOBALS['log_page_access'] === true) {
             AppLogger::debug("Acceso a página", [
                 'usuario_id' => $_SESSION['usuario_id'],
@@ -37,15 +51,22 @@ function checkSession() {
     return $session_data;
 }
 
+/* ========== 3. FUNCIÓN DE VERIFICACIÓN DE ROL ========== */
 /**
- * Función para verificar si el usuario tiene un rol específico
+ * ===== 3.1. requireRole() =====
+ * Verifica si el usuario tiene un rol específico
+ * Redirige a login si no está autenticado
+ * @param string $required_role Rol requerido
+ * @return array Datos de sesión si autorizado
  * Uso: requireRole('admin');
  */
 function requireRole($required_role) {
+    // ===== 3.1.1. OBTENER DATOS DE SESIÓN =====
     $session = checkSession();
     
+    // ===== 3.1.2. VERIFICAR SI EL USUARIO ESTÁ LOGUEADO =====
     if (!$session['logged_in']) {
-        // LOG: Intento de acceso sin sesión
+        // Registrar intento de acceso sin sesión
         AppLogger::warning("Intento de acceso sin sesión", [
             'pagina' => $_SERVER['REQUEST_URI'],
             'ip' => $_SERVER['REMOTE_ADDR'],
@@ -56,8 +77,8 @@ function requireRole($required_role) {
         exit;
     }
     
+    // ===== 3.1.3. VERIFICAR SI EL ROL COINCIDE =====
     if ($session['user_role'] !== $required_role) {
-        // LOG: Intento de acceso sin permisos
         AppLogger::warning("Intento de acceso sin permisos", [
             'usuario_id' => $session['user_id'],
             'usuario' => $session['user_name'],

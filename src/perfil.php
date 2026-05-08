@@ -1,4 +1,12 @@
-<?php session_start();?>
+<?php
+/* ==========================================================================
+   PERFIL.PHP - PÁGINA DE PERFIL DEL USUARIO
+   ========================================================================== */
+
+/* ========== 1. INICIAR SESIÓN ========== */
+// ===== 1.1. INICIAR SESIÓN DEL USUARIO =====
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>

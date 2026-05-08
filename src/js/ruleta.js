@@ -39,7 +39,8 @@ class RuletaApp {
     static actualizarRuletaConCircuitos(circuitos) {
         const slots = document.querySelectorAll('.ruleta-slot');
         
-        // Limpiar todos los slots primero
+        // ===== 5.1. LIMPIAR TODOS LOS SLOTS PRIMERO =====
+        // Restaurar slots al estado inicial con placeholder
         slots.forEach(slot => {
             const content = slot.querySelector('.slot-content');
             
@@ -54,7 +55,8 @@ class RuletaApp {
             slot.classList.remove('winner');
         });
         
-        // Llenar los slots con los circuitos seleccionados (SIN badge de ganador)
+        // ===== 5.2. LLENAR LOS SLOTS CON CIRCUITOS SELECCIONADOS =====
+        // Iterar sobre los circuitos seleccionados y poblar cada slot con su contenido
         circuitos.forEach((circuito, index) => {
             if (index < slots.length) {
                 const slot = slots[index];
@@ -80,25 +82,30 @@ class RuletaApp {
             }
         });
         
-        // Añadir event listeners a los botones de eliminar
+        // ===== 5.3. ASIGNAR EVENT LISTENERS A BOTONES DE ELIMINAR =====
+        // Configurar los botones de eliminar para cada slot
         this.addRemoveListeners();
     }
     
     /* ========== 6. GESTIÓN DE BOTONES ELIMINAR ========== */
     static addRemoveListeners() {
+        // ===== 6.1. LIMPIAR LISTENERS ANTERIORES =====
+        // Clonar cada botón para remover listeners duplicados
         document.querySelectorAll('.btn-remove-ruleta').forEach(btn => {
-            // Eliminar listener anterior para evitar duplicados
             btn.replaceWith(btn.cloneNode(true));
         });
         
-        // Añadir nuevos listeners
+        // ===== 6.2. ASIGNAR NUEVOS LISTENERS =====
+        // Añadir listeners a los botones de eliminar circuito
         document.querySelectorAll('.btn-remove-ruleta').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 e.preventDefault();
                 
+                // Obtener ID del circuito a eliminar
                 const id = parseInt(btn.dataset.id);
                 
+                // Buscar el selector del circuito y simulare un click
                 const elementoSelector = document.querySelector(`.circuito-selector[data-circuit-id="${id}"]`);
                 if (elementoSelector) {
                     elementoSelector.click();
@@ -109,23 +116,27 @@ class RuletaApp {
     
     /* ========== 7. FUNCIÓN PRINCIPAL DE GIRAR ========== */
     static async girarRuleta() {
+        // ===== 7.1. VALIDAR QUE NO HAYA UN GIRO EN PROGRESO =====
         if (this.isSpinning) return;
         
+        // ===== 7.2. VALIDAR CANTIDAD DE CIRCUITOS SELECCIONADOS =====
         const circuitos = CircuitosApp?.selectedCircuits || [];
         if (circuitos.length < 2) {
             this.showAlert('Selecciona al menos 2 circuitos en la ruleta', 'warning');
             return;
         }
         
+        // ===== 7.3. PREPARAR ESTADO PARA EL GIRO =====
         this.isSpinning = true;
         this.winners = [];
         this.ultimaTirada = []; // Reiniciar la última tirada
         
+        // ===== 7.4. ACTUALIZAR BOTÓN DE GIRAR =====
         const btnGirar = document.getElementById('btnGirar');
         btnGirar.disabled = true;
         btnGirar.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> GIRANDO...';
         
-        // ===== REINICIAR LOS SLOTS A SU ESTADO ORIGINAL =====
+        // ===== 7.5. REINICIAR SLOTS A ESTADO ORIGINAL =====
         // Quitar clase winner de todos los slots
         document.querySelectorAll('.ruleta-slot').forEach(slot => {
             slot.classList.remove('winner');
@@ -137,13 +148,14 @@ class RuletaApp {
         // Ocultar resultados anteriores
         document.getElementById('resultsSection').style.display = 'none';
         
-        // Iniciar animación
+        // ===== 7.6. INICIAR ANIMACIÓN =====
         this.startSlotAnimation();
         
-        // Simular proceso de selección
+        // ===== 7.7. SIMULAR PROCESO DE SELECCIÓN (3000ms) =====
         setTimeout(() => {
-            // SELECCIONAR SOLO 1 GANADOR ALEATORIO
+            // Seleccionar solo 1 ganador aleatorio
             this.selectSingleWinner(circuitos);
+            // Detener animación de slots
             this.stopSlotAnimation();
             
             // Mostrar el único ganador en el panel de resultados
@@ -156,11 +168,13 @@ class RuletaApp {
             this.spinCount++;
             this.updateSpinCount();
             
+            // ===== 7.8. FINALIZAR GIRO (1500ms después) =====
             setTimeout(() => {
                 this.isSpinning = false;
                 btnGirar.disabled = false;
                 btnGirar.innerHTML = '<i class="fas fa-play me-2"></i> GIRAR RULETA';
                 
+                // Guardar estadísticas si usuario está logueado
                 if (CircuitosApp.isLoggedIn) {
                     this.guardarEstadisticas();
                 }
@@ -181,50 +195,63 @@ class RuletaApp {
         console.log('🏆 ID del ganador:', this.winners[0].id);
     }
     
-    /* ========== 9. ANIMACIONES ========== */
+    /* ========== 9. ANIMACIONES DE SLOTS ========== */
+    /* ===== 9.1. INICIAR ANIMACIÓN DE SLOTS ===== */
     static startSlotAnimation() {
         const slots = document.querySelectorAll('.ruleta-slot');
         let slotIndex = 0;
         
+        // Crear intervalo que itera sobre los slots cada 150ms
         this.animationInterval = setInterval(() => {
+            // Remover clase active de todos los slots
             slots.forEach(slot => slot.classList.remove('active'));
+            // Añadir clase active al slot actual
             slots[slotIndex].classList.add('active');
+            // Incrementar índice de forma cíclica
             slotIndex = (slotIndex + 1) % slots.length;
         }, 150);
     }
     
+    /* ===== 9.2. DETENER ANIMACIÓN DE SLOTS ===== */
     static stopSlotAnimation() {
+        // Limpiar intervalo si existe
         if (this.animationInterval) {
             clearInterval(this.animationInterval);
             this.animationInterval = null;
         }
         
+        // Remover clase active de todos los slots
         document.querySelectorAll('.ruleta-slot').forEach(slot => {
             slot.classList.remove('active');
         });
     }
     
+    /* ===== 9.3. ANIMAR SLOT GANADOR ===== */
     static animateWinner() {
+        // Verificar que haya un ganador seleccionado
         if (this.winners.length === 0) return;
         
         const slots = document.querySelectorAll('.ruleta-slot');
         const winner = this.winners[0];
         
-        // Buscar qué slot contiene al ganador
+        // ===== 9.3.1. BUSCAR Y ANIMAR EL SLOT GANADOR =====
         slots.forEach((slot, index) => {
             const btn = slot.querySelector('.btn-remove-ruleta');
             if (btn) {
                 const circuitoId = parseInt(btn.dataset.id);
+                // Verificar si este slot contiene al ganador
                 if (circuitoId === winner.id) {
-                    // Este slot contiene al ganador
+                    // ===== 9.3.2. APLICAR CLASE WINNER Y ACTUALIZAR CONTENIDO =====
                     setTimeout(() => {
+                        // Añadir clase visual winner
                         slot.classList.add('winner');
                         
-                        // Actualizar el contenido para mostrar que es el ganador (CON badge)
+                        // Obtener referencias necesarias
                         const content = slot.querySelector('.slot-content');
                         const displayName = CircuitosApp.formatCircuitoNombre(winner.nombre);
                         const imageName = CircuitosApp.getCircuitoImageName(winner.nombre);
                         
+                        // ===== 9.3.3. ACTUALIZAR HTML CON BADGE DE GANADOR =====
                         content.innerHTML = `
                             <img src="media/circuitos/${imageName}.jpg" 
                                 alt="${displayName}"
@@ -240,7 +267,7 @@ class RuletaApp {
                             </button>
                         `;
                         
-                        // Reasignar el event listener al nuevo botón
+                        // ===== 9.3.4. REASIGNAR EVENT LISTENER AL NUEVO BOTÓN =====
                         const newBtn = content.querySelector('.btn-remove-ruleta');
                         newBtn.addEventListener('click', (e) => {
                             e.stopPropagation();
@@ -258,12 +285,14 @@ class RuletaApp {
         });
     }
     
-    /* ========== 10. RESULTADOS ========== */
+    /* ========== 10. MOSTRAR RESULTADO ÚNICO ========== */
     static mostrarResultadoUnico() {
+        // ===== 10.1. OBTENER CONTENEDOR DE RESULTADOS =====
         const container = document.getElementById('resultadosGrid');
         
         if (!container) return;
         
+        // ===== 10.2. MOSTRAR ESTADO VACÍO SI NO HAY GANADOR =====
         if (this.winners.length === 0) {
             container.innerHTML = `
                 <div class="empty-state text-center py-5">
@@ -275,10 +304,12 @@ class RuletaApp {
             return;
         }
         
+        // ===== 10.3. OBTENER DATOS DEL GANADOR =====
         const winner = this.winners[0];
         const displayName = CircuitosApp.formatCircuitoNombre(winner.nombre);
         const imageName = CircuitosApp.getCircuitoImageName(winner.nombre);
         
+        // ===== 10.4. RENDERIZAR TARJETA DEL GANADOR =====
         container.innerHTML = `
             <div class="winner-card">
                 <div class="winner-header">
@@ -299,10 +330,12 @@ class RuletaApp {
         `;
     }
     
-    /* ========== 11. RESETEO ========== */
+    /* ========== 11. REINICIAR ESTADOS ========== */
+    /* ===== 11.1. REINICIAR SLOTS AL PLACEHOLDER INICIAL ===== */
     static resetSlots() {
         const slots = document.querySelectorAll('.ruleta-slot');
         
+        // Iterar sobre cada slot y restaurar a su estado inicial
         slots.forEach(slot => {
             const content = slot.querySelector('.slot-content');
             content.innerHTML = `
@@ -317,24 +350,29 @@ class RuletaApp {
         });
     }
     
+    /* ===== 11.2. REINICIAR LA RULETA COMPLETA ===== */
     static resetRuleta() {
+        // ===== 11.2.1. DETENER ANIMACIÓN EN PROGRESO =====
         this.stopSlotAnimation();
         
-        // Restaurar los circuitos seleccionados en la ruleta
+        // ===== 11.2.2. RESTAURAR CIRCUITOS EN SLOTS =====
         const circuitos = CircuitosApp?.selectedCircuits || [];
         this.actualizarRuletaConCircuitos(circuitos);
         
+        // ===== 11.2.3. RESETEAR PROPIEDADES =====
         this.isSpinning = false;
         this.winners = [];
         this.ultimaTirada = [];
         
+        // ===== 11.2.4. RESTAURAR BOTÓN DE GIRAR =====
         const btnGirar = document.getElementById('btnGirar');
         btnGirar.disabled = circuitos.length < 2;
         btnGirar.innerHTML = '<i class="fas fa-play me-2"></i> GIRAR RULETA';
         
+        // ===== 11.2.5. OCULTAR SECCIÓN DE RESULTADOS =====
         document.getElementById('resultsSection').style.display = 'none';
         
-        // Limpiar panel de resultados
+        // ===== 11.2.6. LIMPIAR PANEL DE RESULTADOS =====
         const container = document.getElementById('resultadosGrid');
         if (container) {
             container.innerHTML = `
@@ -351,9 +389,11 @@ class RuletaApp {
     
     /* ========== 12. SISTEMA DE ALERTAS ========== */
     static showAlert(message, type = 'info') {
+        // ===== 12.1. OBTENER CONTENEDOR Y GENERAR ID ÚNICO =====
         const alertContainer = document.getElementById('alertContainer');
         const alertId = 'alert-' + Date.now();
         
+        // ===== 12.2. MAPEAR TIPOS DE ALERTA A ICONOS =====
         const icons = {
             'success': 'check-circle',
             'warning': 'exclamation-triangle',
@@ -361,6 +401,7 @@ class RuletaApp {
             'info': 'info-circle'
         };
         
+        // ===== 12.3. CONSTRUIR HTML DE LA ALERTA =====
         const alertHTML = `
             <div id="${alertId}" class="alert alert-${type} alert-dismissible fade show animate__animated animate__fadeInDown" role="alert">
                 <div class="d-flex align-items-center">
@@ -371,8 +412,10 @@ class RuletaApp {
             </div>
         `;
         
+        // ===== 12.4. INYECTAR ALERTA EN EL DOM =====
         alertContainer.innerHTML = alertHTML;
         
+        // ===== 12.5. REMOVER ALERTA AUTOMÁTICAMENTE DESPUÉS DE 5000MS =====
         setTimeout(() => {
             const alert = document.getElementById(alertId);
             if (alert) {
@@ -381,17 +424,20 @@ class RuletaApp {
         }, 5000);
     }
     
-    /* ========== 13. ESTADÍSTICAS ========== */
+    /* ========== 13. GUARDAR ESTADÍSTICAS ========== */
     static async guardarEstadisticas() {
+        // ===== 13.1. VERIFICAR AUTENTICACIÓN =====
         if (!CircuitosApp.isLoggedIn) {
             console.log('Usuario no logueado, no se guardan estadísticas');
             return;
         }
         
+        // ===== 13.2. OBTENER DATOS A GUARDAR =====
         // Usar ultimaTirada (todos los circuitos) pero necesitamos identificar al ganador
         const datosAGuardar = this.ultimaTirada;
         const ganador = this.winners[0]; // El ganador está en winners
         
+        // ===== 13.3. VALIDAR QUE HAYA DATOS =====
         if (!datosAGuardar || datosAGuardar.length === 0) {
             console.log('No hay datos para guardar');
             return;
@@ -401,6 +447,7 @@ class RuletaApp {
         console.log('Todos los circuitos:', datosAGuardar);
         console.log('Ganador:', ganador);
         
+        // ===== 13.4. ENVIAR PETICIÓN AL BACKEND =====
         try {
             const response = await fetch('../backend/api/guardar_estadisticas.php', {
                 method: 'POST',
@@ -413,6 +460,7 @@ class RuletaApp {
                 })
             });
             
+            // ===== 13.5. PROCESAR RESPUESTA DEL BACKEND =====
             const data = await response.json();
             
             if (data.success) {

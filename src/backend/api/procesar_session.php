@@ -1,14 +1,22 @@
 <?php
-// backend/api/procesar_session.php
+/* ==========================================================================
+   PROCESAR_SESSION.PHP - OBTENER ESTADO DE SESIÓN ACTUAL
+   ========================================================================== */
+
+/* ========== 1. CONFIGURACIÓN ========== */
+// ===== 1.1. ESTABLECER TIPO DE RESPUESTA JSON =====
 header('Content-Type: application/json');
 
-// Incluir el archivo check_session.php desde includes
+/* ========== 2. INCLUIR DEPENDENCIAS ========== */
+// ===== 2.1. INCLUIR FUNCIONES DE SESIÓN =====
 require_once __DIR__ . '/../includes/check_session.php';
 
-// Obtener datos de sesión usando tu función
+/* ========== 3. OBTENER DATOS DE SESIÓN ========== */
+// ===== 3.1. VERIFICAR Y OBTENER SESIÓN =====
 $session = checkSession();
 
-// Devolver los datos en formato JSON
+/* ========== 4. RETORNAR INFORMACIÓN DE SESIÓN ========== */
+// ===== 4.1. DEVOLVER DATOS EN FORMATO JSON =====
 echo json_encode([
     'logged_in' => $session['logged_in'],
     'user_id' => $session['user_id'],

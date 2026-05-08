@@ -1,13 +1,20 @@
 <?php
-// admin/dashboard.php
+/* ==========================================================================
+   DASHBOARD.PHP - PANEL DE ADMINISTRACIÓN
+   ========================================================================== */
+
+/* ========== 1. INCLUIR DEPENDENCIAS ========== */
+// ===== 1.1. INCLUIR VERIFICACIÓN DE SESIÓN Y CONEXIÓN =====
 require_once '../backend/includes/check_session.php';
 require_once '../backend/includes/conexion.php';
 require_once '../backend/includes/logger.php';
 
-// Verificar que es admin
+/* ========== 2. VALIDAR PERMISO DE ADMINISTRADOR ========== */
+// ===== 2.1. VERIFICAR QUE EL USUARIO ES ADMINISTRADOR =====
 $session = requireRole('admin');
 
-// Obtener estadísticas
+/* ========== 3. INICIALIZAR VARIABLES DE ESTADisticas ========== */
+// ===== 3.1. CREAR ARRAY CON EST ADITICAS INICIALES =====
 $stats = [
     'usuarios' => 0,
     'admins' => 0,
@@ -18,16 +25,19 @@ $stats = [
     'logs_hoy' => 0
 ];
 
-// Estadísticas de usuarios
+/* ========== 4. OBTENER DATOS DEL SISTEMA ========== */
+// ===== 4.1. CONTAR USUARIOS TOTALES =====
 $result = $enlace->query("SELECT COUNT(*) as total FROM usuarios");
 if ($result) $stats['usuarios'] = $result->fetch_assoc()['total'];
 
+// ===== 4.2. CONTAR ADMINISTRADORES =====
 $result = $enlace->query("SELECT COUNT(*) as total FROM usuarios WHERE rol='admin'");
 if ($result) $stats['admins'] = $result->fetch_assoc()['total'];
 
+// ===== 4.3. CALCULAR USUARIOS NORMALES =====
 $stats['usuarios_normales'] = $stats['usuarios'] - $stats['admins'];
 
-// Verificar si existen las tablas
+// ===== 4.4. OBTENER COPAS Y CIRCUITOS =====
 $tablas = [
     'copas' => "SELECT COUNT(*) as total FROM copas",
     'circuitos' => "SELECT COUNT(*) as total FROM circuitos"
@@ -40,29 +50,29 @@ foreach ($tablas as $key => $query) {
     }
 }
 
-// Tiradas totales
+// ===== 4.5. OBTENER TIRADAS TOTALES =====
 $result = $enlace->query("SELECT COUNT(*) as total FROM historial_tiradas");
 if ($result) {
     $row = $result->fetch_assoc();
     $stats['tiradas'] = $row['total'] ?? 0;
 } else {
-    // Si la tabla no existe, mostrar 0
     $stats['tiradas'] = 0;
 }
 
-// Logs de hoy - AHORA LEE DEL ARCHIVO EN VEZ DE LA BD
+/* ========== 5. OBTENER LOGS DEL DÍA ========== */
+// ===== 5.1. PROCESAR ARCHIVO DE LOGS =====
 $logsDir = __DIR__ . '/../logs/';
 $fechaHoy = date('Y-m-d');
 $archivoHoy = $logsDir . 'rulemkw-' . $fechaHoy . '.log';
 $stats['logs_hoy'] = 0;
 
 if (file_exists($archivoHoy)) {
-    // Contar líneas del archivo de hoy
     $lineas = file($archivoHoy, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $stats['logs_hoy'] = count($lineas);
 }
 
-// Obtener últimos usuarios registrados
+/* ========== 6. OBTENER USUARIOS RECIENTES ========== */
+// ===== 6.1. CONSULTAR ÚTIMOS USUARIOS REGISTRADOS =====
 $ultimos_usuarios = $enlace->query("
     SELECT usuario, email, fecha_registro 
     FROM usuarios 
@@ -70,16 +80,17 @@ $ultimos_usuarios = $enlace->query("
     LIMIT 5
 ");
 
-// Obtener últimas acciones - AHORA LEE DEL ARCHIVO MÁS RECIENTE
+/* ========== 7. OBTENER ÚTIMOS LOGS ========== */
+// ===== 7.1. BUSCAR ARCHIVO MÁS RECIENTE =====
 $ultimos_logs = [];
 $archivosLog = glob($logsDir . 'rulemkw-*.log');
 if (!empty($archivosLog)) {
-    rsort($archivosLog); // Ordenar por fecha (más reciente primero)
+    rsort($archivosLog);
     $archivoReciente = $archivosLog[0];
     
     if (file_exists($archivoReciente)) {
+        // ===== 7.2. PROCESAR ÚTIMAS LÍNEAS DEL LOG =====
         $lineas = file($archivoReciente, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        // Tomar las últimas 10 líneas (más recientes)
         $ultimasLineas = array_slice($lineas, -10);
         
         foreach ($ultimasLineas as $linea) {
@@ -88,12 +99,19 @@ if (!empty($archivosLog)) {
                 $ultimos_logs[] = $log;
             }
         }
-        // Revertir para mostrar las más recientes primero
+        
+        // ===== 7.3. REVERTIR PARA MOSTRAR MÁS RECIENTES PRIMERO =====
         $ultimos_logs = array_reverse($ultimos_logs);
     }
 }
 
-// Función simple para parsear logs (para el dashboard)
+/* ========== 8. FUNCIÓN AUXILIAR PARA PARSEAR LOGS ========== */
+/**
+ * ===== 8.1. parsearLogLineaSimple() =====
+ * Analiza una línea de log en formato Monolog
+ * @param string $linea Línea a parsear
+ * @return array|null Array con datos del log o null si no coincide
+ */
 function parsearLogLineaSimple($linea) {
     $patron = '/^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\] \w+\.(\w+): (.*?)(\s+\{.*\})?$/';
     

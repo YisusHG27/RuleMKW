@@ -1,19 +1,31 @@
 <?php
+/* ==========================================================================
+   GET_ESTADISTICAS.PHP - OBTENER ESTADÍSTICAS DEL USUARIO
+   ========================================================================== */
+
+/* ========== 1. INICIALIZACIÓN ========== */
+// ===== 1.1. INICIAR SESIÓN Y CONFIGURAR RESPUESTA =====
 session_start();
 header('Content-Type: application/json');
+
+// ===== 1.2. INCLUIR DEPENDENCIAS =====
 require_once '../includes/conexion.php';
 require_once '../includes/check_session.php';
 
+/* ========== 2. VALIDAR AUTORIZACIÓN ========== */
+// ===== 2.1. VERIFICAR SESIÓN DEL USUARIO =====
 $session = checkSession();
 if (!$session['logged_in']) {
     echo json_encode(['success' => false, 'message' => 'No autorizado']);
     exit;
 }
 
+// ===== 2.2. OBTENER ID DEL USUARIO =====
 $usuario_id = $session['user_id'];
 
+/* ========== 3. OBTENER ESTADÍSTICAS ========== */
 try {
-    // SOLO CIRCUITOS QUE HAN GANADO (veces_ganador > 0)
+    // ===== 3.1. CONSULTAR CIRCUITOS GANADORES =====
     $query = "
         SELECT 
             eu.*,
@@ -26,7 +38,6 @@ try {
         AND eu.veces_ganador > 0
         ORDER BY eu.veces_ganador DESC, eu.veces_seleccionado DESC
     ";
-    
     $stmt = $enlace->prepare($query);
     $stmt->bind_param("i", $usuario_id);
     $stmt->execute();
@@ -34,12 +45,11 @@ try {
     
     $estadisticas = [];
     while ($row = $result->fetch_assoc()) {
-        // Formatear nombre del circuito
         $row['circuito_nombre_formateado'] = formatearNombreCircuito($row['circuito_nombre']);
         $estadisticas[] = $row;
     }
     
-    // Calcular total de VECES GIRADO (contando registros en historial_tiradas)
+    // ===== 3.2. CALCULAR TOTALES =====
     $query_veces_girado = "SELECT COUNT(*) as total FROM historial_tiradas WHERE usuario_id = ?";
     $stmt_girado = $enlace->prepare($query_veces_girado);
     $stmt_girado->bind_param("i", $usuario_id);
@@ -47,7 +57,6 @@ try {
     $result_girado = $stmt_girado->get_result();
     $veces_girado = $result_girado->fetch_assoc()['total'];
     
-    // Calcular total de VECES GANADOR (suma de veces_ganador de todos los circuitos)
     $query_veces_ganador = "SELECT SUM(veces_ganador) as total FROM estadisticas_usuario WHERE usuario_id = ?";
     $stmt_ganador = $enlace->prepare($query_veces_ganador);
     $stmt_ganador->bind_param("i", $usuario_id);
@@ -74,7 +83,6 @@ try {
     ]);
 }
 
-// Función auxiliar para formatear nombres de circuitos
 function formatearNombreCircuito($nombre) {
     $cambios = [
         'CanionFerroviario' => 'Cañón Ferroviario',

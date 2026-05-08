@@ -1,27 +1,43 @@
 <?php
+/* ==========================================================================
+   LOGS.PHP - VISOR DE LOGS DEL SISTEMA
+   ========================================================================== */
+
+/* ========== 1. INCLUIR DEPENDENCIAS ========== */
+// ===== 1.1. INCLUIR SIDEBAR Y BD =====
 require_once 'layout/sidebar.php';
 require_once '../backend/includes/conexion.php';
 
-// Verificar que es admin
+/* ========== 2. VALIDAR PERMISOS DE ADMINISTRADOR ========== */
+// ===== 2.1. VERIFICAR QUE EL USUARIO ES ADMINISTRADOR =====
 if (!isset($_SESSION['usuario_rol']) || $_SESSION['usuario_rol'] !== 'admin') {
     header('Location: /login.php');
     exit;
 }
 
-// Configuración
+/* ========== 3. CONFIGURACIÓN DE PÁGINACIÓN Y FILTROS ========== */
+// ===== 3.1. VARIABLES DE CONFIGURACIÓN =====
 $logsDir = __DIR__ . '/../logs/';
 $limite = 50;
 $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+
+// ===== 3.2. OBTENER PARÁMETROS DE FILTRO =====
 $filtroTipo = $_GET['tipo'] ?? '';
 $filtroAccion = $_GET['accion'] ?? '';
 $filtroUsuario = $_GET['usuario_id'] ?? '';
 $filtroBusqueda = $_GET['busqueda'] ?? '';
 $filtroFecha = $_GET['fecha'] ?? '';
 
-// Obtener lista de usuarios para el filtro
+// ===== 3.3. OBTENER LISTA DE USUARIOS PARA FILTRO =====
 $usuarios = $enlace->query("SELECT id, usuario FROM usuarios ORDER BY usuario");
 
-// Función para parsear una línea de log
+/* ========== 4. FUNCIÓN PARA PARSEAR LOGS ========== */
+/**
+ * ===== 4.1. parsearLogLinea() =====
+ * Analiza una línea de log del archivo
+ * @param string $linea Línea a analizar
+ * @return array|null Datos del log o null si no coincide
+ */
 function parsearLogLinea($linea) {
     $patron = '/^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\] \w+\.(\w+): (.*?)(\s+\{.*\})?$/';
     

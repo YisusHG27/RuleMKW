@@ -1,24 +1,35 @@
 <?php
-// Iniciar sesión si no está iniciada
+/* ==========================================================================
+   GENERAR_NAVBAR.PHP - GENERAR BARRA DE NAVEGACIÓN DINÁMICA
+   ========================================================================== */
+
+/* ========== 1. INICIAR SESIÓN ========== */
+// ===== 1.1. VERIFICAR Y INICIAR SESIÓN =====
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Si el usuario está logueado, obtener su foto de perfil y rol
+/* ========== 2. INICIALIZAR VARIABLES ========== */
+// ===== 2.1. VARIABLES PARA AUTENTICACIÓN Y PERFIL =====
 $foto_perfil = null;
 $inicial_nombre = '';
 $es_admin = false;
 
+/* ========== 3. OBTENER DATOS DEL USUARIO LOGUEADO ========== */
+// ===== 3.1. VERIFICAR SI HAY USUARIO AUTENTICADO =====
 if (isset($_SESSION['usuario_id'])) {
-    // Conectar a la base de datos para obtener la foto
+    // ===== 3.2. INCLUIR CONEXIÓN A LA BD =====
     require_once __DIR__ . '/conexion.php';
     $usuario_id = $_SESSION['usuario_id'];
     $nombre_usuario = $_SESSION['usuario_nombre'];
+    
+    // ===== 3.3. VERIFICAR SI ES ADMINISTRADOR =====
     $es_admin = ($_SESSION['usuario_rol'] === 'admin');
     
-    // Obtener primera letra del nombre para el avatar de texto
+    // ===== 3.4. OBTENER INICIAL DEL NOMBRE =====
     $inicial_nombre = strtoupper(substr($nombre_usuario, 0, 1));
     
+    // ===== 3.5. OBTENER FOTO DE PERFIL DE LA BD =====
     $query = "SELECT foto_perfil FROM usuarios WHERE id = ?";
     $stmt = $enlace->prepare($query);
     $stmt->bind_param("i", $usuario_id);
@@ -41,11 +52,6 @@ if (isset($_SESSION['usuario_id'])) {
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" href="index.php">
-                        <i class="fas fa-home me-1"></i> Inicio
-                    </a>
-                </li>
                 <?php if(isset($_SESSION['usuario_id'])): ?>
                 <li class="nav-item">
                     <a class="nav-link" href="perfil.php">
@@ -212,18 +218,51 @@ if (isset($_SESSION['usuario_id'])) {
             width: 35px;
             height: 35px;
         }
-        
+
         .avatar-inicial {
             font-size: 1.1rem;
         }
-        
+
         .navbar-user-name {
             font-size: 1rem;
         }
-        
+
         .nav-link[href*="admin"] {
             margin-left: 0;
             margin-top: 5px;
+        }
+
+        /* Más separación entre elementos en móvil */
+        .navbar .container {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        .navbar-nav {
+            gap: 6px;
+            align-items: center;
+        }
+
+        .navbar-nav .nav-link {
+            padding: 6px 8px;
+            margin-right: 4px;
+        }
+
+        .navbar-nav .btn {
+            margin: 2px 4px !important;
+        }
+
+        /* Más separación superior para los botones (Iniciar sesión / Registro) en móvil */
+        .navbar-nav .nav-link.btn {
+            margin-top: 8px;
+        }
+
+        .navbar-avatar-container {
+            margin-right: 8px;
+        }
+
+        .navbar-user-name {
+            margin-left: 6px;
         }
     }
 </style>

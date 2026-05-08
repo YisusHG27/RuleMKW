@@ -1,0 +1,3 @@
+[2026-05-03 18:10:29] rulemkw.INFO: Login exitoso {"usuario_id":1,"usuario":"admin","rol":"admin","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Mobile Safari/537.36"}
+[2026-05-03 18:10:29] rulemkw.INFO: Acceso al dashboard de administración {"usuario_id":1,"usuario":"admin"}
+[2026-05-03 18:19:29] rulemkw.INFO: Usuario cerró sesión {"usuario_id":1,"usuario":"admin","rol":"admin","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Mobile Safari/537.36","metodo":"logout_manual"}

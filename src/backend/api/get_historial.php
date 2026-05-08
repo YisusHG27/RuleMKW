@@ -1,9 +1,15 @@
 <?php
+/* ==========================================================================
+   GET_HISTORIAL.PHP - OBTENER HISTORIAL DE TIRADAS DEL USUARIO
+   ========================================================================== */
+
+/* ========== 1. INICIALIZACIÓN ========== */
 session_start();
 header('Content-Type: application/json');
 require_once '../includes/conexion.php';
 require_once '../includes/check_session.php';
 
+/* ========== 2. VALIDAR AUTORIZACIÓN ========== */
 $session = checkSession();
 if (!$session['logged_in']) {
     echo json_encode(['success' => false, 'message' => 'No autorizado']);
@@ -12,6 +18,7 @@ if (!$session['logged_in']) {
 
 $usuario_id = $session['user_id'];
 
+/* ========== 3. OBTENER HISTORIAL ========== */
 try {
     $query = "
         SELECT 
@@ -40,7 +47,6 @@ try {
     
     $historial = [];
     while ($row = $result->fetch_assoc()) {
-        // Crear array con todos los circuitos (filtrando nulls)
         $circuitos = [];
         if ($row['circuito1']) $circuitos[] = formatearNombreCircuito($row['circuito1']);
         if ($row['circuito2']) $circuitos[] = formatearNombreCircuito($row['circuito2']);
@@ -68,7 +74,6 @@ try {
     ]);
 }
 
-// Función auxiliar para formatear nombres de circuitos
 function formatearNombreCircuito($nombre) {
     if (!$nombre) return '';
     

@@ -1,18 +1,28 @@
 <?php
+/* ==========================================================================
+   USUARIOS.PHP - GESTIÓN DE USUARIOS DEL ADMINISTRADOR
+   ========================================================================== */
+
+/* ========== 1. INCLUIR COMPONENTES ========== */
+// ===== 1.1. INCLUIR SIDEBAR Y DEPENDENCIAS =====
 require_once 'layout/sidebar.php';
 require_once '../backend/includes/conexion.php';
-require_once '../backend/includes/Logger.php'; // Añadido para logs
+require_once '../backend/includes/Logger.php';
 
+/* ========== 2. INICIALIZAR VARIABLES ========== */
+// ===== 2.1. VARIABLES DE MENSAJE =====
 $mensaje = '';
-$tipo_mensaje = 'success'; // success, error, warning
+$tipo_mensaje = 'success';
 
-// Verificar que es admin (seguridad adicional)
+/* ========== 3. VALIDAR PERMISOS DE ADMINISTRADOR ========== */
+// ===== 3.1. VERIFICAR QUE EL USUARIO ES ADMINISTRADOR =====
 if (!isset($_SESSION['usuario_rol']) || $_SESSION['usuario_rol'] !== 'admin') {
     header('Location: /index.php');
     exit;
 }
 
-// Procesar acciones
+/* ========== 4. PROCESAR ACCIONES DEL FORMULARIO ========== */
+// ===== 4.1. VERIFICAR MÉTODO POST =====
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
         switch ($_POST['action']) {

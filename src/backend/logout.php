@@ -1,13 +1,23 @@
 <?php
-session_start();
-require_once 'includes/Logger.php'; // Añadido para logging
+/* ==========================================================================
+   LOGOUT.PHP - CIERRE DE SESIÓN DE USUARIO
+   ========================================================================== */
 
-// Guardar información del usuario ANTES de destruir la sesión
+/* ========== 1. INICIALIZACIÓN ========== */
+// ===== 1.1. INICIAR SESIÓN PARA ACCEDER A VARIABLES =====
+session_start();
+
+// ===== 1.2. INCLUIR DEPENDENCIAS =====
+require_once 'includes/Logger.php';
+
+/* ========== 2. GUARDAR DATOS DE USUARIO ANTES DE DESTRUIR SESIÓN ========== */
+// ===== 2.1. OBTENER INFORMACIÓN DEL USUARIO ACTUAL =====
 $usuario_id = $_SESSION['usuario_id'] ?? null;
 $usuario_nombre = $_SESSION['usuario_nombre'] ?? 'Desconocido';
 $usuario_rol = $_SESSION['usuario_rol'] ?? 'sin_rol';
 
-// LOG: Registrar cierre de sesión
+/* ========== 3. REGISTRAR CIERRE DE SESIÓN EN LOG ========== */
+// ===== 3.1. SI HAY USUARIO LOGUEADO =====
 if ($usuario_id) {
     AppLogger::info("Usuario cerró sesión", [
         'usuario_id' => $usuario_id,
@@ -18,17 +28,18 @@ if ($usuario_id) {
         'metodo' => 'logout_manual'
     ]);
 } else {
-    // Caso raro: alguien llama a logout.php sin sesión activa
+    // ===== 3.2. CASO RARO: INTENTO DE LOGOUT SIN SESIÓN =====
     AppLogger::warning("Intento de cerrar sesión sin sesión activa", [
         'ip' => $_SERVER['REMOTE_ADDR'],
         'user_agent' => $_SERVER['HTTP_USER_AGENT']
     ]);
 }
 
-// Destruir todas las variables de sesión
+/* ========== 4. DESTRUIR LA SESIÓN ========== */
+// ===== 4.1. VACIAR TODAS LAS VARIABLES DE SESIÓN =====
 $_SESSION = array();
 
-// Destruir la cookie de sesión
+// ===== 4.2. DESTRUIR COOKIE DE SESIÓN =====
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();
     setcookie(session_name(), '', time() - 42000,
@@ -37,13 +48,14 @@ if (ini_get("session.use_cookies")) {
     );
 }
 
-// Finalmente, destruir la sesión
+// ===== 4.3. DESTRUIR LA SESIÓN COMPLETAMENTE =====
 session_destroy();
 
-// Pequeña pausa para asegurar que el log se guarde (opcional)
+/* ========== 5. PAUSAR Y REDIRIGIR ========== */
+// Pequeña pausa para asegurar que el log se guarde
 usleep(100000); // 0.1 segundos
 
-// Redirigir al login
+// ===== 5.1. REDIRIGIR AL LOGIN =====
 header("Location: login.php");
 exit();
 ?>

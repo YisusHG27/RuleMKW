@@ -1,8 +1,14 @@
 <?php
-// Iniciar sesión solo si existe
+// ========================================================================== 
+// INDEX.PHP - PÁGINA PRINCIPAL CON RULETA DE CIRCUITOS
+// ========================================================================== 
+
+/* ========== 1. INICIALIZACIÓN ========== */
+// ===== 1.1. INICIAR SESIÓN =====
 session_start();
 
-// ========== GESTIÓN DE COOKIES CON PHP ==========
+/* ========== 2. GESTIÓN DE COOKIES CON PHP ========== */
+// ===== 2.1. VERIFICAR CONSENTIMIENTO DE COOKIES =====
 $mostrar_banner_cookies = false;
 $cookie_consent = $_COOKIE['cookie_consent'] ?? null;
 
@@ -11,11 +17,14 @@ if (!$cookie_consent) {
     $mostrar_banner_cookies = true;
 }
 
-// Procesar si un usuario a aceptado o rechazado las cookies
+/* ========== 3. PROCESAR ACCIÓN DE COOKIES ========== */
+// ===== 3.1. GESTIONAR ACEPTACIÓN O RECHAZO DE COOKIES =====
 if (isset($_GET['cookie_action'])) {
     $action = $_GET['cookie_action'];
+    // Establecer expiración en 1 año
     $expires = time() + (365 * 24 * 60 * 60);
     
+    // ===== 3.2. SI EL USUARIO ACEPTA LAS COOKIES =====
     if ($action === 'accept') {
         setcookie('cookie_consent', 'accepted', $expires, '/');
         
@@ -23,14 +32,15 @@ if (isset($_GET['cookie_action'])) {
         $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
         $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? 'Desconocido';
         
-        // Para guardar en un archivo de log
         $log_entry = date('Y-m-d H:i:s') . " - Cookie aceptada - IP: $ip - User Agent: $user_agent\n";
         file_put_contents(__DIR__ . '/logs/cookies.log', $log_entry, FILE_APPEND);
         
         // Redirigir para quitar el parámetro de la URL
         header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?'));
         exit;
-    } elseif ($action === 'reject') {
+    } 
+    // ===== 3.3. SI EL USUARIO RECHAZA LAS COOKIES =====
+    elseif ($action === 'reject') {
         setcookie('cookie_consent', 'rejected', $expires, '/');
         
         // Registrar log de cookie rechazada

@@ -1,23 +1,32 @@
 <?php
-// backend/api/log_cookie.php
+/* ==========================================================================
+   LOG_COOKIE.PHP - REGISTRAR EVENTOS DE CONSENTIMIENTO DE COOKIES
+   ========================================================================== */
+
+/* ========== 1. INICIALIZACIÓN ========== */
+// ===== 1.1. CONFIGURAR RESPUESTA JSON =====
 header('Content-Type: application/json');
 
-// Incluir el logger
+// ===== 1.2. INCLUIR LOGGER =====
 require_once __DIR__ . '/../includes/Logger.php';
 
-// Obtener datos del POST
+/* ========== 2. OBTENER DATOS DEL CLIENTE ========== */
+// ===== 2.1. DECODIFICAR JSON RECIBIDO =====
 $input = json_decode(file_get_contents('php://input'), true);
 
+// ===== 2.2. VALIDAR QUE HAY DATOS =====
 if (!$input) {
+    // ===== 2.2.1. ERROR: NO HAY DATOS =====
     http_response_code(400);
     echo json_encode(['error' => 'No data received']);
     exit;
 }
 
-// Obtener IP del usuario
+/* ========== 3. EXTRAER INFORMACIÓN DEL CLIENTE ========== */
+// ===== 3.1. OBTENER IP DEL USUARIO =====
 $ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 
-// Preparar contexto para el log
+// ===== 3.2. PREPARAR CONTEXTO PARA EL LOG =====
 $context = [
     'accion' => $input['accion'] ?? 'desconocida',
     'ip' => $ip_address,
@@ -27,8 +36,11 @@ $context = [
     'timestamp' => $input['timestamp'] ?? date('Y-m-d H:i:s')
 ];
 
-// Registrar el log
+/* ========== 4. REGISTRAR EVENTO =====*/
+// ===== 4.1. LOGUEAR CONSENTIMIENTO DE COOKIES =====
 AppLogger::cookie($context['accion'], $context);
 
-// Respuesta exitosa
+/* ========== 5. RETORNAR CONFIRMACIÓN ========== */
+// ===== 5.1. RESPUESTA EXITOSA =====
 echo json_encode(['success' => true, 'message' => 'Cookie consent logged']);
+?>

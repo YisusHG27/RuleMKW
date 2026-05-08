@@ -1,41 +1,52 @@
 <?php
+/* ========================================================================== 
+   LOGIN.PHP - VALIDACIÓN Y AUTENTICACIÓN DE USUARIOS
+   ========================================================================== */
+
+/* ========== 1. INICIALIZACIÓN ========== */
+// ===== 1.1. INICIAR SESIÓN =====
 session_start();
+
+// ===== 1.2. INCLUIR DEPENDENCIAS =====
 include 'includes/conexion.php';
 require_once 'includes/Logger.php';
 
+/* ========== 2. VARIABLES GLOBALES ========== */
 $error = '';
 
+/* ========== 3. PROCESAR FORMULARIO DE LOGIN ========== */
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
     
-    // Validar que los campos no estén vacíos
+    // ===== 3.1. VALIDAR QUE LOS CAMPOS NO ESTÉN VACÍOS =====
     if (empty($_POST["email"]) || empty($_POST["password"])) {
         $error = "Por favor complete todos los campos";
         AppLogger::warning("Intento de login con campos vacíos", [
             'ip' => $_SERVER['REMOTE_ADDR']
         ]);
     } else {
-        // Limpiar datos
+        // ===== 3.2. LIMPIAR DATOS DE ENTRADA =====
         $email = trim($_POST["email"]);
         $password = $_POST["password"];
         
-        // Preparar la consulta con sentencias preparadas
+        // ===== 3.3. BUSCAR USUARIO EN LA BD CON SENTENCIA PREPARADA =====
         $stmt = $enlace->prepare("SELECT id, usuario, pass, rol FROM usuarios WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $resultado = $stmt->get_result();
         
+        // ===== 3.4. VERIFICAR SI EL USUARIO EXISTE =====
         if ($resultado->num_rows == 1) {
             $fila = $resultado->fetch_assoc();
             
-            // Verificar contraseña con password_verify
+            // ===== 3.5. VERIFICAR CONTRASEÑA CON HASH =====
             if (password_verify($password, $fila['pass'])) {
-                // Iniciar sesión
+                // ===== 3.6. CREAR SESIÓN EXITOSA =====
                 $_SESSION['usuario_id'] = $fila['id'];
                 $_SESSION['usuario_nombre'] = $fila['usuario'];
                 $_SESSION['usuario_rol'] = $fila['rol'];
                 $_SESSION['usuario_email'] = $email;
                 
-                // LOG: Login exitoso
+                // ===== 3.7. REGISTRAR LOGIN EXITOSO EN LOG =====
                 AppLogger::info("Login exitoso", [
                     'usuario_id' => $fila['id'],
                     'usuario' => $fila['usuario'],
@@ -44,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
                     'user_agent' => $_SERVER['HTTP_USER_AGENT']
                 ]);
                 
-                // Redirigir
+                // ===== 3.8. REDIRIGIR SEGÚN ROL =====
                 if ($fila['rol'] === 'admin') {
                     header("Location: /admin/dashboard.php");
                 } else {
@@ -52,8 +63,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
                 }
                 exit();
             } else {
+                // ===== 3.9. CONTRASEÑA INCORRECTA =====
                 $error = "Correo o contraseña incorrectos";
-                // LOG: Contraseña incorrecta
                 AppLogger::warning("Intento de login fallido - contraseña incorrecta", [
                     'email' => $email,
                     'ip' => $_SERVER['REMOTE_ADDR'],
@@ -61,8 +72,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
                 ]);
             }
         } else {
+            // ===== 3.10. EMAIL NO REGISTRADO =====
             $error = "Correo o contraseña incorrectos";
-            // LOG: Email no encontrado
             AppLogger::warning("Intento de login fallido - email no registrado", [
                 'email' => $email,
                 'ip' => $_SERVER['REMOTE_ADDR'],
@@ -74,8 +85,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-iniciar"])) {
     }
 }
 
-// Si ya está logueado, redirigir
+/* ========== 4. VERIFICAR SI USUARIO YA ESTÁ LOGUEADO ========== */
+// Si ya está logueado, redirigir a la página correspondiente
 if (isset($_SESSION['usuario_id'])) {
+    // ===== 4.1. REDIRIGIR SEGÚN ROL =====
     if ($_SESSION['usuario_rol'] === 'admin') {
         header("Location: /admin/dashboard.php");
     } else {

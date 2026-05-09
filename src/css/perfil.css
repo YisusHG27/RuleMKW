@@ -217,10 +217,9 @@
     white-space: nowrap;
 }
 
-/* Anchos fijos para cada columna */
 .table th:nth-child(1), 
 .table td:nth-child(1) {
-    width: 110px; /* Aumentado para fecha completa */
+    width: 110px;
     min-width: 110px;
     max-width: 110px;
 }
@@ -232,7 +231,7 @@
 
 .table th:nth-child(3), 
 .table td:nth-child(3) {
-    width: 220px; /* Aumentado para nombre completo sin puntos */
+    width: 220px;
     min-width: 220px;
     max-width: 220px;
 }
@@ -241,29 +240,29 @@
     padding: 12px 10px;
     vertical-align: middle;
     border-bottom: 1px solid #e9ecef;
-    height: 60px; /* Altura fija */
-    white-space: nowrap; /* Todo en una línea */
-    overflow: visible; /* Cambiado de hidden a visible */
-    text-overflow: clip; /* Cambiado de ellipsis a clip */
+    height: 60px;
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
 }
 
 .table td:first-child {
     white-space: nowrap;
     font-family: monospace;
-    font-size: 0.9rem; /* Aumentado ligeramente */
+    font-size: 0.9rem;
 }
 
 .circuitos-lista {
     display: flex;
     gap: 4px;
-    overflow-x: auto; /* Scroll horizontal si hay muchos circuitos */
+    overflow-x: auto;
     white-space: nowrap;
     padding-bottom: 2px;
     width: 100%;
 }
 
 .circuitos-lista .badge {
-    background: #4ECDC4; /* Color turquesa */
+    background: #4ECDC4;
     color: white;
     padding: 4px 10px;
     font-size: 0.75rem;
@@ -284,19 +283,19 @@
 }
 
 .table td:last-child .badge {
-    width: 200px; /* Ancho suficiente para nombre completo */
+    width: 200px;
     text-align: left;
     display: inline-block;
     white-space: nowrap;
-    overflow: visible; /* Cambiado de hidden a visible */
-    text-overflow: clip; /* Cambiado de ellipsis a clip */
-    padding: 6px 15px; /* Aumentado padding derecho */
-    font-size: 0.9rem; /* Aumentado */
-    background: #FFD166; /* Amarillo */
+    overflow: visible;
+    text-overflow: clip;
+    padding: 6px 15px;
+    font-size: 0.9rem;
+    background: #FFD166;
     color: #2D3047;
     font-weight: 600;
     border-radius: 20px;
-    box-sizing: border-box; /* Asegura que el padding se incluya en el ancho */
+    box-sizing: border-box;
 }
 
 .table-responsive {
@@ -306,7 +305,7 @@
 }
 
 .table tbody tr {
-    height: calc(365px / 5 - 2px); /* Altura total / 5 filas - bordes */
+    height: calc(365px / 5 - 2px);
     min-height: 70px;
 }
 

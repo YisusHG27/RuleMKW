@@ -186,13 +186,13 @@ class RuletaApp {
     static selectSingleWinner(circuitos) {
         // Guardar la tirada completa para el historial (EN EL MISMO ORDEN)
         this.ultimaTirada = [...circuitos]; // Copia del array original
-        console.log('📋 Tirada completa guardada:', this.ultimaTirada);
+        console.log('Tirada completa guardada:', this.ultimaTirada);
         
         // Seleccionar SOLO 1 circuito aleatorio para mostrar como ganador
         const randomIndex = Math.floor(Math.random() * circuitos.length);
         this.winners = [circuitos[randomIndex]];
-        console.log('🏆 Ganador seleccionado:', this.winners[0]);
-        console.log('🏆 ID del ganador:', this.winners[0].id);
+        console.log('Ganador seleccionado:', this.winners[0]);
+        console.log('ID del ganador:', this.winners[0].id);
     }
     
     /* ========== 9. ANIMACIONES DE SLOTS ========== */

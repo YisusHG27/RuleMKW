@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: mysql:3306
--- Tiempo de generación: 28-04-2026 a las 19:23:45
+-- Tiempo de generación: 09-05-2026 a las 17:37:28
 -- Versión del servidor: 8.0.45
 -- Versión de PHP: 8.3.26
 
@@ -279,7 +279,7 @@ ALTER TABLE `historial_tiradas`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Restricciones para tablas volcadas

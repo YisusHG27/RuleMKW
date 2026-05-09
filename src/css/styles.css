@@ -537,8 +537,8 @@ body {
 
 /* ========== 9.1. ESTILOS PARA EL GANADOR (MÁS GRANDE Y CENTRADO) ========== */
 .winner-card {
-    grid-column: 1 / -1; /* Ocupa toda la columna */
-    justify-self: center; /* Centrado horizontal */
+    grid-column: 1 / -1;
+    justify-self: center;
     background: white;
     border-radius: 20px;
     overflow: hidden;
@@ -552,16 +552,16 @@ body {
 }
 
 .winner-card .selected-circuito-image {
-    height: 200px; /* Imagen más grande */
+    height: 200px;
 }
 
 .winner-card .selected-circuito-info h6 {
-    font-size: 1.2rem; /* Texto más grande */
-    white-space: normal; /* Permite que el texto se rompa en varias líneas */
+    font-size: 1.2rem;
+    white-space: normal;
 }
 
 .winner-card .selected-circuito-info small {
-    font-size: 0.9rem; /* Texto más grande */
+    font-size: 0.9rem;
 }
 
 .winner-badge {
@@ -1013,7 +1013,7 @@ body {
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     border: 4px solid #FFD700;
-    max-width: 400px;  /* Mismo ancho */
+    max-width: 400px;
     width: 100%;
     margin: 0 auto;
     animation: winnerAppear 0.5s ease-out;
@@ -1021,22 +1021,22 @@ body {
 
 .winner-header {
     background: #FFD700;
-    padding: 12px 20px;  /* Reducido de 15px a 12px */
+    padding: 12px 20px;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;  /* Reducido de 10px a 8px */
+    gap: 8px;
     border-bottom: 2px solid rgba(0,0,0,0.1);
 }
 
 .winner-crown {
-    font-size: 1.6rem;  /* Reducido de 1.8rem a 1.6rem */
+    font-size: 1.6rem;
     line-height: 1;
 }
 
 .winner-title {
-    font-size: 1.4rem;  /* Reducido de 1.5rem a 1.4rem */
+    font-size: 1.4rem;
     font-weight: 700;
     color: #000;
     letter-spacing: 1px;
@@ -1044,7 +1044,7 @@ body {
 
 .winner-image-container {
     width: 100%;
-    height: 200px;  /* Reducido de 250px a 200px */
+    height: 200px;
     overflow: hidden;
     background: #f5f5f5;
     display: flex;
@@ -1060,20 +1060,20 @@ body {
 }
 
 .winner-info {
-    padding: 15px 15px;  /* Reducido de 20px a 15px */
+    padding: 15px 15px;
     text-align: center;
     background: white;
 }
 
 .winner-name {
-    font-size: 1.3rem;  /* Reducido de 1.4rem a 1.3rem */
+    font-size: 1.3rem;
     font-weight: 600;
-    margin: 0 0 5px 0;  /* Reducido de 8px a 5px */
+    margin: 0 0 5px 0;
     color: #2D3047;
 }
 
 .winner-copa {
-    font-size: 1rem;  /* Reducido de 1.1rem a 1rem */
+    font-size: 1rem;
     color: #6c757d;
     margin: 0;
     font-weight: 400;
@@ -1146,7 +1146,7 @@ body {
     }
     
     .winner-image-container {
-        height: 160px;  /* Ajustado */
+        height: 160px;
     }
     
     .winner-header {

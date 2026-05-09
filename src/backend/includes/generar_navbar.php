@@ -252,7 +252,6 @@ if (isset($_SESSION['usuario_id'])) {
             margin: 2px 4px !important;
         }
 
-        /* Más separación superior para los botones (Iniciar sesión / Registro) en móvil */
         .navbar-nav .nav-link.btn {
             margin-top: 8px;
         }

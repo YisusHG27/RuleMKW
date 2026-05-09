@@ -1,16 +1,16 @@
-Antes de intentar ejecutar a la aplicacion has de realizar varias cosas
+Antes de intentar ejecutar la aplicación, tienes que realizar varias cosas.
 
-## Tendrás que descargar docker desktop a traves de la página de docker
+## Tendrás que descargar Docker Desktop a través de la página de Docker
 [Página de Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
-luego inicias docker desktop
+Luego, inicia Docker Desktop.
 
-## Dentro de una terminal tendras que dirigirte a la carpeta raiz del proyecto y poner distintos comandos para distintas cosas:
+## Dentro de una terminal, tendrás que dirigirte a la carpeta raíz del proyecto y usar distintos comandos para distintas cosas:
 
-# Para iniciar docker y poder ir a la página
+### Para iniciar Docker y poder ir a la página
 
-docker-compose up
+docker-compose up -d --build
 
-# Para finalizr docker
+### Para finalizar Docker
 
 docker-compose down

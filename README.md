@@ -5,7 +5,7 @@ Antes de intentar ejecutar la aplicación, tienes que realizar varias cosas.
 
 Luego, inicia Docker Desktop.
 
-## Dentro de una terminal, tendrás que dirigirte a la carpeta raíz del proyecto y usar distintos comandos para distintas cosas:
+## Dentro de una terminal, tendrás que dirigirte a la carpeta raíz del proyecto y usar distintos comandos:
 
 ### Para iniciar Docker y poder ir a la página
 

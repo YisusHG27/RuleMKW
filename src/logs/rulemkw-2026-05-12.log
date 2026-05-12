@@ -1,0 +1,11 @@
+[2026-05-12 17:28:40] rulemkw.INFO: Login exitoso {"usuario_id":1,"usuario":"admin","rol":"admin","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-12 17:28:40] rulemkw.INFO: Acceso al dashboard de administración {"usuario_id":1,"usuario":"admin"}
+[2026-05-12 17:40:55] rulemkw.INFO: Usuario cerró sesión {"usuario_id":1,"usuario":"admin","rol":"admin","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36","metodo":"logout_manual"}
+[2026-05-12 17:41:33] rulemkw.INFO: Nuevo usuario registrado {"usuario_id":7,"usuario":"Carol","email":"soycarol22@gmail.com","es_admin":false,"ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-12 17:42:36] rulemkw.INFO: Estadísticas guardadas exitosamente {"usuario_id":7,"usuario":"Carol","ganador_id":8,"total_circuitos":4,"ip":"172.18.0.1"}
+[2026-05-12 17:42:56] rulemkw.INFO: Estadísticas guardadas exitosamente {"usuario_id":7,"usuario":"Carol","ganador_id":7,"total_circuitos":4,"ip":"172.18.0.1"}
+[2026-05-12 17:43:12] rulemkw.INFO: Foto de perfil actualizada {"usuario_id":7,"usuario":"Carol","foto":"perfil_7_1778600592.jpg"}
+[2026-05-12 17:43:26] rulemkw.INFO: Usuario cerró sesión {"usuario_id":7,"usuario":"Carol","rol":"usuario","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36","metodo":"logout_manual"}
+[2026-05-12 17:43:31] rulemkw.INFO: Login exitoso {"usuario_id":1,"usuario":"admin","rol":"admin","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-12 17:43:31] rulemkw.INFO: Acceso al dashboard de administración {"usuario_id":1,"usuario":"admin"}
+[2026-05-12 17:45:59] rulemkw.INFO: Usuario cerró sesión {"usuario_id":1,"usuario":"admin","rol":"admin","ip":"172.18.0.1","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36","metodo":"logout_manual"}

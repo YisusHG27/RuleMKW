@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: mysql:3306
--- Tiempo de generación: 09-05-2026 a las 17:37:28
+-- Tiempo de generación: 12-05-2026 a las 15:48:18
 -- Versión del servidor: 8.0.45
 -- Versión de PHP: 8.3.26
 
@@ -135,7 +135,11 @@ INSERT INTO `estadisticas_usuario` (`id`, `usuario_id`, `circuito_id`, `veces_se
 (16, 4, 8, 2, 1, '2026-04-28 18:37:31', '2026-04-28 18:37:22'),
 (17, 4, 6, 2, 1, '2026-04-28 18:37:31', '2026-04-28 18:37:22'),
 (18, 4, 28, 2, 0, '2026-04-28 18:37:31', '2026-04-28 18:37:22'),
-(19, 4, 25, 2, 0, '2026-04-28 18:37:31', '2026-04-28 18:37:22');
+(19, 4, 25, 2, 0, '2026-04-28 18:37:31', '2026-04-28 18:37:22'),
+(20, 7, 8, 2, 1, '2026-05-12 15:42:56', '2026-05-12 15:42:36'),
+(21, 7, 7, 2, 1, '2026-05-12 15:42:56', '2026-05-12 15:42:36'),
+(22, 7, 6, 2, 0, '2026-05-12 15:42:56', '2026-05-12 15:42:36'),
+(23, 7, 32, 2, 0, '2026-05-12 15:42:56', '2026-05-12 15:42:36');
 
 -- --------------------------------------------------------
 
@@ -173,7 +177,9 @@ INSERT INTO `historial_tiradas` (`id`, `usuario_id`, `fecha`, `circuito1_id`, `c
 (12, 4, '2026-04-28 18:37:31', 8, 6, 28, 25, 6),
 (13, 2, '2026-04-28 19:06:14', 3, 7, 8, 6, 6),
 (14, 2, '2026-04-28 19:06:49', 8, 6, 7, 3, 6),
-(15, 2, '2026-04-28 19:07:23', 8, 6, 7, 3, 7);
+(15, 2, '2026-04-28 19:07:23', 8, 6, 7, 3, 7),
+(16, 7, '2026-05-12 15:42:36', 8, 7, 6, 32, 8),
+(17, 7, '2026-05-12 15:42:56', 8, 7, 6, 32, 7);
 
 -- --------------------------------------------------------
 
@@ -200,7 +206,8 @@ INSERT INTO `usuarios` (`id`, `usuario`, `email`, `foto_perfil`, `pass`, `rol`, 
 (2, 'Jesus', 'jahernandezg20@educarex.es', 'perfil_2_1772655132.jpg', '$2y$10$flwgyS/OTHizGI0k7QVmV.lHbX2hWc8Z6T2Y9k7P4AfuUzzNmNYYu', 'usuario', '2026-02-06 01:33:33'),
 (3, 'Alberto', 'ariveron02@educarex.es', 'default.png', '$2y$10$2mAZ6NF2ky1i9jNG1w6We.2KHb8MQxjacdXCkrZgKgv6XMUzwY8u2', 'usuario', '2026-03-04 19:20:58'),
 (4, 'Dario', 'dariomarbau@gmail.com', 'default.png', '$2y$10$0Cj8iiLfWmRPXyp7pMANq.RJ2xL67oOOXqpH6BWeKaPfg92V4iSru', 'usuario', '2026-04-28 18:36:57'),
-(5, 'Mangel', 'Mangel@gmail.com', 'default.png', '$2y$10$dyFoBDlPnv0R.TL462lE4.VGJvLrUw3ZUCat8XaqRFaxt7wJjyLZu', 'usuario', '2026-04-28 18:42:26');
+(5, 'Mangel', 'Mangel@gmail.com', 'default.png', '$2y$10$dyFoBDlPnv0R.TL462lE4.VGJvLrUw3ZUCat8XaqRFaxt7wJjyLZu', 'usuario', '2026-04-28 18:42:26'),
+(7, 'Carol', 'soycarol22@gmail.com', 'perfil_7_1778600592.jpg', '$2y$10$StcCVtRxa.bquQ7IwBiC9ecQaQnEX8c/Kre5tQdomg9Bo2cz7i2Gq', 'usuario', '2026-05-12 15:41:33');
 
 --
 -- Índices para tablas volcadas
@@ -267,19 +274,19 @@ ALTER TABLE `copas`
 -- AUTO_INCREMENT de la tabla `estadisticas_usuario`
 --
 ALTER TABLE `estadisticas_usuario`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_tiradas`
 --
 ALTER TABLE `historial_tiradas`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Restricciones para tablas volcadas
